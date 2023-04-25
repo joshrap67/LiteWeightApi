@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LiteWeightAPI.Api.Workouts;
 
-[Route("users")]
+[Route("workouts")]
 [ApiController]
 public class WorkoutsController : BaseController
 {
