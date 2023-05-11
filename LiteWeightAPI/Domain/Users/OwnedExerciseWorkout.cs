@@ -1,7 +1,10 @@
-﻿namespace LiteWeightAPI.Domain.Users;
+﻿using Google.Cloud.Firestore;
 
+namespace LiteWeightAPI.Domain.Users;
+
+[FirestoreData]
 public class OwnedExerciseWorkout
 {
-	public string WorkoutId { get; set; }
-	public string WorkoutName { get; set; }
+	[FirestoreProperty("workoutId")] public string WorkoutId { get; set; }
+	[FirestoreProperty("workoutName")] public string WorkoutName { get; set; }
 }

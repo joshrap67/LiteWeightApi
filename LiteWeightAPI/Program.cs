@@ -25,6 +25,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseRouting();
 app.UseAuthorization();
+// todo custom middleware for determining if the user is verified or not
 
 app.MapControllers();
 

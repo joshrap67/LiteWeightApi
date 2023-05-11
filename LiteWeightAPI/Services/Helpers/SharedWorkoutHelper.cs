@@ -22,7 +22,7 @@ public static class SharedWorkoutHelper
 		var ownedExercises = new HashSet<string>();
 		foreach (var exercise in user.Exercises)
 		{
-			ownedExercises.Add(exercise.ExerciseName);
+			ownedExercises.Add(exercise.Name);
 		}
 
 		sharedExerciseNames.ExceptWith(ownedExercises);
@@ -33,7 +33,7 @@ public static class SharedWorkoutHelper
 			var sharedExercise = sharedWorkout.Exercises.First(x => x.ExerciseName == exerciseName);
 			var ownedExercise = new OwnedExercise
 			{
-				ExerciseName = exerciseName,
+				Name = exerciseName,
 				Focuses = sharedExercise.Focuses,
 				VideoUrl = sharedExercise.VideoUrl
 			};

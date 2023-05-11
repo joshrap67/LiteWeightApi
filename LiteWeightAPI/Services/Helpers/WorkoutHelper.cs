@@ -8,7 +8,7 @@ public static class WorkoutHelper
 	public static void UpdateOwnedExercisesOnCreation(User user, Workout newWorkout)
 	{
 		var updateDefaultWeight = user.UserPreferences.UpdateDefaultWeightOnSave;
-		var exerciseIds = new List<string>();
+		var exerciseIds = new HashSet<string>();
 		var exerciseIdToExercise = user.Exercises.ToDictionary(x => x.Id, x => x);
 		foreach (var week in newWorkout.Routine.Weeks)
 		{
@@ -20,8 +20,6 @@ public static class WorkoutHelper
 					var ownedExercise = exerciseIdToExercise[exerciseId];
 					if (updateDefaultWeight && routineExercise.Weight > ownedExercise.DefaultWeight)
 					{
-						// if user wants to update default weight on save and this exercise has a greater
-						// weight than the current default, then update the default
 						ownedExercise.DefaultWeight = routineExercise.Weight;
 					}
 
@@ -32,17 +30,18 @@ public static class WorkoutHelper
 
 		foreach (var exerciseId in exerciseIds)
 		{
-			// updates the list of exercises on the user object to include this new workout in all contained exercises
-			var ownedExerciseWorkout = exerciseIdToExercise[exerciseId].Workouts
-				.First(x => x.WorkoutId == newWorkout.WorkoutId);
-			ownedExerciseWorkout.WorkoutName = newWorkout.WorkoutName;
+			exerciseIdToExercise[exerciseId].Workouts.Add(new OwnedExerciseWorkout
+			{
+				WorkoutId = newWorkout.Id,
+				WorkoutName = newWorkout.Name
+			});
 		}
 	}
 
 	public static void UpdateOwnedExercisesOnEdit(User user, Routine newRoutine, Workout workout)
 	{
 		var updateDefaultWeight = user.UserPreferences.UpdateDefaultWeightOnSave;
-		var newExerciseIds = new HashSet<string>();
+		var currentExerciseIds = new HashSet<string>();
 		var exerciseIdToExercise = user.Exercises.ToDictionary(x => x.Id, x => x);
 		foreach (var week in newRoutine.Weeks)
 		{
@@ -57,7 +56,7 @@ public static class WorkoutHelper
 						ownedExercise.DefaultWeight = routineExercise.Weight;
 					}
 
-					newExerciseIds.Add(exerciseId);
+					currentExerciseIds.Add(exerciseId);
 				}
 			}
 		}
@@ -74,35 +73,35 @@ public static class WorkoutHelper
 			}
 		}
 
-		// find the exercises that are no longer being used in this workout
-		var deletedExercises = oldExerciseIds.Where(x => !newExerciseIds.Contains(x)).ToList();
+		var deletedExercises = oldExerciseIds.Where(x => !currentExerciseIds.Contains(x)).ToList();
+		var newExercises = currentExerciseIds.Where(x => !oldExerciseIds.Contains(x)).ToList();
 
-		foreach (var exerciseId in newExerciseIds)
+		foreach (var exerciseId in newExercises)
 		{
 			var ownedExercise = exerciseIdToExercise[exerciseId];
 			ownedExercise.Workouts.Add(new OwnedExerciseWorkout
 			{
-				WorkoutId = workout.WorkoutId,
-				WorkoutName = workout.WorkoutName
+				WorkoutId = workout.Id,
+				WorkoutName = workout.Name
 			});
 		}
 
 		foreach (var exerciseId in deletedExercises)
 		{
 			var ownedExercise = exerciseIdToExercise[exerciseId];
-			var ownedExerciseWorkout = ownedExercise.Workouts.First(x => x.WorkoutId == workout.WorkoutId);
+			var ownedExerciseWorkout = ownedExercise.Workouts.First(x => x.WorkoutId == workout.Id);
 			ownedExercise.Workouts.Remove(ownedExerciseWorkout);
 		}
 	}
 
-	public static void VerifyCurrentDayAndWeek(Workout editedWorkout)
+	public static void FixCurrentDayAndWeek(Workout editedWorkout)
 	{
-		// make sure that the current week according to the frontend is actually valid
+		// make sure that the current week according to the request is actually valid
 		var currentDay = editedWorkout.CurrentDay;
 		var currentWeek = editedWorkout.CurrentWeek;
 		if (currentWeek < 0 && currentWeek >= editedWorkout.Routine.Weeks.Count)
 		{
-			// frontend incorrectly set the current week, so just set both to 0
+			// request incorrectly set the current week, so just set both to 0
 			editedWorkout.CurrentWeek = 0;
 			editedWorkout.CurrentDay = 0;
 			return;
@@ -110,7 +109,7 @@ public static class WorkoutHelper
 
 		if (currentDay < 0 && currentDay >= editedWorkout.Routine.Weeks[currentWeek].Days.Count)
 		{
-			// frontend incorrectly set the current day, so just set it to 0
+			// request incorrectly set the current day, so just set it to 0
 			editedWorkout.CurrentWeek = 0;
 			editedWorkout.CurrentDay = 0;
 		}
@@ -119,13 +118,10 @@ public static class WorkoutHelper
 	/// <summary>
 	/// Reset each exercise in the workout to be not completed, and update statistics and default weights where necessary.
 	/// </summary>
-	/// <param name="workout"></param>
-	/// <param name="workoutMeta"></param>
-	/// <param name="user"></param>
-	public static void RestartWorkout(Workout workout, WorkoutMeta workoutMeta, User user)
+	public static void RestartWorkout(Routine routine, WorkoutInfo workoutInfo, User user)
 	{
 		var exerciseIdToExercise = user.Exercises.ToDictionary(x => x.Id, x => x);
-		foreach (var week in workout.Routine.Weeks)
+		foreach (var week in routine.Weeks)
 		{
 			foreach (var day in week.Days)
 			{
@@ -133,8 +129,8 @@ public static class WorkoutHelper
 				{
 					if (routineExercise.Completed)
 					{
-						workoutMeta.AverageExercisesCompleted =
-							IncreaseAverage(workoutMeta.AverageExercisesCompleted, workoutMeta.TotalExercisesSum, 1);
+						workoutInfo.AverageExercisesCompleted =
+							IncreaseAverage(workoutInfo.AverageExercisesCompleted, workoutInfo.TotalExercisesSum, 1);
 						routineExercise.Completed = false;
 
 						if (user.UserPreferences.UpdateDefaultWeightOnRestart)
@@ -151,11 +147,11 @@ public static class WorkoutHelper
 					else
 					{
 						// didn't complete the exercise, still need to update new average with this 0 value
-						workoutMeta.AverageExercisesCompleted =
-							IncreaseAverage(workoutMeta.AverageExercisesCompleted, workoutMeta.TotalExercisesSum, 0);
+						workoutInfo.AverageExercisesCompleted =
+							IncreaseAverage(workoutInfo.AverageExercisesCompleted, workoutInfo.TotalExercisesSum, 0);
 					}
 
-					workoutMeta.TotalExercisesSum += 1;
+					workoutInfo.TotalExercisesSum += 1;
 				}
 			}
 		}

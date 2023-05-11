@@ -34,8 +34,6 @@ public static class ServiceCollectionExtensions
 		services.AddAutoMapper(typeof(Program));
 		services.AddSingleton<IClock>(SystemClock.Instance);
 		services.AddTransient<IAmazonS3>(x => new AmazonS3Client(RegionEndpoint.USEast1)); // todo env var for region
-		services.AddTransient<IAmazonDynamoDB>(x =>
-			new AmazonDynamoDBClient(RegionEndpoint.USEast1)); // todo env var for region
 		// auto registers all classes that inherit from an interface as transient
 		services.RegisterAssemblyPublicNonGenericClasses()
 			.AsPublicImplementedInterfaces();
@@ -55,6 +53,9 @@ public static class ServiceCollectionExtensions
 
 			// append any error types that are attributed to each endpoint
 			options.OperationFilter<AppendErrorTypesOperationFilter>();
+
+			// append an indicator of which actions send a push notification
+			options.OperationFilter<AppendPushNotificationIndicatorOperationFilter>();
 
 			const string bearerDefinition = "BearerDefinition";
 			options.AddSecurityDefinition(bearerDefinition, new OpenApiSecurityScheme
@@ -78,7 +79,7 @@ public static class ServiceCollectionExtensions
 			options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 		}).AddJwtBearer(jwt =>
 		{
-			jwt.Authority = "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_vLSsBubHd"; // todo env var on config
+			jwt.Authority = "https://securetoken.google.com/liteweight-faa1a"; // todo env var on config
 			jwt.TokenValidationParameters = new TokenValidationParameters
 			{
 				ValidateIssuer = true,

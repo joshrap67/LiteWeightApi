@@ -1,7 +1,7 @@
 ﻿using LiteWeightAPI.Api.Workouts.Requests;
-using LiteWeightAPI.Api.Workouts.Responses;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Domain.Workouts;
+using LiteWeightAPI.Errors.Exceptions;
 using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
 using LiteWeightAPI.Imports;
 
@@ -9,10 +9,14 @@ namespace LiteWeightAPI.Services.Validation;
 
 public interface IWorkoutValidator
 {
-	void EnsureWorkoutOwnership(string username, Workout workout);
-	void EnsureValidNewWorkout(CreateWorkoutRequest request, User activeUser);
-	void EnsureValidEditWorkout(SetRoutineRequest request);
-	void EnsureValidCopyWorkout(CopyWorkoutRequest request, User activeUser);
+	void ValidCreateWorkout(CreateWorkoutRequest request, User user);
+	void ValidSetRoutine(Workout workout, SetRoutineRequest request, User user);
+	void ValidUpdateWorkout(Workout workout, User user);
+	void ValidRestartWorkout(Workout workout, User user);
+	void ValidDeleteWorkout(Workout workout, User user);
+	void ValidCopyWorkout(CopyWorkoutRequest request, Workout workoutToCopy, User user);
+	void ValidRenameWorkout(RenameWorkoutRequest request, Workout workout, User user);
+	void ValidResetStatistics(User user, string workoutId);
 }
 
 public class WorkoutWorkoutValidator : IWorkoutValidator
@@ -23,54 +27,84 @@ public class WorkoutWorkoutValidator : IWorkoutValidator
 	{
 		_commonValidator = commonValidator;
 	}
-	
-	public void EnsureWorkoutOwnership(string username, Workout workout)
+
+	public void ValidCreateWorkout(CreateWorkoutRequest request, User user)
 	{
-		if (workout.Creator != username)
+		if (user.Workouts.Count >= Globals.MaxFreeWorkouts && user.PremiumToken == null)
 		{
-			throw new ForbiddenException("User does not have permissions to modify workout");
+			throw new MaxLimitException("Max amount of free workouts reached");
+		}
+
+		if (user.Workouts.Count >= Globals.MaxWorkouts && user.PremiumToken != null)
+		{
+			throw new MaxLimitException("Maximum workouts exceeded");
+		}
+
+		_commonValidator.ValidWorkoutName(request.WorkoutName, user);
+		ValidRoutineWeeks(request.Routine);
+		ValidRoutineDays(request.Routine);
+	}
+
+	public void ValidSetRoutine(Workout workout, SetRoutineRequest request, User user)
+	{
+		_commonValidator.EnsureWorkoutOwnership(user.Username, workout);
+		_commonValidator.WorkoutExists(workout);
+		ValidRoutineWeeks(request);
+		ValidRoutineDays(request);
+	}
+
+	public void ValidUpdateWorkout(Workout workout, User user)
+	{
+		_commonValidator.WorkoutExists(workout);
+		_commonValidator.EnsureWorkoutOwnership(user.Username, workout);
+	}
+
+	public void ValidRestartWorkout(Workout workout, User user)
+	{
+		_commonValidator.WorkoutExists(workout);
+		_commonValidator.EnsureWorkoutOwnership(user.Username, workout);
+	}
+
+	public void ValidDeleteWorkout(Workout workout, User user)
+	{
+		_commonValidator.WorkoutExists(workout);
+		_commonValidator.EnsureWorkoutOwnership(user.Username, workout);
+	}
+
+	public void ValidCopyWorkout(CopyWorkoutRequest request, Workout workoutToCopy, User user)
+	{
+		_commonValidator.WorkoutExists(workoutToCopy);
+		_commonValidator.EnsureWorkoutOwnership(user.Username, workoutToCopy);
+
+		if (user.Workouts.Count >= Globals.MaxFreeWorkouts && user.PremiumToken == null)
+		{
+			throw new MaxLimitException("Max amount of free workouts reached");
+		}
+
+		if (user.Workouts.Count >= Globals.MaxWorkouts && user.PremiumToken != null)
+		{
+			throw new MaxLimitException("Maximum workouts exceeded");
+		}
+
+		_commonValidator.ValidWorkoutName(request.NewName, user);
+	}
+
+	public void ValidRenameWorkout(RenameWorkoutRequest request, Workout workout, User user)
+	{
+		_commonValidator.WorkoutExists(workout);
+		_commonValidator.EnsureWorkoutOwnership(user.Username, workout);
+		_commonValidator.ValidWorkoutName(request.NewName, user);
+	}
+
+	public void ValidResetStatistics(User user, string workoutId)
+	{
+		if (user.Workouts.All(x => x.WorkoutId != workoutId))
+		{
+			throw new ResourceNotFoundException("Workout");
 		}
 	}
 
-	public void EnsureValidNewWorkout(CreateWorkoutRequest request, User activeUser)
-	{
-		if (activeUser.Workouts.Count >= Globals.MaxFreeWorkouts && activeUser.PremiumToken == null)
-		{
-			throw new Exception("Max amount of free workouts reached");
-		}
-
-		if (activeUser.Workouts.Count >= Globals.MaxWorkouts && activeUser.PremiumToken != null)
-		{
-			throw new Exception("Maximum workouts exceeded");
-		}
-
-		_commonValidator.EnsureValidWorkoutName(request.WorkoutName, activeUser);
-		EnsureValidRoutineWeeks(request.Routine);
-		EnsureValidRoutineDays(request.Routine);
-	}
-
-	public void EnsureValidEditWorkout(SetRoutineRequest request)
-	{
-		EnsureValidRoutineWeeks(request.Routine);
-		EnsureValidRoutineDays(request.Routine);
-	}
-
-	public void EnsureValidCopyWorkout(CopyWorkoutRequest request, User activeUser)
-	{
-		if (activeUser.Workouts.Count >= Globals.MaxFreeWorkouts && activeUser.PremiumToken == null)
-		{
-			throw new Exception("Max amount of free workouts reached");
-		}
-
-		if (activeUser.Workouts.Count >= Globals.MaxWorkouts && activeUser.PremiumToken != null)
-		{
-			throw new Exception("Maximum workouts exceeded");
-		}
-
-		_commonValidator.EnsureValidWorkoutName(request.NewName, activeUser);
-	}
-
-	private static void EnsureValidRoutineDays(RoutineResponse routine)
+	private static void ValidRoutineDays(SetRoutineRequest routine)
 	{
 		var weekIndex = 0;
 		foreach (var week in routine.Weeks)
@@ -79,7 +113,7 @@ public class WorkoutWorkoutValidator : IWorkoutValidator
 			var dayCount = week.Days.Count;
 			if (dayCount > Globals.MaxDaysRoutine)
 			{
-				throw new Exception($"Week: {weekIndex} exceeds maximum amount of days in a week");
+				throw new InvalidRoutineException($"Week: {weekIndex} exceeds maximum amount of days in a week");
 			}
 
 			var dayIndex = 0;
@@ -88,17 +122,18 @@ public class WorkoutWorkoutValidator : IWorkoutValidator
 				dayIndex++;
 				if (day.Tag != null && day.Tag.Length > Globals.MaxDayTagLength)
 				{
-					throw new Exception($"Day tag for Week: {weekIndex} Day: {dayIndex} exceeds maximum length");
+					throw new InvalidRoutineException(
+						$"Day tag for Week: {weekIndex} Day: {dayIndex} exceeds maximum length");
 				}
 			}
 		}
 	}
 
-	private static void EnsureValidRoutineWeeks(RoutineResponse routine)
+	private static void ValidRoutineWeeks(SetRoutineRequest routine)
 	{
 		if (routine.Weeks.Count > Globals.MaxWeeksRoutine)
 		{
-			throw new Exception("Workout exceeds maximum amount of weeks allowed");
+			throw new InvalidRoutineException("Workout exceeds maximum amount of weeks allowed");
 		}
 	}
 }

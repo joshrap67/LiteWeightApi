@@ -11,7 +11,8 @@ namespace LiteWeightAPI.Api;
 public class BaseController : Controller
 {
 	private readonly Serilog.ILogger _logger;
-	protected string UserId { get; private set; }
+	protected string CurrentUserId { get; private set; }
+	protected string CurrentUserEmail { get; private set; }
 
 	public BaseController(Serilog.ILogger logger)
 	{
@@ -31,25 +32,21 @@ public class BaseController : Controller
 			versionCode = int.Parse(versionCodeString);
 			_logger.Information($"LiteWeight version code for request: {version}");
 		}
-		catch (Exception e)
+		catch (Exception)
 		{
-			_logger.Error("Version code not in proper format. Continuing request...", e);
+			_logger.Error("Version code not in proper format. Continuing request...");
 		}
 
 
-		if (versionCode != null && versionCode < MinimumLiteWeightAndroidVersion)
+		if (versionCode is < MinimumLiteWeightAndroidVersion)
 		{
 			throw new UpgradeRequiredException(
 				$"The minimum LiteWeight Android version required to use this API is {MinimumLiteWeightAndroidVersion}");
 		}
 
-		var claim = HttpContext.User.Claims.ToList().FirstOrDefault(x => x.Type == "username");
-		if (claim == null)
-		{
-			throw new ForbiddenException();
-		}
-
-		UserId = claim.Value;
+		// todo get custom claim of email is tricky
+		var userIdClaim = HttpContext.User.Claims.ToList().FirstOrDefault(x => x.Type == "user_id");
+		CurrentUserId = userIdClaim?.Value;
 
 		return base.OnActionExecutionAsync(context, next);
 	}

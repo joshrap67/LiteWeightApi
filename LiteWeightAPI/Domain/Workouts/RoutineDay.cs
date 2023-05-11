@@ -1,16 +1,16 @@
-﻿namespace LiteWeightAPI.Domain.Workouts;
+﻿using Google.Cloud.Firestore;
 
+namespace LiteWeightAPI.Domain.Workouts;
+
+[FirestoreData]
 public class RoutineDay
 {
-	public IList<RoutineExercise> Exercises { get; set; } = new List<RoutineExercise>();
-	public string Tag { get; set; }
+	[FirestoreProperty("exercises")] public IList<RoutineExercise> Exercises { get; set; } = new List<RoutineExercise>();
+	[FirestoreProperty("tag")] public string Tag { get; set; }
 
 	public RoutineDay Clone()
 	{
-		var clonedDay = new RoutineDay
-		{
-			Tag = Tag
-		};
+		var clonedDay = new RoutineDay { Tag = Tag };
 		foreach (var exercise in Exercises)
 		{
 			clonedDay.Exercises.Add(exercise.Clone());
@@ -22,5 +22,11 @@ public class RoutineDay
 	public void AppendExercise(RoutineExercise exercise)
 	{
 		Exercises.Add(exercise);
+	}
+
+	public void DeleteExercise(string exerciseId)
+	{
+		var exercise = Exercises.FirstOrDefault(x => x.ExerciseId == exerciseId);
+		Exercises.Remove(exercise);
 	}
 }

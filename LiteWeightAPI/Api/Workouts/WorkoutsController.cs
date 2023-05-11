@@ -1,5 +1,8 @@
 ﻿using LiteWeightAPI.Api.Common.Responses;
+using LiteWeightAPI.Api.Common.Responses.ErrorResponses;
 using LiteWeightAPI.Api.Workouts.Requests;
+using LiteWeightAPI.Api.Workouts.Responses;
+using LiteWeightAPI.Errors.ErrorAttributes;
 using LiteWeightAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,83 +20,116 @@ public class WorkoutsController : BaseController
 	}
 
 	/// <summary>Create Workout</summary>
-	/// <remarks>Creates a workout and adds it to the authenticated user's list of workouts.</remarks>
+	/// <remarks>Creates a workout and adds it to the current user's list of workouts.</remarks>
 	[HttpPost]
+	[InvalidRequest, InvalidRoutine, MaxLimit]
 	[ProducesResponseType(typeof(UserAndWorkoutResponse), 200)]
+	[ProducesResponseType(typeof(BadRequestResponse), 400)]
 	public async Task<ActionResult<UserAndWorkoutResponse>> CreateWorkout(CreateWorkoutRequest request)
 	{
-		var response = await _workoutService.CreateWorkout(request, UserId);
+		var response = await _workoutService.CreateWorkout(request, CurrentUserId);
 		return response;
 	}
 
-	/// <summary>Switch Workout</summary>
-	/// <remarks>Switches the authenticated user's workout to the specified one, and updates the current workout if specified.</remarks>
-	[HttpPut("switch")]
-	[ProducesResponseType(typeof(UserAndWorkoutResponse), 200)]
-	public async Task<ActionResult<UserAndWorkoutResponse>> SwitchWorkout(SwitchWorkoutRequest request)
+	/// <summary>Get Workout</summary>
+	/// <remarks>Gets a workout assuming it belongs to the authenticated user</remarks>
+	[HttpGet("{workoutId}")]
+	[ProducesResponseType(typeof(WorkoutResponse), 200)]
+	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
+	public async Task<ActionResult<WorkoutResponse>> GetWorkout(string workoutId)
 	{
-		var response = await _workoutService.SwitchWorkout(request, UserId);
+		var response = await _workoutService.GetWorkout(workoutId, CurrentUserId);
 		return response;
 	}
 
 	/// <summary>Copy Workout</summary>
 	/// <remarks>Copies a workout as a new workout.</remarks>
-	[HttpPost("copy")]
+	[HttpPost("{workoutId}/copy")]
+	[InvalidRequest, AlreadyExists, MaxLimit]
 	[ProducesResponseType(typeof(UserAndWorkoutResponse), 200)]
-	public async Task<ActionResult<UserAndWorkoutResponse>> CopyWorkout(CopyWorkoutRequest request)
+	[ProducesResponseType(typeof(BadRequestResponse), 400)]
+	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
+	public async Task<ActionResult<UserAndWorkoutResponse>> CopyWorkout(string workoutId, CopyWorkoutRequest request)
 	{
 		// todo this should not switch, that is too much in one method. need to update frontend to handle that
-		var response = await _workoutService.CopyWorkout(request, UserId);
+		var response = await _workoutService.CopyWorkout(request, workoutId, CurrentUserId);
 		return response;
 	}
 
 	/// <summary>Set Routine</summary>
 	/// <remarks>Sets the routine of a given workout.</remarks>
-	[HttpPut("{workoutId}/set-routine")]
+	[HttpPut("{workoutId}/routine")]
+	[InvalidRequest, InvalidRoutine]
 	[ProducesResponseType(typeof(UserAndWorkoutResponse), 200)]
+	[ProducesResponseType(typeof(BadRequestResponse), 400)]
+	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
 	public async Task<ActionResult<UserAndWorkoutResponse>> SetRoutine(SetRoutineRequest request, string workoutId)
 	{
-		var response = await _workoutService.SetRoutine(request, workoutId, UserId);
+		var response = await _workoutService.SetRoutine(request, workoutId, CurrentUserId);
 		return response;
 	}
 
 	/// <summary>Update Workout</summary>
 	/// <remarks>Updates the specified workout.</remarks>
-	[HttpPut("update")]
-	public async Task<ActionResult> UpdateWorkout(UpdateWorkoutRequest request)
+	[HttpPut("{workoutId}/update")]
+	[InvalidRequest]
+	[ProducesResponseType(typeof(BadRequestResponse), 400)]
+	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
+	public async Task<ActionResult> UpdateWorkout(string workoutId, UpdateWorkoutRequest request)
 	{
-		await _workoutService.UpdateWorkout(request, UserId);
+		await _workoutService.UpdateWorkout(workoutId, request, CurrentUserId);
+		return Ok();
+	}
+
+	/// <summary>Reset Statistics</summary>
+	/// <remarks>Resets the statistics for a given workout, if it exists.</remarks>
+	[HttpPut("{workoutId}/reset-statistics")]
+	[ProducesResponseType(200)]
+	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
+	public async Task<ActionResult> ResetStatistics(string workoutId)
+	{
+		await _workoutService.ResetStatistics(workoutId, CurrentUserId);
 		return Ok();
 	}
 
 	/// <summary>Restart Workout</summary>
-	/// <remarks>Restarts the workout to have all exercises set to incomplete, and updates the statistics of the authenticated user using the state of the workout before it was restarted.</remarks>
-	[HttpPut("restart")]
+	/// <remarks>
+	/// Restarts the workout to have all exercises set to incomplete, and updates the statistics of the authenticated user using the state of the workout before it was restarted.
+	/// <br/>If enabled on the current user's preferences, the default weights of any completed exercises will be updated if their completed weight is greater than the current default weight.
+	/// </remarks>
+	[HttpPost("{workoutId}/restart")]
+	[InvalidRequest]
 	[ProducesResponseType(typeof(UserAndWorkoutResponse), 200)]
-	public async Task<ActionResult<UserAndWorkoutResponse>> RestartWorkout(RestartWorkoutRequest request)
+	[ProducesResponseType(typeof(BadRequestResponse), 400)]
+	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
+	public async Task<ActionResult<UserAndWorkoutResponse>> RestartWorkout(string workoutId,
+		RestartWorkoutRequest request)
 	{
-		var response = await _workoutService.RestartWorkout(request, UserId);
+		var response = await _workoutService.RestartWorkout(workoutId, request, CurrentUserId);
 		return response;
 	}
 
 	/// <summary>Rename Workout</summary>
 	/// <remarks>Renames a given workout. Name must be unique.</remarks>
 	[HttpPut("{workoutId}/rename")]
-	[ProducesResponseType(typeof(UserAndWorkoutResponse), 200)]
-	public async Task<ActionResult<UserAndWorkoutResponse>> RenameWorkout(RenameWorkoutRequest request,
-		string workoutId)
+	[InvalidRequest, AlreadyExists]
+	[ProducesResponseType(200)]
+	[ProducesResponseType(typeof(UserAndWorkoutResponse), 400)]
+	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
+	public async Task<ActionResult> RenameWorkout(string workoutId, RenameWorkoutRequest request)
 	{
-		var response = await _workoutService.RenameWorkout(request, workoutId, UserId);
-		return response;
+		await _workoutService.RenameWorkout(request, workoutId, CurrentUserId);
+		return Ok();
 	}
 
 	/// <summary>Delete Workout</summary>
 	/// <remarks>Deletes a given workout. Removes it from the authenticated user's list of workouts, and from the list of workouts on the exercises of the deleted workout.</remarks>
 	[HttpDelete("{workoutId}")]
+	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
 	public async Task<ActionResult> DeleteWorkout(string workoutId)
 	{
 		// todo this should not switch, that is too much in one method. need to update frontend to handle that
-		await _workoutService.DeleteWorkout(workoutId, UserId);
+		await _workoutService.DeleteWorkout(workoutId, CurrentUserId);
 		return Ok();
 	}
 }

@@ -1,4 +1,4 @@
-﻿using LiteWeightAPI.Api.Users.Responses;
+﻿using LiteWeightAPI.Api.CurrentUser.Responses;
 using LiteWeightAPI.Api.Workouts.Responses;
 
 namespace LiteWeightAPI.Api.Common.Responses;

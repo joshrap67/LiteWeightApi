@@ -1,4 +1,3 @@
-using LiteWeightAPI.Errors.ErrorAttributes;
 using LiteWeightAPI.Errors.ErrorAttributes.Setup;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;

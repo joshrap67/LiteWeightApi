@@ -3,64 +3,67 @@ using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Domain.Workouts;
 using LiteWeightAPI.Errors.Exceptions;
 using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
-using LiteWeightAPI.Imports;
 
 namespace LiteWeightAPI.Services.Validation;
 
 public interface ICommonValidator
 {
-	void AuthenticatedUserExists(User authenticatedUser);
-	void UserExists(User user, string username);
-	void EnsureWorkoutOwnership(string username, Workout workout);
-	void EnsureSharedWorkoutResourceExists(SharedWorkout workout);
-	void EnsureValidWorkoutName(string workoutName, User user);
+	void UserExists(User user, string userId);
+	void WorkoutExists(Workout workout);
+	void EnsureWorkoutOwnership(string userId, Workout workout);
+	void EnsureSharedWorkoutOwnership(string userId, SharedWorkout workout);
+	void SharedWorkoutExists(SharedWorkout workout);
+	void ValidWorkoutName(string workoutName, User user);
 }
 
 public class CommonValidator : ICommonValidator
 {
-	public void AuthenticatedUserExists(User authenticatedUser)
-	{
-		if (authenticatedUser == null)
-		{
-			throw new UserNotFoundException("Authenticated user not found"); // todo this might be excessive
-		}
-	}
-
-	public void UserExists(User user, string username)
+	public void UserExists(User user, string userId)
 	{
 		if (user == null)
 		{
-			throw new UserNotFoundException($"User {username} not found");
+			throw new UserNotFoundException($"User {userId} not found");
 		}
 	}
 
-	public void EnsureWorkoutOwnership(string username, Workout workout)
-	{
-		if (workout.Creator != username)
-		{
-			throw new ForbiddenException("User does not have permissions to modify workout");
-		}
-	}
-
-	public void EnsureSharedWorkoutResourceExists(SharedWorkout workout)
+	public void WorkoutExists(Workout workout)
 	{
 		if (workout == null)
 		{
-			throw new ResourceNotFoundException("Shared workout not found");
+			throw new ResourceNotFoundException("Workout");
 		}
 	}
 
-	public void EnsureValidWorkoutName(string workoutName, User user)
+	public void EnsureWorkoutOwnership(string userId, Workout workout)
 	{
-		if (workoutName.Length > Globals.MaxWorkoutNameLength)
+		if (workout.CreatorId != userId)
 		{
-			// todo put in request
-			throw new Exception("Workout name is too long");
+			throw new ForbiddenException("User does not have permissions to access workout");
 		}
+	}
 
+	public void EnsureSharedWorkoutOwnership(string userId, SharedWorkout sharedWorkout)
+	{
+		if (sharedWorkout.RecipientId != userId)
+		{
+			throw new ForbiddenException("User does not have permissions to access shared workout");
+		}
+	}
+
+	public void SharedWorkoutExists(SharedWorkout workout)
+	{
+		if (workout == null)
+		{
+			throw new ResourceNotFoundException("Shared workout");
+		}
+	}
+
+	public void ValidWorkoutName(string workoutName, User user)
+	{
 		if (user.Workouts.Any(x => x.WorkoutName == workoutName))
 		{
-			throw new DuplicateFoundException("Workout name already exists");
+			// todo "AlreadyExists"?
+			throw new AlreadyExistsException("Workout name already exists");
 		}
 	}
 }

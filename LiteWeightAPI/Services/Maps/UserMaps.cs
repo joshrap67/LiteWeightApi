@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
-using LiteWeightAPI.Api.Users.Requests;
-using LiteWeightAPI.Api.Users.Responses;
+using LiteWeightAPI.Api.CurrentUser.Responses;
+using LiteWeightAPI.Api.Exercises.Requests;
+using LiteWeightAPI.Api.Exercises.Responses;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Imports;
 
@@ -12,16 +13,12 @@ public class UserMaps : Profile
 	{
 		CreateMap<OwnedExercise, OwnedExerciseResponse>();
 		CreateMap<OwnedExerciseWorkout, OwnedExerciseWorkoutResponse>();
-		CreateMap<WorkoutMeta, WorkoutMetaResponse>();
+		CreateMap<WorkoutInfo, WorkoutInfoResponse>();
 		CreateMap<Friend, FriendResponse>();
-		CreateMap<Blocked, BlockedUserResponse>();
 		CreateMap<FriendRequest, FriendRequestResponse>();
-		CreateMap<SharedWorkoutMeta, SharedWorkoutMetaResponse>();
+		CreateMap<SharedWorkoutInfo, SharedWorkoutInfoResponse>();
 		CreateMap<UserPreferences, UserPreferencesResponse>().ReverseMap();
-		CreateMap<CreateExerciseRequest, OwnedExercise>()
-			.Ignore(x => x.Id)
-			.Ignore(x => x.Workouts);
-		CreateMap<UpdateExerciseRequest, OwnedExercise>()
+		CreateMap<SetExerciseRequest, OwnedExercise>()
 			.Ignore(x => x.Id)
 			.Ignore(x => x.Workouts);
 		CreateMap<User, UserResponse>();

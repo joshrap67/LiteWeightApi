@@ -1,12 +1,15 @@
-﻿namespace LiteWeightAPI.Domain.SharedWorkouts;
+﻿using Google.Cloud.Firestore;
 
+namespace LiteWeightAPI.Domain.SharedWorkouts;
+
+[FirestoreData]
 public class SharedDay
 {
+	[FirestoreProperty("exercises")] public IList<SharedExercise> Exercises { get; set; } = new List<SharedExercise>();
+	[FirestoreProperty("tag")] public string Tag { get; set; }
+
 	public void AppendExercise(SharedExercise sharedExercise)
 	{
 		Exercises.Add(sharedExercise);
 	}
-
-	public IList<SharedExercise> Exercises { get; set; } = new List<SharedExercise>();
-	public string Tag { get; set; }
 }

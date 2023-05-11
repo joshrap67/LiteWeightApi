@@ -1,9 +1,14 @@
-﻿namespace LiteWeightAPI.Domain.Users;
+﻿using Google.Cloud.Firestore;
+using NodaTime;
 
+namespace LiteWeightAPI.Domain.Users;
+
+[FirestoreData]
 public class FriendRequest
 {
-	public string Username { get; set; }
-	public string Icon { get; set; }
-	public bool Seen { get; set; }
-	public string RequestTimeStamp { get; set; }
+	[FirestoreProperty("userId")] public string UserId { get; set; }
+	[FirestoreProperty("username")] public string Username { get; set; }
+	[FirestoreProperty("icon")] public string Icon { get; set; }
+	[FirestoreProperty("seen")] public bool Seen { get; set; }
+	[FirestoreProperty("requestTimestamp")] public Instant RequestTimestamp { get; set; }
 }

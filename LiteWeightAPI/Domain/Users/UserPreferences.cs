@@ -1,9 +1,12 @@
-﻿namespace LiteWeightAPI.Domain.Users;
+﻿using Google.Cloud.Firestore;
 
+namespace LiteWeightAPI.Domain.Users;
+
+[FirestoreData]
 public class UserPreferences
 {
-	public bool PrivateAccount { get; set; }
-	public bool UpdateDefaultWeightOnSave { get; set; }
-	public bool UpdateDefaultWeightOnRestart { get; set; }
-	public bool MetricUnits { get; set; }
+	[FirestoreProperty("privateAccount")] public bool PrivateAccount { get; set; }
+	[FirestoreProperty("updateDefaultWeightOnSave")] public bool UpdateDefaultWeightOnSave { get; set; }
+	[FirestoreProperty("updateDefaultWeightOnRestart")] public bool UpdateDefaultWeightOnRestart { get; set; }
+	[FirestoreProperty("metricUnits")] public bool MetricUnits { get; set; }
 }

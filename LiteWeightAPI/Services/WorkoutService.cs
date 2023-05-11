@@ -1,13 +1,15 @@
 ﻿using AutoMapper;
 using LiteWeightAPI.Api.Common.Responses;
-using LiteWeightAPI.Api.Users.Responses;
+using LiteWeightAPI.Api.CurrentUser.Responses;
 using LiteWeightAPI.Api.Workouts.Requests;
 using LiteWeightAPI.Api.Workouts.Responses;
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Domain.Workouts;
+using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
 using LiteWeightAPI.Services.Helpers;
 using LiteWeightAPI.Services.Validation;
+using Microsoft.AspNetCore.Mvc;
 using NodaTime;
 
 namespace LiteWeightAPI.Services;
@@ -15,13 +17,14 @@ namespace LiteWeightAPI.Services;
 public interface IWorkoutService
 {
 	Task<UserAndWorkoutResponse> CreateWorkout(CreateWorkoutRequest request, string userId);
-	Task<UserAndWorkoutResponse> SwitchWorkout(SwitchWorkoutRequest request, string userId);
-	Task<UserAndWorkoutResponse> CopyWorkout(CopyWorkoutRequest request, string userId);
+	Task<ActionResult<WorkoutResponse>> GetWorkout(string workoutId, string currentUserId);
+	Task<UserAndWorkoutResponse> CopyWorkout(CopyWorkoutRequest request, string workoutId, string userId);
 	Task<UserAndWorkoutResponse> SetRoutine(SetRoutineRequest request, string workoutId, string userId);
-	Task UpdateWorkout(UpdateWorkoutRequest request, string userId);
-	Task<UserAndWorkoutResponse> RestartWorkout(RestartWorkoutRequest request, string userId);
-	Task<UserAndWorkoutResponse> RenameWorkout(RenameWorkoutRequest request, string workoutId, string userId);
+	Task UpdateWorkout(string workoutId, UpdateWorkoutRequest request, string userId);
+	Task<UserAndWorkoutResponse> RestartWorkout(string workoutId, RestartWorkoutRequest request, string userId);
+	Task RenameWorkout(RenameWorkoutRequest request, string workoutId, string userId);
 	Task DeleteWorkout(string workoutId, string userId);
+	Task ResetStatistics(string workoutId, string userId);
 }
 
 public class WorkoutService : IWorkoutService
@@ -30,239 +33,235 @@ public class WorkoutService : IWorkoutService
 	private readonly IMapper _mapper;
 	private readonly IClock _clock;
 	private readonly IWorkoutValidator _workoutValidator;
-	private readonly ICommonValidator _commonValidator; // todo delete
 
-	public WorkoutService(IRepository repository, IMapper mapper, IClock clock, IWorkoutValidator workoutValidator,
-		ICommonValidator commonValidator)
+	public WorkoutService(IRepository repository, IMapper mapper, IClock clock, IWorkoutValidator workoutValidator)
 	{
 		_repository = repository;
 		_mapper = mapper;
 		_clock = clock;
 		_workoutValidator = workoutValidator;
-		_commonValidator = commonValidator;
 	}
 
 	public async Task<UserAndWorkoutResponse> CreateWorkout(CreateWorkoutRequest request, string userId)
 	{
-		var activeUser = await _repository.GetUser(userId);
+		var user = await _repository.GetUser(userId);
 
 		var workoutId = Guid.NewGuid().ToString();
-		_workoutValidator.EnsureValidNewWorkout(request, activeUser);
+		_workoutValidator.ValidCreateWorkout(request, user);
 
-		var creationTime = _clock.GetCurrentInstant().ToString();
-
-		// no error, so go ahead and try and insert this new workout along with updating active user
+		var now = _clock.GetCurrentInstant();
 		var newWorkout = new Workout
 		{
-			CreationDate = creationTime,
-			Creator = userId,
-			WorkoutId = workoutId,
-			WorkoutName = request.WorkoutName.Trim(),
+			Id = workoutId,
+			Name = request.WorkoutName.Trim(),
+			CreationTimestamp = now,
+			LastModified = now, // todo is this denormalization necessary?
+			CreatorId = userId,
 			Routine = _mapper.Map<Routine>(request.Routine)
 		};
 
-		var workoutMeta = new WorkoutMeta
+		var workoutMeta = new WorkoutInfo
 		{
+			WorkoutId = workoutId,
 			WorkoutName = request.WorkoutName,
-			DateLast = creationTime
+			LastModified = now
 		};
-		activeUser.Workouts.Add(workoutMeta);
+		user.Workouts.Add(workoutMeta);
 		if (request.SetAsCurrentWorkout)
 		{
-			activeUser.CurrentWorkout = workoutId;
+			user.CurrentWorkoutId = workoutId;
 		}
 
-		// update all the exercises that are now a part of this workout
-		WorkoutHelper.UpdateOwnedExercisesOnCreation(activeUser, newWorkout);
+		// update all the exercises that are now part of this workout
+		WorkoutHelper.UpdateOwnedExercisesOnCreation(user, newWorkout);
 
 		await _repository.ExecuteBatchWrite(
 			workoutsToPut: new List<Workout> { newWorkout },
-			usersToPut: new List<User> { activeUser }
+			usersToPut: new List<User> { user }
 		);
 
 		return new UserAndWorkoutResponse
 		{
-			User = _mapper.Map<UserResponse>(activeUser),
+			User = _mapper.Map<UserResponse>(user),
 			Workout = _mapper.Map<WorkoutResponse>(newWorkout)
 		};
 	}
 
-	public async Task<UserAndWorkoutResponse> SwitchWorkout(SwitchWorkoutRequest request, string userId)
+	public async Task<ActionResult<WorkoutResponse>> GetWorkout(string workoutId, string currentUserId)
 	{
-		var activeUser = await _repository.GetUser(userId);
-		var newWorkout = await _repository.GetWorkout(request.NewWorkoutId);
-		_workoutValidator.EnsureWorkoutOwnership(userId, newWorkout);
-		Workout workoutToSync = null;
-		if (request.WorkoutToUpdate != null)
+		var workout = await _repository.GetWorkout(workoutId);
+		if (workout == null)
 		{
-			workoutToSync = _mapper.Map<Workout>(request.WorkoutToUpdate);
-			_workoutValidator.EnsureWorkoutOwnership(userId, workoutToSync);
-			WorkoutHelper.VerifyCurrentDayAndWeek(workoutToSync);
+			throw new ResourceNotFoundException("Workout");
 		}
 
-		activeUser.CurrentWorkout = request.NewWorkoutId;
-		var workoutMeta = activeUser.Workouts.First(x => x.WorkoutId == request.NewWorkoutId);
-		workoutMeta.DateLast = _clock.GetCurrentInstant().ToString();
-
-		if (workoutToSync != null)
-		{
-			await _repository.ExecuteBatchWrite(
-				usersToPut: new List<User> { activeUser },
-				workoutsToPut: new List<Workout> { workoutToSync }
-			);
-		}
-		else
-		{
-			await _repository.PutUser(activeUser);
-		}
-
-		return new UserAndWorkoutResponse
-		{
-			User = _mapper.Map<UserResponse>(activeUser),
-			Workout = _mapper.Map<WorkoutResponse>(newWorkout)
-		};
+		return _mapper.Map<WorkoutResponse>(workout);
 	}
 
-	public async Task<UserAndWorkoutResponse> CopyWorkout(CopyWorkoutRequest request, string userId)
+	public async Task<UserAndWorkoutResponse> CopyWorkout(CopyWorkoutRequest request, string workoutId, string userId)
 	{
-		var activeUser = await _repository.GetUser(userId);
-		var workoutToCopy = await _repository.GetWorkout(request.WorkoutId);
-		_workoutValidator.EnsureWorkoutOwnership(userId, workoutToCopy);
-		_workoutValidator.EnsureValidCopyWorkout(request, activeUser);
+		var user = await _repository.GetUser(userId);
+		var workoutToCopy = await _repository.GetWorkout(workoutId);
+		_workoutValidator.ValidCopyWorkout(request, workoutToCopy, user);
 
 		var newWorkoutId = Guid.NewGuid().ToString();
-		var creationTime = _clock.GetCurrentInstant().ToString();
+		var now = _clock.GetCurrentInstant();
 		var newRoutine = workoutToCopy.Routine.Clone();
 		var newWorkout = new Workout
 		{
+			Id = newWorkoutId,
+			Name = request.NewName,
 			Routine = newRoutine,
-			WorkoutName = request.NewName,
-			Creator = userId,
-			WorkoutId = newWorkoutId,
-			CreationDate = creationTime
+			CreatorId = userId,
+			CreationTimestamp = now,
+			LastModified = now
 		};
 
-		activeUser.Workouts.Add(new WorkoutMeta
+		user.Workouts.Add(new WorkoutInfo
 		{
-			WorkoutName = newWorkout.WorkoutName,
-			DateLast = creationTime
+			WorkoutId = newWorkoutId,
+			WorkoutName = newWorkout.Name,
+			LastModified = now
 		});
-		// update all the exercises that are now a part of this workout
-		WorkoutHelper.UpdateOwnedExercisesOnCreation(activeUser, newWorkout);
+		// update all the exercises that are now part of this workout
+		WorkoutHelper.UpdateOwnedExercisesOnCreation(user, newWorkout);
 
 		await _repository.ExecuteBatchWrite(
 			workoutsToPut: new List<Workout> { newWorkout },
-			usersToPut: new List<User> { activeUser }
+			usersToPut: new List<User> { user }
 		);
 
 		return new UserAndWorkoutResponse
 		{
-			User = _mapper.Map<UserResponse>(activeUser),
+			User = _mapper.Map<UserResponse>(user),
 			Workout = _mapper.Map<WorkoutResponse>(newWorkout)
 		};
 	}
 
 	public async Task<UserAndWorkoutResponse> SetRoutine(SetRoutineRequest request, string workoutId, string userId)
 	{
-		var activeUser = await _repository.GetUser(userId);
+		var user = await _repository.GetUser(userId);
 		var workout = await _repository.GetWorkout(workoutId);
-		var routine = _mapper.Map<Routine>(request.Routine);
-		_workoutValidator.EnsureWorkoutOwnership(userId, workout);
-		_workoutValidator.EnsureValidEditWorkout(request);
+		var routine = _mapper.Map<Routine>(request);
+		_workoutValidator.ValidSetRoutine(workout, request, user);
 
-		WorkoutHelper.UpdateOwnedExercisesOnEdit(activeUser, routine, workout);
+		WorkoutHelper.UpdateOwnedExercisesOnEdit(user, routine, workout);
 		workout.Routine = routine;
-		WorkoutHelper.VerifyCurrentDayAndWeek(workout);
+		WorkoutHelper.FixCurrentDayAndWeek(workout);
 
 		await _repository.ExecuteBatchWrite(
 			workoutsToPut: new List<Workout> { workout },
-			usersToPut: new List<User> { activeUser }
+			usersToPut: new List<User> { user }
 		);
 
 		return new UserAndWorkoutResponse
 		{
-			User = _mapper.Map<UserResponse>(activeUser),
+			User = _mapper.Map<UserResponse>(user),
 			Workout = _mapper.Map<WorkoutResponse>(workout)
 		};
 	}
 
-	public async Task UpdateWorkout(UpdateWorkoutRequest request, string userId)
+	public async Task UpdateWorkout(string workoutId, UpdateWorkoutRequest request, string userId)
 	{
-		var workoutToSync = _mapper.Map<Workout>(request.Workout);
-		_workoutValidator.EnsureWorkoutOwnership(userId, workoutToSync);
-		WorkoutHelper.VerifyCurrentDayAndWeek(workoutToSync);
+		var user = await _repository.GetUser(userId);
+		var workoutToUpdate = await _repository.GetWorkout(workoutId);
+		_workoutValidator.ValidUpdateWorkout(workoutToUpdate, user);
 
-		await _repository.PutWorkout(workoutToSync);
+		var routine = _mapper.Map<Routine>(request.Routine);
+		workoutToUpdate.Routine = routine;
+		workoutToUpdate.CurrentDay = request.CurrentDay;
+		workoutToUpdate.CurrentWeek = request.CurrentWeek;
+
+		WorkoutHelper.FixCurrentDayAndWeek(workoutToUpdate);
+
+		await _repository.PutWorkout(workoutToUpdate);
 	}
 
-	public async Task<UserAndWorkoutResponse> RestartWorkout(RestartWorkoutRequest request, string userId)
+	public async Task<UserAndWorkoutResponse> RestartWorkout(string workoutId, RestartWorkoutRequest request,
+		string userId)
 	{
-		var activeUser = await _repository.GetUser(userId);
-		var workout = _mapper.Map<Workout>(request.Workout);
-		var workoutMeta = activeUser.Workouts.First(x => x.WorkoutId == request.Workout.WorkoutId);
-		_workoutValidator.EnsureWorkoutOwnership(userId, workout);
+		var user = await _repository.GetUser(userId);
+		var workout = await _repository.GetWorkout(workoutId);
+		_workoutValidator.ValidRestartWorkout(workout, user);
 
-		WorkoutHelper.RestartWorkout(workout, workoutMeta, activeUser);
+		var routine = _mapper.Map<Routine>(request.Routine);
+		var workoutMeta = user.Workouts.First(x => x.WorkoutId == workoutId);
+		WorkoutHelper.RestartWorkout(routine, workoutMeta, user);
 		workoutMeta.TimesCompleted += 1;
 		workout.CurrentDay = 0;
 		workout.CurrentWeek = 0;
 
 		await _repository.ExecuteBatchWrite(
 			workoutsToPut: new List<Workout> { workout },
-			usersToPut: new List<User> { activeUser }
+			usersToPut: new List<User> { user }
 		);
 
 		return new UserAndWorkoutResponse
 		{
-			User = _mapper.Map<UserResponse>(activeUser),
+			User = _mapper.Map<UserResponse>(user),
 			Workout = _mapper.Map<WorkoutResponse>(workout)
 		};
 	}
 
-	public async Task<UserAndWorkoutResponse> RenameWorkout(RenameWorkoutRequest request, string workoutId,
+	public async Task RenameWorkout(RenameWorkoutRequest request, string workoutId,
 		string userId)
 	{
 		var workout = await _repository.GetWorkout(workoutId);
-		var activeUser = await _repository.GetUser(userId);
-		_workoutValidator.EnsureWorkoutOwnership(userId, workout);
-		_commonValidator.EnsureValidWorkoutName(request.NewName, activeUser);
+		var user = await _repository.GetUser(userId);
+		_workoutValidator.ValidRenameWorkout(request, workout, user);
 
-		workout.WorkoutName = request.NewName;
-		foreach (var exercise in activeUser.Exercises)
+		var newName = request.NewName;
+		workout.Name = newName;
+		foreach (var exercise in user.Exercises)
 		{
 			var exerciseWorkout = exercise.Workouts.FirstOrDefault(x => x.WorkoutId == workoutId);
 			if (exerciseWorkout != null)
 			{
 				// old workout name found, replace it with newly named one
-				exerciseWorkout.WorkoutName = request.NewName;
+				exerciseWorkout.WorkoutName = newName;
 			}
 		}
 
-		activeUser.Workouts.First(x => x.WorkoutId == workoutId).WorkoutName = request.NewName;
+		user.Workouts.First(x => x.WorkoutId == workoutId).WorkoutName = newName;
 
 		await _repository.ExecuteBatchWrite(
 			workoutsToPut: new List<Workout> { workout },
-			usersToPut: new List<User> { activeUser }
+			usersToPut: new List<User> { user }
 		);
+	}
 
-		return new UserAndWorkoutResponse
-		{
-			User = _mapper.Map<UserResponse>(activeUser),
-			Workout = _mapper.Map<WorkoutResponse>(workout)
-		};
+	public async Task ResetStatistics(string workoutId, string userId)
+	{
+		var user = await _repository.GetUser(userId);
+		_workoutValidator.ValidResetStatistics(user, workoutId);
+
+		var workoutInfo = user.Workouts.First(x => x.WorkoutId == workoutId);
+		workoutInfo.TimesCompleted = 0;
+		workoutInfo.AverageExercisesCompleted = 0.0;
+		workoutInfo.TotalExercisesSum = 0;
+
+		await _repository.PutUser(user);
 	}
 
 	public async Task DeleteWorkout(string workoutId, string userId)
 	{
 		var workoutToDelete = await _repository.GetWorkout(workoutId);
-		var activeUser = await _repository.GetUser(userId);
-		_workoutValidator.EnsureWorkoutOwnership(userId, workoutToDelete);
+		var user = await _repository.GetUser(userId);
+		_workoutValidator.ValidDeleteWorkout(workoutToDelete, user);
 
-		activeUser.Workouts.RemoveAll(x => x.WorkoutId == workoutId);
+		user.Workouts.RemoveAll(x => x.WorkoutId == workoutId);
+		foreach (var ownedExercise in user.Exercises)
+		{
+			var ownedExerciseWorkout = ownedExercise.Workouts.FirstOrDefault(x => x.WorkoutId == workoutId);
+			if (ownedExerciseWorkout != null)
+			{
+				ownedExercise.Workouts.Remove(ownedExerciseWorkout);
+			}
+		}
 
 		await _repository.ExecuteBatchWrite(
 			workoutsToDelete: new List<Workout> { workoutToDelete },
-			usersToPut: new List<User> { activeUser }
+			usersToPut: new List<User> { user }
 		);
 	}
 }

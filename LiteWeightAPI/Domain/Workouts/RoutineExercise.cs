@@ -1,13 +1,16 @@
-﻿namespace LiteWeightAPI.Domain.Workouts;
+﻿using Google.Cloud.Firestore;
 
+namespace LiteWeightAPI.Domain.Workouts;
+
+[FirestoreData]
 public class RoutineExercise
 {
-	public bool Completed { get; set; }
-	public string ExerciseId { get; set; }
-	public double Weight { get; set; }
-	public int Sets { get; set; }
-	public int Reps { get; set; }
-	public string Details { get; set; }
+	[FirestoreProperty("completed")] public bool Completed { get; set; }
+	[FirestoreProperty("exerciseId")] public string ExerciseId { get; set; }
+	[FirestoreProperty("weight")] public double Weight { get; set; }
+	[FirestoreProperty("sets")] public int Sets { get; set; }
+	[FirestoreProperty("reps")] public int Reps { get; set; }
+	[FirestoreProperty("details")] public string Details { get; set; }
 
 	public RoutineExercise Clone()
 	{

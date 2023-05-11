@@ -9,7 +9,6 @@ public class RoutineDayResponse
 	/// Arbitrary tag of the day.
 	/// </summary>
 	/// <example>Back and Biceps Day</example>
-	[MaxLength(Globals.MaxDayTagLength)]
 	public string Tag { get; set; }
 
 	/// <summary>

@@ -20,7 +20,7 @@ public class StorageService : IStorageService
 
 	public StorageService(IAmazonS3 client)
 	{
-		_client = client; // todo factory with credentials
+		_client = client;
 	}
 
 	public async Task UploadImage(byte[] fileData, string fileName)

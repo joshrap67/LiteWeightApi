@@ -16,7 +16,7 @@ public static class Globals
 	public const int MaxFreeWorkoutsSent = 50;
 	public const string CognitoUserPool = "us-east-1_vLSsBubHd";// todo env var
 	public const int MaxDayTagLength = 50;
-	public const int MaxWeight = 99999;
+	public const double MaxWeight = 99999.0;
 	public const int MaxSets = 99;
 	public const int MaxReps = 999;
 	public const int MaxDetailsLength = 120;

@@ -1,5 +1,4 @@
-﻿using LiteWeightAPI.Api.Common.Responses;
-using LiteWeightAPI.Api.Common.Responses.ErrorResponses;
+﻿using LiteWeightAPI.Api.Common.Responses.ErrorResponses;
 using LiteWeightAPI.Api.SharedWorkouts.Requests;
 using LiteWeightAPI.Api.SharedWorkouts.Responses;
 using LiteWeightAPI.Errors.ErrorAttributes;
@@ -19,26 +18,14 @@ public class SharedWorkoutsController : BaseController
 		_sharedWorkoutService = sharedWorkoutService;
 	}
 
-	/// <summary>Share Workout</summary>
-	/// <remarks>Create a shared workout from a specified workout, and send it to a specified user.</remarks>
-	[HttpPost]
-	[InvalidRequest, UserNotFound, MaximumReached, MiscError]
-	[ProducesResponseType(typeof(ResourceCreatedResponse), 200)]
-	[ProducesResponseType(typeof(BadRequestResponse), 400)]
-	public async Task<ActionResult<ResourceCreatedResponse>> ShareWorkout(SendWorkoutRequest request)
-	{
-		var createdWorkoutId = await _sharedWorkoutService.ShareWorkout(request, UserId);
-		return new ResourceCreatedResponse { Id = createdWorkoutId };
-	}
-
 	/// <summary>Get Shared Workout</summary>
-	/// <remarks>Returns a given shared workout assuming it was sent to the authenticated user.</remarks>
+	/// <remarks>Returns a given shared workout, assuming it was sent to the authenticated user.</remarks>
 	[HttpGet("{sharedWorkoutId}")]
 	[ProducesResponseType(typeof(SharedWorkoutResponse), 200)]
 	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
 	public async Task<ActionResult<SharedWorkoutResponse>> GetSharedWorkout(string sharedWorkoutId)
 	{
-		var sharedWorkout = await _sharedWorkoutService.GetSharedWorkout(sharedWorkoutId);
+		var sharedWorkout = await _sharedWorkoutService.GetSharedWorkout(sharedWorkoutId, CurrentUserId);
 		return sharedWorkout;
 	}
 
@@ -48,26 +35,29 @@ public class SharedWorkoutsController : BaseController
 	/// workout deletes the shared workout from the database and creates a workout with the values of that shared workout.
 	/// </remarks>
 	/// <param name="sharedWorkoutId">Id of the shared workout to accept</param>
-	/// <param name="newName">Optional parameter that specifies a different name to accept the workout as</param>
+	/// <param name="request">Request</param>
 	[HttpPost("{sharedWorkoutId}/accept")]
-	[MaximumReached, UserNotFound, DuplicateFound]
+	[MaxLimit, UserNotFound, AlreadyExists]
 	[ProducesResponseType(typeof(AcceptSharedWorkoutResponse), 200)]
 	[ProducesResponseType(typeof(BadRequestResponse), 400)]
 	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
 	public async Task<ActionResult<AcceptSharedWorkoutResponse>> AcceptSharedWorkout(string sharedWorkoutId,
-		[FromQuery] string newName)
+		AcceptSharedWorkoutRequest request)
 	{
-		var response = await _sharedWorkoutService.AcceptWorkout(sharedWorkoutId, UserId, newName);
+		// todo can this cause a invalid request? idk since i think .net would try and cast everything to a string
+		var response = await _sharedWorkoutService.AcceptWorkout(sharedWorkoutId, CurrentUserId, request);
 		return response;
 	}
 
 	/// <summary>Decline Shared Workout</summary>
-	/// <remarks>Declines a workout and deletes it from the database.</remarks>
+	/// <remarks>Declines a workout and deletes it from the database, assuming the recipient matches the authenticated user.</remarks>
 	[HttpPost("{sharedWorkoutId}/decline")]
+	[ProducesResponseType(200)]
 	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
 	public async Task<ActionResult> DeclineReceivedWorkout(string sharedWorkoutId)
 	{
-		await _sharedWorkoutService.DeclineWorkout(sharedWorkoutId, UserId);
+		// todo delete?
+		await _sharedWorkoutService.DeclineWorkout(sharedWorkoutId, CurrentUserId);
 		return Ok();
 	}
 }

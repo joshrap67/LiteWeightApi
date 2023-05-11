@@ -1,13 +1,15 @@
-﻿using LiteWeightAPI.Domain.SharedWorkouts;
+﻿using Google.Cloud.Firestore;
+using LiteWeightAPI.Domain.SharedWorkouts;
 
 namespace LiteWeightAPI.Domain.Workouts;
 
+[FirestoreData]
 public class Routine
 {
 	public Routine()
 	{
 	}
-	
+
 	public Routine(SharedRoutine routine, IReadOnlyDictionary<string, string> exerciseNameToId)
 	{
 		// constructor is used to convert from a shared routine back to a normal workout routine
@@ -41,12 +43,24 @@ public class Routine
 		}
 	}
 
-	public IList<RoutineWeek> Weeks { get; set; } = new List<RoutineWeek>();
+	[FirestoreProperty("weeks")] public IList<RoutineWeek> Weeks { get; set; } = new List<RoutineWeek>();
+
 	public int TotalNumberOfDays => Weeks.Sum(x => x.Days.Count);
 
 	public void AppendWeek(RoutineWeek week)
 	{
 		Weeks.Add(week);
+	}
+
+	public void DeleteExerciseFromRoutine(string exerciseId)
+	{
+		foreach (var week in Weeks)
+		{
+			foreach (var day in week.Days)
+			{
+				day.DeleteExercise(exerciseId);
+			}
+		}
 	}
 
 	public Routine Clone()

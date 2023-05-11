@@ -1,18 +1,22 @@
-﻿namespace LiteWeightAPI.Domain.Users;
+﻿using Google.Cloud.Firestore;
 
+namespace LiteWeightAPI.Domain.Users;
+
+[FirestoreData]
 public class User
 {
-	public string Username { get; set; }
-	public string Icon { get; set; }
-	public string PushEndpointArn { get; set; }
-	public string PremiumToken { get; set; }
-	public string CurrentWorkout { get; set; }
-	public int WorkoutsSent { get; set; }
-	public UserPreferences UserPreferences { get; set; }
-	public List<Blocked> Blocked { get; set; } = new();
-	public List<WorkoutMeta> Workouts { get; set; } = new();
-	public List<OwnedExercise> Exercises { get; set; } = new();
-	public List<Friend> Friends { get; set; } = new();
-	public List<FriendRequest> FriendRequests { get; set; } = new();
-	public List<SharedWorkoutMeta> ReceivedWorkouts { get; set; } = new();
+	[FirestoreDocumentId] public string Id { get; set; }
+	[FirestoreProperty("username")] public string Username { get; set; }
+	[FirestoreProperty("email")] public string Email { get; set; }
+	[FirestoreProperty("icon")] public string Icon { get; set; }
+	[FirestoreProperty("pushEndpointArn")] public string PushEndpointArn { get; set; }
+	[FirestoreProperty("premiumToken")] public string PremiumToken { get; set; }
+	[FirestoreProperty("currentWorkoutId")] public string CurrentWorkoutId { get; set; }
+	[FirestoreProperty("workoutsSent")] public int WorkoutsSent { get; set; }
+	[FirestoreProperty("userPreferences")] public UserPreferences UserPreferences { get; set; }
+	[FirestoreProperty("workouts")] public List<WorkoutInfo> Workouts { get; set; } = new();
+	[FirestoreProperty("exercises")] public List<OwnedExercise> Exercises { get; set; } = new();
+	[FirestoreProperty("friends")] public List<Friend> Friends { get; set; } = new();
+	[FirestoreProperty("friendRequests")] public List<FriendRequest> FriendRequests { get; set; } = new();
+	[FirestoreProperty("receivedWorkouts")] public List<SharedWorkoutInfo> ReceivedWorkouts { get; set; } = new();
 }

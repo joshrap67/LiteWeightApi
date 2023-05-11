@@ -2,15 +2,20 @@
 
 public class ResourceNotFoundException : Exception
 {
-    public string FormattedMessage { get; }
+	private const string DefaultMessage = "Resource not found";
+	public string FormattedMessage { get; } = DefaultMessage;
 
-    public ResourceNotFoundException(string id) : base(GetFormattedMessage(id))
-    {
-        FormattedMessage = GetFormattedMessage(id);
-    }
+	public ResourceNotFoundException() : base(DefaultMessage)
+	{
+	}
 
-    private static string GetFormattedMessage(string id)
-    {
-        return $"Resource with id={id} not found";
-    }
+	public ResourceNotFoundException(string resourceName) : base(GetFormattedMessage(resourceName))
+	{
+		FormattedMessage = GetFormattedMessage(resourceName);
+	}
+
+	private static string GetFormattedMessage(string resourceName)
+	{
+		return $"{resourceName} not found";
+	}
 }

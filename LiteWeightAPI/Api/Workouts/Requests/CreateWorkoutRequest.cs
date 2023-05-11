@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using LiteWeightAPI.Api.Workouts.Responses;
+using LiteWeightAPI.Imports;
 
 namespace LiteWeightAPI.Api.Workouts.Requests;
 
@@ -10,13 +10,14 @@ public class CreateWorkoutRequest
 	/// </summary>
 	/// <example>High Intensity Workout</example>
 	[Required]
+	[MaxLength(Globals.MaxWorkoutNameLength)]
 	public string WorkoutName { get; set; }
 
 	/// <summary>
 	/// Routine of the workout.
 	/// </summary>
 	[Required]
-	public RoutineResponse Routine { get; set; } // todo new model?
+	public SetRoutineRequest Routine { get; set; }
 
 	/// <summary>
 	/// If true, set this new workout to be the current workout for the user creating the workout.
