@@ -30,7 +30,7 @@ public static class SharedWorkoutHelper
 		foreach (var exerciseName in sharedExerciseNames)
 		{
 			// for each of the exercises that the user doesn't own, make a new entry for them
-			var sharedExercise = sharedWorkout.Exercises.First(x => x.ExerciseName == exerciseName);
+			var sharedExercise = sharedWorkout.DistinctExercises.First(x => x.ExerciseName == exerciseName);
 			var ownedExercise = new OwnedExercise
 			{
 				Name = exerciseName,

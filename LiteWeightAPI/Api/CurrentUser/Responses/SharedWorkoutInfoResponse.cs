@@ -18,7 +18,7 @@ public class SharedWorkoutInfoResponse
 	/// Timestamp of when the workout was shared (Zulu)
 	/// </summary>
 	/// <example>2023-04-23T13:43:44.685341Z</example>
-	public string SentTimestamp { get; set; }
+	public string SharedUtc { get; set; }
 
 	/// <summary>
 	/// Is this received workout seen by the user?
@@ -38,9 +38,9 @@ public class SharedWorkoutInfoResponse
 	public string SenderUsername { get; set; }
 
 	/// <summary>
-	/// File path of the user's icon
+	/// Url of the user's profile profile picture
 	/// </summary>
-	/// <example>61fcf9b4-15f1-4413-9534-683b085875b9.jpg</example>
+	/// <example>https://storage.googleapis.com/liteweight-profile-pictures/61fcf9b4-15f1-4413-9534-683b085875b9.jpg</example>
 	public string SenderIcon { get; set; }
 
 	/// <summary>

@@ -13,8 +13,9 @@ public class SharedWorkout
 	[FirestoreProperty("senderUsername")] public string SenderUsername { get; set; }
 	[FirestoreProperty("recipientId")] public string RecipientId { get; set; }
 	[FirestoreProperty("routine")] public SharedRoutine Routine { get; set; }
-	[FirestoreProperty("exercises")] public IList<SharedWorkoutExercise> Exercises { get; set; }
-	//todo created time?
+
+	[FirestoreProperty("distinctExercises")]
+	public IList<SharedWorkoutDistinctExercise> DistinctExercises { get; set; }
 
 	public SharedWorkout(Workout workout, string recipientId, string sharedWorkoutId, User sender)
 	{
@@ -26,7 +27,7 @@ public class SharedWorkout
 		Routine = new SharedRoutine(workout.Routine, sender.Exercises);
 
 		// preserve the focuses and video url of the exercises since recipient user might not have the same exercises
-		Exercises = new List<SharedWorkoutExercise>();
+		DistinctExercises = new List<SharedWorkoutDistinctExercise>();
 		var exerciseIdToExercise = sender.Exercises.ToDictionary(x => x.Id, x => x);
 		var exercisesOfWorkout = workout.Routine.Weeks
 			.SelectMany(x => x.Days)
@@ -35,8 +36,8 @@ public class SharedWorkout
 		foreach (var routineExercise in exercisesOfWorkout)
 		{
 			var ownedExercise = exerciseIdToExercise[routineExercise.ExerciseId];
-			var sharedWorkoutExercise = new SharedWorkoutExercise(ownedExercise, ownedExercise.Name);
-			Exercises.Add(sharedWorkoutExercise);
+			var sharedWorkoutExercise = new SharedWorkoutDistinctExercise(ownedExercise, ownedExercise.Name);
+			DistinctExercises.Add(sharedWorkoutExercise);
 		}
 	}
 }

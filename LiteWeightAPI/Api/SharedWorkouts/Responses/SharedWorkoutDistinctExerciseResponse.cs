@@ -1,6 +1,6 @@
 ﻿namespace LiteWeightAPI.Api.SharedWorkouts.Responses;
 
-public class SharedWorkoutExerciseResponse
+public class SharedWorkoutDistinctExerciseResponse
 {
 	/// <summary>
 	/// Name of the exercise.

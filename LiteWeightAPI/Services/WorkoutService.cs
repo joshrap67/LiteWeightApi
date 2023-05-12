@@ -54,8 +54,7 @@ public class WorkoutService : IWorkoutService
 		{
 			Id = workoutId,
 			Name = request.WorkoutName.Trim(),
-			CreationTimestamp = now,
-			LastModified = now, // todo is this denormalization necessary?
+			CreationUtc = now,
 			CreatorId = userId,
 			Routine = _mapper.Map<Routine>(request.Routine)
 		};
@@ -63,8 +62,7 @@ public class WorkoutService : IWorkoutService
 		var workoutMeta = new WorkoutInfo
 		{
 			WorkoutId = workoutId,
-			WorkoutName = request.WorkoutName,
-			LastModified = now
+			WorkoutName = request.WorkoutName
 		};
 		user.Workouts.Add(workoutMeta);
 		if (request.SetAsCurrentWorkout)
@@ -113,15 +111,13 @@ public class WorkoutService : IWorkoutService
 			Name = request.NewName,
 			Routine = newRoutine,
 			CreatorId = userId,
-			CreationTimestamp = now,
-			LastModified = now
+			CreationUtc = now
 		};
 
 		user.Workouts.Add(new WorkoutInfo
 		{
 			WorkoutId = newWorkoutId,
-			WorkoutName = newWorkout.Name,
-			LastModified = now
+			WorkoutName = newWorkout.Name
 		});
 		// update all the exercises that are now part of this workout
 		WorkoutHelper.UpdateOwnedExercisesOnCreation(user, newWorkout);

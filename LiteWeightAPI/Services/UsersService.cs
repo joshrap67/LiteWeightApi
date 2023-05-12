@@ -48,14 +48,14 @@ public class UsersService : IUsersService
 
 		_usersValidator.ValidSendFriendRequest(senderUser, recipientUser, recipientUsername);
 
-		var friendToAdd = new Friend { Username = recipientUsername, UserId = recipientUser.Id, Icon = recipientUser.Icon };
+		var friendToAdd = new Friend { Username = recipientUsername, UserId = recipientUser.Id, UserIcon = recipientUser.Icon };
 		var now = _clock.GetCurrentInstant();
 		var friendRequest = new FriendRequest
 		{
 			UserId = senderUserId,
 			Username = senderUser.Username,
-			Icon = senderUser.Icon,
-			RequestTimestamp = now
+			UserIcon = senderUser.Icon,
+			SentUtc = now
 		};
 		senderUser.Friends.Add(friendToAdd);
 		recipientUser.FriendRequests.Add(friendRequest);
@@ -85,7 +85,7 @@ public class UsersService : IUsersService
 			SenderUsername = senderUser.Username,
 			SenderIcon = senderUser.Icon,
 			WorkoutName = workoutToSend.Name,
-			SentTimestamp = _clock.GetCurrentInstant(),
+			SharedUtc = _clock.GetCurrentInstant(),
 			TotalDays = workoutToSend.Routine.TotalNumberOfDays,
 			MostFrequentFocus = WorkoutHelper.FindMostFrequentFocus(senderUser, workoutToSend.Routine)
 		};
@@ -122,7 +122,7 @@ public class UsersService : IUsersService
 		{
 			UserId = acceptedUser.Id,
 			Username = acceptedUser.Username,
-			Icon = acceptedUser.Icon,
+			UserIcon = acceptedUser.Icon,
 			Confirmed = true
 		};
 		initiator.FriendRequests.Remove(friendRequest);

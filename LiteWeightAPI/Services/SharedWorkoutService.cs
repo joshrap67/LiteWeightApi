@@ -73,13 +73,13 @@ public class SharedWorkoutService : ISharedWorkoutService
 			Id = newWorkoutId,
 			Name = workoutToAccept.WorkoutName,
 			CreatorId = userId,
-			CreationTimestamp = now,
+			CreationUtc = now,
 			Routine = new Routine(workoutToAccept.Routine, exerciseNameToId)
 		};
 
 		var workoutMeta = new WorkoutInfo
 		{
-			LastModified = now,
+			LastSetAsCurrentUtc = now,
 			WorkoutName = newWorkout.Name,
 			WorkoutId = newWorkoutId
 		};

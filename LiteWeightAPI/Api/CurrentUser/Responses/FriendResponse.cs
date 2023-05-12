@@ -15,10 +15,10 @@ public class FriendResponse
 	public string Username { get; set; }
 
 	/// <summary>
-	/// File path of the friend's icon
+	/// Url of the friend's icon
 	/// </summary>
-	/// <example>66fcc4c3-700e-41e3-b0e5-9f121eb97fa9.jpg</example>
-	public string Icon { get; set; }
+	/// <example>https://storage.googleapis.com/liteweight-profile-pictures/66fcc4c3-700e-41e3-b0e5-9f121eb97fa9.jpg</example>
+	public string UserIcon { get; set; }
 
 	/// <summary>
 	/// Is the friend confirmed? If yes they are a friend, else they are a pending friend (pending until this user accepts friend request).

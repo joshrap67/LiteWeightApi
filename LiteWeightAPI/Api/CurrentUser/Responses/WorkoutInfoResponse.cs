@@ -15,10 +15,10 @@ public class WorkoutInfoResponse
 	public string WorkoutName { get; set; }
 
 	/// <summary>
-	/// Timestamp of when the workout was last modified.
+	/// Timestamp of when the workout was last set as the current workout.
 	/// </summary>
 	/// <example>2023-04-06T23:20:39.665047Z</example>
-	public string LastModified { get; set; } // todo need to make this more accurate
+	public string LastSetAsCurrentUtc { get; set; }
 
 	/// <summary>
 	/// Total times the workout has been completed (restarted).

@@ -18,12 +18,12 @@ public class WorkoutResponse
 	/// Timestamp of when the workout was created (Zulu).
 	/// </summary>
 	/// <example>2023-04-23T16:49:02.310661Z</example>
-	public string CreationTimestamp { get; set; }
+	public string CreationUtc { get; set; }
 
 	/// <summary>
 	/// Id of the user who created the workout.
 	/// </summary>
-	/// <example>a7be7348-bca5-466c-b290-55ae38e2bad0</example> todo guid
+	/// <example>a7be7348-bca5-466c-b290-55ae38e2bad0</example>
 	public string CreatorId { get; set; }
 
 	/// <summary>

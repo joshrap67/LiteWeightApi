@@ -10,7 +10,7 @@ public class SharedWorkoutMaps : Profile
 	public SharedWorkoutMaps()
 	{
 		CreateMap<SharedWorkout, SharedWorkoutResponse>();
-		CreateMap<SharedWorkoutExercise, SharedWorkoutExerciseResponse>();
+		CreateMap<SharedWorkoutDistinctExercise, SharedWorkoutDistinctExerciseResponse>();
 		CreateMap<SharedRoutine, SharedRoutineResponse>();
 		CreateMap<SharedWeek, SharedWeekResponse>();
 		CreateMap<SharedDay, SharedDayResponse>();

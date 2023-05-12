@@ -64,7 +64,7 @@ public class UsersValidator : IUsersValidator
 	public void ValidShareWorkout(User senderUser, User recipientUser, Workout workoutToSend, string recipientUsername)
 	{
 		_commonValidator.UserExists(recipientUser, recipientUsername);
-		_commonValidator.EnsureWorkoutOwnership(senderUser.Username, workoutToSend);
+		_commonValidator.EnsureWorkoutOwnership(senderUser.Id, workoutToSend);
 
 		var senderUsername = senderUser.Username;
 

@@ -25,7 +25,7 @@ public class PushNotificationService : IPushNotificationService
 
 	public async Task SendWorkoutPushNotification(User recipientUser, SharedWorkoutInfo sharedWorkoutInfo)
 	{
-		await _fcmService.SendPushNotification(recipientUser.PushEndpointArn,
+		await _fcmService.SendPushNotification(recipientUser.FirebaseMessagingToken,
 			new NotificationData
 			{
 				Action = FcmService.ReceivedWorkoutAction,
@@ -35,7 +35,7 @@ public class PushNotificationService : IPushNotificationService
 
 	public async Task SendNewFriendRequestNotification(User recipientUser, FriendRequest friendRequest)
 	{
-		await _fcmService.SendPushNotification(recipientUser.PushEndpointArn,
+		await _fcmService.SendPushNotification(recipientUser.FirebaseMessagingToken,
 			new NotificationData
 			{
 				Action = FcmService.FriendRequestAction,
@@ -45,7 +45,7 @@ public class PushNotificationService : IPushNotificationService
 
 	public async Task SendFriendRequestAcceptedNotification(User acceptedUser, User initiator)
 	{
-		await _fcmService.SendPushNotification(acceptedUser.PushEndpointArn,
+		await _fcmService.SendPushNotification(acceptedUser.FirebaseMessagingToken,
 			new NotificationData
 			{
 				Action = FcmService.AcceptedFriendRequestAction,
@@ -56,7 +56,7 @@ public class PushNotificationService : IPushNotificationService
 
 	public async Task SendFriendRequestCanceledNotification(User canceledUser, User initiator)
 	{
-		await _fcmService.SendPushNotification(canceledUser.PushEndpointArn,
+		await _fcmService.SendPushNotification(canceledUser.FirebaseMessagingToken,
 			new NotificationData
 			{
 				Action = FcmService.CanceledFriendRequestAction,
@@ -67,7 +67,7 @@ public class PushNotificationService : IPushNotificationService
 
 	public async Task SendFriendRequestDeclinedNotification(User declinedUser, User initiator)
 	{
-		await _fcmService.SendPushNotification(declinedUser.PushEndpointArn,
+		await _fcmService.SendPushNotification(declinedUser.FirebaseMessagingToken,
 			new NotificationData
 			{
 				Action = FcmService.DeclinedFriendRequestAction,
@@ -78,7 +78,7 @@ public class PushNotificationService : IPushNotificationService
 
 	public async Task SendRemovedAsFriendNotification(User removedFriend, User initiator)
 	{
-		await _fcmService.SendPushNotification(removedFriend.PushEndpointArn,
+		await _fcmService.SendPushNotification(removedFriend.FirebaseMessagingToken,
 			new NotificationData
 			{
 				Action = FcmService.RemovedAsFriendAction,

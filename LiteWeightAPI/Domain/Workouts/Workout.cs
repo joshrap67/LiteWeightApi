@@ -1,4 +1,5 @@
 ﻿using Google.Cloud.Firestore;
+using LiteWeightAPI.Domain.Converters;
 using NodaTime;
 
 namespace LiteWeightAPI.Domain.Workouts;
@@ -8,8 +9,10 @@ public class Workout
 {
 	[FirestoreDocumentId] public string Id { get; set; }
 	[FirestoreProperty("name")] public string Name { get; set; }
-	[FirestoreProperty("creationTimestamp")] public Instant CreationTimestamp { get; set; }
-	[FirestoreProperty("lastModified")] public Instant LastModified { get; set; }
+
+	[FirestoreProperty("creationUtc", ConverterType = typeof(InstantConverter))]
+	public Instant CreationUtc { get; set; } // todo see if necessary since firestore apparently has this built in
+
 	[FirestoreProperty("creatorId")] public string CreatorId { get; set; }
 	[FirestoreProperty("routine")] public Routine Routine { get; set; }
 	[FirestoreProperty("currentDay")] public int CurrentDay { get; set; }

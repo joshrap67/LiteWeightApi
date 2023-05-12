@@ -7,6 +7,6 @@ public class Friend
 {
 	[FirestoreProperty("userId")] public string UserId { get; set; }
 	[FirestoreProperty("username")] public string Username { get; set; }
-	[FirestoreProperty("icon")] public string Icon { get; set; }
+	[FirestoreProperty("userIcon")] public string UserIcon { get; set; }
 	[FirestoreProperty("confirmed")] public bool Confirmed { get; set; }
 }

@@ -38,7 +38,8 @@ public class SharedWorkoutResponse
 	public SharedRoutineResponse Routine { get; set; }
 
 	/// <summary>
-	/// List of distinct exercises in the routine of the workout.
+	/// List of distinct exercises in the routine of the shared workout.
 	/// </summary>
-	public IList<SharedWorkoutExerciseResponse> Exercises { get; set; } = new List<SharedWorkoutExerciseResponse>();
+	public IList<SharedWorkoutDistinctExerciseResponse> DistinctExercises { get; set; } =
+		new List<SharedWorkoutDistinctExerciseResponse>();
 }

@@ -1,8 +1,4 @@
 ﻿using System.Reflection;
-using Amazon;
-using Amazon.DynamoDBv2;
-using Amazon.Runtime.CredentialManagement;
-using Amazon.S3;
 using LiteWeightAPI.Api.Common.Responses.ErrorResponses;
 using LiteWeightAPI.Errors.Exceptions;
 using LiteWeightAPI.Swagger;
@@ -33,10 +29,8 @@ public static class ServiceCollectionExtensions
 	{
 		services.AddAutoMapper(typeof(Program));
 		services.AddSingleton<IClock>(SystemClock.Instance);
-		services.AddTransient<IAmazonS3>(x => new AmazonS3Client(RegionEndpoint.USEast1)); // todo env var for region
 		// auto registers all classes that inherit from an interface as transient
-		services.RegisterAssemblyPublicNonGenericClasses()
-			.AsPublicImplementedInterfaces();
+		services.RegisterAssemblyPublicNonGenericClasses().AsPublicImplementedInterfaces();
 	}
 
 	public static void SetupSwagger(this IServiceCollection services)

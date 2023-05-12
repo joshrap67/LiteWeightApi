@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LiteWeightAPI.Api.CurrentUser;
 
-[Route("current-user")]
+[Route("current-user")] // todo "self"?
 [ApiController]
 public class CurrentUserController : BaseController
 {
@@ -38,9 +38,8 @@ public class CurrentUserController : BaseController
 	[AlreadyExists, InvalidRequest]
 	[ProducesResponseType(typeof(UserResponse), 200)]
 	[ProducesResponseType(typeof(BadRequestResponse), 400)]
-	public async Task<ActionResult<UserResponse>> CreateUser([FromBody] CreateUserRequest request)
+	public async Task<ActionResult<UserResponse>> CreateUser(CreateUserRequest request)
 	{
-		// todo is frombody necessary?
 		var user = await _currentUserService.CreateUser(request, CurrentUserId);
 		return user;
 	}

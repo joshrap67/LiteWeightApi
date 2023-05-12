@@ -23,19 +23,19 @@ public class UserResponse
 	public string Email { get; set; }
 
 	/// <summary>
-	/// File path of the user's icon
+	/// Url of the user's icon
 	/// </summary>
-	/// <example>0f1d96c3-ca22-4657-9f9b-136bb4621985.jpg</example>
-	public string Icon { get; set; } // todo backend should prepend the domain
+	/// <example>https://storage.googleapis.com/liteweight-profile-pictures/0f1d96c3-ca22-4657-9f9b-136bb4621985.jpg</example>
+	public string Icon { get; set; }
 
 	/// <summary>
-	/// Amazon Reference Number (ARN) for the user's push notification endpoint in SNS.
+	/// Firebase token registered for the user's device to receive push notifications.
 	/// </summary>
-	/// <example>arn:aws:sns:us-east-1:438338746171:endpoint/GCM/LiteWeight/1eacec71-fb64-39ae-a638-bc21bb2ee062</example>
-	public string PushEndpointArn { get; set; }
+	/// <example>c-Id_13FTDf5c5PZGjsmg9:APA91bFG4w3Qnd16l0WDZzFYco3_71-_X595oncjilyKhSJBZC9FUD4mjg2lE68HCcDQR80Y6GDTuz-zbXK69V9D-jTBs4aXhv7LBAUTGzoC8h91q_QV-H1vz6XUGF8Mcob84_2-izMI</example>
+	public string FirebaseMessagingToken { get; set; }
 
 	/// <summary>
-	/// Token indicating the user has purchased LiteWeight premium. Current not used.
+	/// Token indicating the user has purchased LiteWeight premium. Currently not used.
 	/// </summary>
 	/// <example>a704f441-8ee3-471b-ac8a-abb0b7d8249a</example>
 	public string PremiumToken { get; set; }

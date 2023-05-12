@@ -1,69 +1,44 @@
-﻿using Amazon.S3;
-using Amazon.S3.Model;
+﻿using Google.Cloud.Storage.V1;
 
 namespace LiteWeightAPI.Services;
 
 public interface IStorageService
 {
-	Task UploadImage(byte[] fileData, string fileName);
-	Task DeleteImage(string fileName);
-	Task<string> UploadDefaultImage();
+	Task UploadProfilePicture(byte[] fileData, string fileName);
+	Task DeleteProfilePicture(string fileName);
+	Task<string> UploadDefaultProfilePicture();
 }
 
 public class StorageService : IStorageService
 {
-	private readonly IAmazonS3 _client;
+	private const string ProfilePictureBucket = "liteweight-profile-pictures";
+	private const string DefaultProfilePictureBucket = "liteweight-private-images";
+	private const string DefaultProfilePictureObject = "DefaultProfilePicture.jpg";
 
-	private const string S3ImageBucket = "liteweight-images";
-	private const string S3DefaultImageBucket = "liteweight-images-private";
-	private const string S3DefaultImageFile = "DefaultProfilePicture.jpg";
-
-	public StorageService(IAmazonS3 client)
-	{
-		_client = client;
-	}
-
-	public async Task UploadImage(byte[] fileData, string fileName)
+	public async Task UploadProfilePicture(byte[] fileData, string fileName)
 	{
 		using var stream = new MemoryStream(fileData);
-		var request = new PutObjectRequest
-		{
-			BucketName = S3ImageBucket,
-			Key = fileName,
-			InputStream = stream,
-			ContentType = "image/jpeg",
-			CannedACL = S3CannedACL.PublicRead
-		};
-		await _client.PutObjectAsync(request);
+		var storage = await StorageClient.CreateAsync();
+
+		await storage.UploadObjectAsync(ProfilePictureBucket, fileName, "image/jpeg", stream);
 	}
 
-	public async Task DeleteImage(string fileName)
+	public async Task DeleteProfilePicture(string fileName)
 	{
-		await _client.DeleteObjectAsync(new DeleteObjectRequest
-		{
-			BucketName = S3ImageBucket,
-			Key = fileName
-		});
+		var storage = await StorageClient.CreateAsync();
+		await storage.DeleteObjectAsync(ProfilePictureBucket, fileName);
 	}
 
-	public async Task<string> UploadDefaultImage()
+	public async Task<string> UploadDefaultProfilePicture()
 	{
 		var fileName = Guid.NewGuid().ToString();
-		var downloadRequest = new GetObjectRequest
-		{
-			BucketName = S3DefaultImageBucket,
-			Key = S3DefaultImageFile,
-			ResponseHeaderOverrides = new ResponseHeaderOverrides
-			{
-				ContentType = "image/jpg"
-			}
-		};
-		var defaultImageResponse = await _client.GetObjectAsync(downloadRequest);
+		var storage = await StorageClient.CreateAsync();
+
 		var memoryStream = new MemoryStream();
-		await defaultImageResponse.ResponseStream.CopyToAsync(memoryStream);
+		await storage.DownloadObjectAsync(DefaultProfilePictureBucket, DefaultProfilePictureObject, memoryStream);
 		var bytes = memoryStream.ToArray();
 
-		await UploadImage(bytes, fileName);
+		await UploadProfilePicture(bytes, fileName);
 
 		return fileName;
 	}

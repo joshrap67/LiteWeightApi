@@ -4,9 +4,9 @@ using LiteWeightAPI.Domain.Users;
 namespace LiteWeightAPI.Domain.SharedWorkouts;
 
 [FirestoreData]
-public class SharedWorkoutExercise
+public class SharedWorkoutDistinctExercise
 {
-	public SharedWorkoutExercise(OwnedExercise userExercise, string exerciseName)
+	public SharedWorkoutDistinctExercise(OwnedExercise userExercise, string exerciseName)
 	{
 		ExerciseName = exerciseName;
 		VideoUrl = userExercise.VideoUrl;

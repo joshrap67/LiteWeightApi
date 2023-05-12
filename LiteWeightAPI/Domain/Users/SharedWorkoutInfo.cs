@@ -1,4 +1,5 @@
 ﻿using Google.Cloud.Firestore;
+using LiteWeightAPI.Domain.Converters;
 using NodaTime;
 
 namespace LiteWeightAPI.Domain.Users;
@@ -9,9 +10,9 @@ public class SharedWorkoutInfo
 	[FirestoreProperty("sharedWorkoutId")] public string SharedWorkoutId { get; set; }
 	[FirestoreProperty("workoutName")] public string WorkoutName { get; set; }
 
-	[FirestoreProperty("sentTimestamp")] public Instant SentTimestamp { get; set; }
+	[FirestoreProperty("sharedUtc", ConverterType = typeof(InstantConverter))]
+	public Instant SharedUtc { get; set; }
 
-	// todo nodatime serialization
 	[FirestoreProperty("seen")] public bool Seen { get; set; }
 	[FirestoreProperty("senderId")] public string SenderId { get; set; }
 	[FirestoreProperty("senderUsername")] public string SenderUsername { get; set; }

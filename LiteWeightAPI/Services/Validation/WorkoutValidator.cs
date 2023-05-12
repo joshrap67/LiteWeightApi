@@ -47,7 +47,7 @@ public class WorkoutWorkoutValidator : IWorkoutValidator
 
 	public void ValidSetRoutine(Workout workout, SetRoutineRequest request, User user)
 	{
-		_commonValidator.EnsureWorkoutOwnership(user.Username, workout);
+		_commonValidator.EnsureWorkoutOwnership(user.Id, workout);
 		_commonValidator.WorkoutExists(workout);
 		ValidRoutineWeeks(request);
 		ValidRoutineDays(request);
@@ -56,25 +56,25 @@ public class WorkoutWorkoutValidator : IWorkoutValidator
 	public void ValidUpdateWorkout(Workout workout, User user)
 	{
 		_commonValidator.WorkoutExists(workout);
-		_commonValidator.EnsureWorkoutOwnership(user.Username, workout);
+		_commonValidator.EnsureWorkoutOwnership(user.Id, workout);
 	}
 
 	public void ValidRestartWorkout(Workout workout, User user)
 	{
 		_commonValidator.WorkoutExists(workout);
-		_commonValidator.EnsureWorkoutOwnership(user.Username, workout);
+		_commonValidator.EnsureWorkoutOwnership(user.Id, workout);
 	}
 
 	public void ValidDeleteWorkout(Workout workout, User user)
 	{
 		_commonValidator.WorkoutExists(workout);
-		_commonValidator.EnsureWorkoutOwnership(user.Username, workout);
+		_commonValidator.EnsureWorkoutOwnership(user.Id, workout);
 	}
 
 	public void ValidCopyWorkout(CopyWorkoutRequest request, Workout workoutToCopy, User user)
 	{
 		_commonValidator.WorkoutExists(workoutToCopy);
-		_commonValidator.EnsureWorkoutOwnership(user.Username, workoutToCopy);
+		_commonValidator.EnsureWorkoutOwnership(user.Id, workoutToCopy);
 
 		if (user.Workouts.Count >= Globals.MaxFreeWorkouts && user.PremiumToken == null)
 		{
@@ -92,7 +92,7 @@ public class WorkoutWorkoutValidator : IWorkoutValidator
 	public void ValidRenameWorkout(RenameWorkoutRequest request, Workout workout, User user)
 	{
 		_commonValidator.WorkoutExists(workout);
-		_commonValidator.EnsureWorkoutOwnership(user.Username, workout);
+		_commonValidator.EnsureWorkoutOwnership(user.Id, workout);
 		_commonValidator.ValidWorkoutName(request.NewName, user);
 	}
 

@@ -9,7 +9,7 @@ public class User
 	[FirestoreProperty("username")] public string Username { get; set; }
 	[FirestoreProperty("email")] public string Email { get; set; }
 	[FirestoreProperty("icon")] public string Icon { get; set; }
-	[FirestoreProperty("pushEndpointArn")] public string PushEndpointArn { get; set; }
+	[FirestoreProperty("firebaseMessagingToken")] public string FirebaseMessagingToken { get; set; }
 	[FirestoreProperty("premiumToken")] public string PremiumToken { get; set; }
 	[FirestoreProperty("currentWorkoutId")] public string CurrentWorkoutId { get; set; }
 	[FirestoreProperty("workoutsSent")] public int WorkoutsSent { get; set; }
