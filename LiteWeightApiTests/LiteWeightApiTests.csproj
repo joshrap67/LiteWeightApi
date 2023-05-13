@@ -24,7 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\LiteWeightAPI\LiteWeightAPI.csproj" />
+        <ProjectReference Include="..\LiteWeightApi\LiteWeightApi.csproj" />
     </ItemGroup>
 
     <ItemGroup>

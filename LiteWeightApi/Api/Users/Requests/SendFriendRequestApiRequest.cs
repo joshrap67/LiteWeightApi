@@ -1,0 +1,13 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace LiteWeightApi.Api.Users.Requests;
+
+public class SendFriendRequestApiRequest
+{
+	/// <summary>
+	/// Username to send the friend request to. Username must belong to a valid LiteWeight user.
+	/// </summary>
+	/// <example>greg_egg</example>
+	[Required]
+	public string RecipientUsername { get; set; }
+}
