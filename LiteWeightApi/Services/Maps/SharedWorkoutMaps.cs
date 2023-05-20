@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
-using LiteWeightApi.Api.SharedWorkouts.Responses;
-using LiteWeightApi.Domain.SharedWorkouts;
+using LiteWeightAPI.Api.SharedWorkouts.Responses;
+using LiteWeightAPI.Domain.SharedWorkouts;
 
-namespace LiteWeightApi.Services.Maps;
+namespace LiteWeightAPI.Services.Maps;
 
 public class SharedWorkoutMaps : Profile
 {

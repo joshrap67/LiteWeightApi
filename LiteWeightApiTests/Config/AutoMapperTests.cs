@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 using AutoMapper;
-using LiteWeightApi.Api.Workouts;
+using LiteWeightAPI.Api.Workouts;
 
 namespace LiteWeightApiTests.Config;
 

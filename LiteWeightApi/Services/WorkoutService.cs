@@ -1,18 +1,16 @@
 ﻿using AutoMapper;
-using LiteWeightApi.Api.Common.Responses;
-using LiteWeightApi.Api.CurrentUser.Responses;
-using LiteWeightApi.Api.Workouts.Requests;
-using LiteWeightApi.Api.Workouts.Responses;
-using LiteWeightApi.Domain;
-using LiteWeightApi.Domain.Users;
-using LiteWeightApi.Domain.Workouts;
-using LiteWeightApi.Errors.Exceptions.BaseExceptions;
-using LiteWeightApi.Services.Helpers;
-using LiteWeightApi.Services.Validation;
+using LiteWeightAPI.Api.Self.Responses;
+using LiteWeightAPI.Api.Workouts.Requests;
+using LiteWeightAPI.Api.Workouts.Responses;
+using LiteWeightAPI.Domain;
+using LiteWeightAPI.Domain.Users;
+using LiteWeightAPI.Domain.Workouts;
+using LiteWeightAPI.Services.Helpers;
+using LiteWeightAPI.Services.Validation;
 using Microsoft.AspNetCore.Mvc;
 using NodaTime;
 
-namespace LiteWeightApi.Services;
+namespace LiteWeightAPI.Services;
 
 public interface IWorkoutService
 {
@@ -20,7 +18,7 @@ public interface IWorkoutService
 	Task<ActionResult<WorkoutResponse>> GetWorkout(string workoutId, string userId);
 	Task<UserAndWorkoutResponse> CopyWorkout(CopyWorkoutRequest request, string workoutId, string userId);
 	Task<UserAndWorkoutResponse> SetRoutine(SetRoutineRequest request, string workoutId, string userId);
-	Task UpdateWorkout(string workoutId, UpdateWorkoutRequest request, string userId);
+	Task UpdateProgress(string workoutId, UpdateWorkoutProgressRequest request, string userId);
 	Task<UserAndWorkoutResponse> RestartWorkout(string workoutId, RestartWorkoutRequest request, string userId);
 	Task RenameWorkout(RenameWorkoutRequest request, string workoutId, string userId);
 	Task DeleteWorkout(string workoutId, string userId);
@@ -155,11 +153,11 @@ public class WorkoutService : IWorkoutService
 		};
 	}
 
-	public async Task UpdateWorkout(string workoutId, UpdateWorkoutRequest request, string userId)
+	public async Task UpdateProgress(string workoutId, UpdateWorkoutProgressRequest request, string userId)
 	{
 		var user = await _repository.GetUser(userId);
 		var workoutToUpdate = await _repository.GetWorkout(workoutId);
-		_workoutValidator.ValidUpdateWorkout(workoutToUpdate, user);
+		_workoutValidator.ValidUpdateProgress(workoutToUpdate, request, user);
 
 		var routine = _mapper.Map<Routine>(request.Routine);
 		workoutToUpdate.Routine = routine;

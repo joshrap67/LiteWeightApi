@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using FirebaseAdmin.Messaging;
 
-namespace LiteWeightApi.Services.Notifications;
+namespace LiteWeightAPI.Services.Notifications;
 
 public interface IFcmService
 {

@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
-using LiteWeightApi.Api.Exercises.Requests;
-using LiteWeightApi.Api.Exercises.Responses;
-using LiteWeightApi.Domain;
-using LiteWeightApi.Domain.Users;
-using LiteWeightApi.Domain.Workouts;
-using LiteWeightApi.Services.Validation;
+using LiteWeightAPI.Api.Exercises.Requests;
+using LiteWeightAPI.Api.Exercises.Responses;
+using LiteWeightAPI.Domain;
+using LiteWeightAPI.Domain.Users;
+using LiteWeightAPI.Domain.Workouts;
+using LiteWeightAPI.Services.Validation;
 
-namespace LiteWeightApi.Services;
+namespace LiteWeightAPI.Services;
 
 public interface IExercisesService
 {

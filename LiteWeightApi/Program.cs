@@ -1,4 +1,5 @@
-using LiteWeightApi.ExtensionMethods;
+using LiteWeightAPI.ExtensionMethods;
+using LiteWeightAPI.Middleware;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,14 +21,11 @@ if (app.Environment.IsDevelopment())
 // todo rate throttling
 
 app.UseCustomExceptionHandling();
-
 app.UseHttpsRedirection();
-
 app.UseAuthentication();
 app.UseRouting();
 app.UseAuthorization();
-// todo custom middleware for determining if the user is verified or not
-
+app.UseMiddleware<EmailVerifiedMiddleware>();
 app.MapControllers();
 
 app.Run();

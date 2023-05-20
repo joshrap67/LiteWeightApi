@@ -1,6 +1,6 @@
 ﻿using Google.Cloud.Storage.V1;
 
-namespace LiteWeightApi.Services;
+namespace LiteWeightAPI.Services;
 
 public interface IStorageService
 {

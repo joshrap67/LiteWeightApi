@@ -1,17 +1,17 @@
 ﻿using AutoMapper;
-using LiteWeightApi.Api.CurrentUser.Responses;
-using LiteWeightApi.Api.Exercises.Responses;
-using LiteWeightApi.Api.SharedWorkouts.Requests;
-using LiteWeightApi.Api.SharedWorkouts.Responses;
-using LiteWeightApi.Domain;
-using LiteWeightApi.Domain.SharedWorkouts;
-using LiteWeightApi.Domain.Users;
-using LiteWeightApi.Domain.Workouts;
-using LiteWeightApi.Services.Helpers;
-using LiteWeightApi.Services.Validation;
+using LiteWeightAPI.Api.Exercises.Responses;
+using LiteWeightAPI.Api.Self.Responses;
+using LiteWeightAPI.Api.SharedWorkouts.Requests;
+using LiteWeightAPI.Api.SharedWorkouts.Responses;
+using LiteWeightAPI.Domain;
+using LiteWeightAPI.Domain.SharedWorkouts;
+using LiteWeightAPI.Domain.Users;
+using LiteWeightAPI.Domain.Workouts;
+using LiteWeightAPI.Services.Helpers;
+using LiteWeightAPI.Services.Validation;
 using NodaTime;
 
-namespace LiteWeightApi.Services;
+namespace LiteWeightAPI.Services;
 
 public interface ISharedWorkoutService
 {
@@ -105,8 +105,13 @@ public class SharedWorkoutService : ISharedWorkoutService
 		var workoutToDecline = await _repository.GetSharedWorkout(sharedWorkoutId);
 
 		_sharedWorkoutValidator.ValidDeclineSharedWorkout(workoutToDecline, userId);
+		var workoutToRemove = user.ReceivedWorkouts.FirstOrDefault(x => x.SharedWorkoutId == sharedWorkoutId);
+		if (workoutToRemove == null)
+		{
+			return;
+		}
 
-		user.ReceivedWorkouts.RemoveAll(x => x.SharedWorkoutId == sharedWorkoutId);
+		user.ReceivedWorkouts.Remove(workoutToRemove);
 
 		await _repository.ExecuteBatchWrite(
 			usersToPut: new List<User> { user },

@@ -1,5 +1,5 @@
 ﻿using AutoFixture;
-using LiteWeightApi.Domain.Users;
+using LiteWeightAPI.Domain.Users;
 
 namespace LiteWeightApiTests.Services.UsersServiceTests;
 

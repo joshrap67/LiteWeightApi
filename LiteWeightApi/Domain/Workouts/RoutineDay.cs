@@ -1,12 +1,15 @@
 ﻿using Google.Cloud.Firestore;
 
-namespace LiteWeightApi.Domain.Workouts;
+namespace LiteWeightAPI.Domain.Workouts;
 
 [FirestoreData]
 public class RoutineDay
 {
-	[FirestoreProperty("exercises")] public IList<RoutineExercise> Exercises { get; set; } = new List<RoutineExercise>();
-	[FirestoreProperty("tag")] public string Tag { get; set; }
+	[FirestoreProperty("exercises")]
+	public IList<RoutineExercise> Exercises { get; set; } = new List<RoutineExercise>();
+
+	[FirestoreProperty("tag")]
+	public string Tag { get; set; }
 
 	public RoutineDay Clone()
 	{

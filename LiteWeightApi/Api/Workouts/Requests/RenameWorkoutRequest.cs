@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace LiteWeightApi.Api.Workouts.Requests;
+namespace LiteWeightAPI.Api.Workouts.Requests;
 
 public class RenameWorkoutRequest
 {

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace LiteWeightApi.Api.Users.Requests;
+namespace LiteWeightAPI.Api.Users.Requests;
 
 public class SendFriendRequestApiRequest
 {

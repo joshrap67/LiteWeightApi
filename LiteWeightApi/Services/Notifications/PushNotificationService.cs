@@ -1,8 +1,8 @@
 ﻿using System.Text.Json;
-using LiteWeightApi.Domain.Users;
-using LiteWeightApi.Services.Notifications.Responses;
+using LiteWeightAPI.Domain.Users;
+using LiteWeightAPI.Services.Notifications.Responses;
 
-namespace LiteWeightApi.Services.Notifications;
+namespace LiteWeightAPI.Services.Notifications;
 
 public interface IPushNotificationService
 {

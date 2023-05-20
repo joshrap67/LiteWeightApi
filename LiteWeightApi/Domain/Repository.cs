@@ -1,14 +1,15 @@
 ﻿using Google.Cloud.Firestore;
-using LiteWeightApi.Domain.SharedWorkouts;
-using LiteWeightApi.Domain.Users;
-using LiteWeightApi.Domain.Workouts;
+using LiteWeightAPI.Domain.SharedWorkouts;
+using LiteWeightAPI.Domain.Users;
+using LiteWeightAPI.Domain.Workouts;
 
-namespace LiteWeightApi.Domain;
+namespace LiteWeightAPI.Domain;
 
 public interface IRepository
 {
 	Task<User> GetUser(string userId);
 	Task<User> GetUserByUsername(string username);
+	Task<User> GetUserByEmail(string email);
 	Task CreateUser(User user);
 	Task PutUser(User user);
 	Task DeleteUser(string userId);
@@ -103,6 +104,17 @@ public class Repository : IRepository
 		return user?.ConvertTo<User>();
 	}
 
+	public async Task<User> GetUserByEmail(string email)
+	{
+		var db = GetDb();
+		var citiesRef = db.Collection(UsersCollection);
+		var query = citiesRef.WhereEqualTo("email", email);
+		var querySnapshot = await query.GetSnapshotAsync();
+
+		var user = querySnapshot.Documents.ToList().FirstOrDefault();
+		return user?.ConvertTo<User>();
+	}
+
 	public async Task CreateUser(User user)
 	{
 		var db = GetDb();
@@ -137,7 +149,6 @@ public class Repository : IRepository
 
 	public async Task CreateWorkout(Workout workout)
 	{
-		// todo pass in id or create it here?
 		var db = GetDb();
 		var docRef = db.Collection(WorkoutsCollection).Document(workout.Id);
 		await docRef.CreateAsync(workout);

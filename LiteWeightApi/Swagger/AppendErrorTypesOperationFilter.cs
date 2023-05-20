@@ -1,8 +1,8 @@
-using LiteWeightApi.Errors.ErrorAttributes.Setup;
+using LiteWeightAPI.Errors.Attributes.Setup;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace LiteWeightApi.Swagger;
+namespace LiteWeightAPI.Swagger;
 
 public class AppendErrorTypesOperationFilter : IOperationFilter
 {

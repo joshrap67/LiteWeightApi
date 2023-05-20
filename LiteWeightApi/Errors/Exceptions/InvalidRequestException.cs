@@ -1,8 +1,8 @@
-﻿using LiteWeightApi.Api.Common.Responses.ErrorResponses;
-using LiteWeightApi.Errors.ErrorAttributes.Setup;
-using LiteWeightApi.Errors.Exceptions.BaseExceptions;
+﻿using LiteWeightAPI.Errors.Attributes.Setup;
+using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
+using LiteWeightAPI.Errors.Responses;
 
-namespace LiteWeightApi.Errors.Exceptions;
+namespace LiteWeightAPI.Errors.Exceptions;
 
 public class InvalidRequestException : BadRequestException
 {

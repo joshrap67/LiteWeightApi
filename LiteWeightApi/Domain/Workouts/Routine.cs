@@ -1,7 +1,7 @@
 ﻿using Google.Cloud.Firestore;
-using LiteWeightApi.Domain.SharedWorkouts;
+using LiteWeightAPI.Domain.SharedWorkouts;
 
-namespace LiteWeightApi.Domain.Workouts;
+namespace LiteWeightAPI.Domain.Workouts;
 
 [FirestoreData]
 public class Routine
@@ -43,7 +43,8 @@ public class Routine
 		}
 	}
 
-	[FirestoreProperty("weeks")] public IList<RoutineWeek> Weeks { get; set; } = new List<RoutineWeek>();
+	[FirestoreProperty("weeks")]
+	public IList<RoutineWeek> Weeks { get; set; } = new List<RoutineWeek>();
 
 	public int TotalNumberOfDays => Weeks.Sum(x => x.Days.Count);
 

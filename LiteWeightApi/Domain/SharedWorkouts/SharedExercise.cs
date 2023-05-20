@@ -1,7 +1,7 @@
 ﻿using Google.Cloud.Firestore;
-using LiteWeightApi.Domain.Workouts;
+using LiteWeightAPI.Domain.Workouts;
 
-namespace LiteWeightApi.Domain.SharedWorkouts;
+namespace LiteWeightAPI.Domain.SharedWorkouts;
 
 [FirestoreData]
 public class SharedExercise
@@ -15,9 +15,18 @@ public class SharedExercise
 		Details = exercise.Details;
 	}
 
-	[FirestoreProperty("exerciseName")] public string ExerciseName { get; set; }
-	[FirestoreProperty("weight")] public double Weight { get; set; }
-	[FirestoreProperty("sets")] public int Sets { get; set; }
-	[FirestoreProperty("reps")] public int Reps { get; set; }
-	[FirestoreProperty("details")] public string Details { get; set; }
+	[FirestoreProperty("exerciseName")]
+	public string ExerciseName { get; set; }
+
+	[FirestoreProperty("weight")]
+	public double Weight { get; set; }
+
+	[FirestoreProperty("sets")]
+	public int Sets { get; set; }
+
+	[FirestoreProperty("reps")]
+	public int Reps { get; set; }
+
+	[FirestoreProperty("details")]
+	public string Details { get; set; }
 }

@@ -1,4 +1,4 @@
-﻿namespace LiteWeightApi.Api.Exercises.Responses;
+﻿namespace LiteWeightAPI.Api.Exercises.Responses;
 
 public class OwnedExerciseResponse
 {

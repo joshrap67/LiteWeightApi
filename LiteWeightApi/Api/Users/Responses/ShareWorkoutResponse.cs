@@ -1,4 +1,4 @@
-﻿namespace LiteWeightApi.Api.Users.Responses;
+﻿namespace LiteWeightAPI.Api.Users.Responses;
 
 public class ShareWorkoutResponse
 {

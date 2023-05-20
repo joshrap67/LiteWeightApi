@@ -1,10 +1,9 @@
-﻿using LiteWeightApi.Domain.Users;
+﻿using LiteWeightAPI.Domain.Users;
 
-namespace LiteWeightApi.Imports;
+namespace LiteWeightAPI.Imports;
 
 public static class Defaults
 {
-	// todo if moving to firestore move this to its own collection?
 	public static List<OwnedExercise> GetDefaultExercises()
 	{
 		var defaultExercises = new List<OwnedExercise>

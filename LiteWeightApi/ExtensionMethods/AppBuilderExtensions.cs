@@ -1,9 +1,9 @@
 ﻿using System.Text.Json;
-using LiteWeightApi.Api.Common.Responses.ErrorResponses;
-using LiteWeightApi.Errors.Exceptions.BaseExceptions;
+using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
+using LiteWeightAPI.Errors.Responses;
 using Microsoft.AspNetCore.Diagnostics;
 
-namespace LiteWeightApi.ExtensionMethods;
+namespace LiteWeightAPI.ExtensionMethods;
 
 public static class AppBuilderExtensions
 {

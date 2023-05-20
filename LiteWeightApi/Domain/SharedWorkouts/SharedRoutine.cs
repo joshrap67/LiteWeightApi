@@ -1,8 +1,8 @@
 ﻿using Google.Cloud.Firestore;
-using LiteWeightApi.Domain.Users;
-using LiteWeightApi.Domain.Workouts;
+using LiteWeightAPI.Domain.Users;
+using LiteWeightAPI.Domain.Workouts;
 
-namespace LiteWeightApi.Domain.SharedWorkouts;
+namespace LiteWeightAPI.Domain.SharedWorkouts;
 
 [FirestoreData]
 public class SharedRoutine
@@ -31,7 +31,8 @@ public class SharedRoutine
 		}
 	}
 
-	[FirestoreProperty("weeks")] public IList<SharedWeek> Weeks { get; set; }
+	[FirestoreProperty("weeks")]
+	public IList<SharedWeek> Weeks { get; set; }
 
 	private void AppendWeek(SharedWeek sharedWeek)
 	{

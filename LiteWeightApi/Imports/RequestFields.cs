@@ -1,4 +1,4 @@
-﻿namespace LiteWeightApi.Imports;
+﻿namespace LiteWeightAPI.Imports;
 
 public static class RequestFields
 {

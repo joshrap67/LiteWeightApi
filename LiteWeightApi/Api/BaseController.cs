@@ -1,10 +1,12 @@
-﻿using LiteWeightApi.Errors.Exceptions.BaseExceptions;
-using LiteWeightApi.Imports;
+﻿using System.Text.Json;
+using System.Text.Json.Nodes;
+using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
+using LiteWeightAPI.Imports;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace LiteWeightApi.Api;
+namespace LiteWeightAPI.Api;
 
 [Produces("application/json")]
 [Authorize]
@@ -44,7 +46,14 @@ public class BaseController : Controller
 				$"The minimum LiteWeight Android version required to use this API is {MinimumLiteWeightAndroidVersion}");
 		}
 
-		// todo get custom claim of email is tricky
+		var firebaseClaim = HttpContext.User.Claims.ToList().FirstOrDefault(x => x.Type == "firebase");
+		if (firebaseClaim != null)
+		{
+			var deserializedToken = JsonSerializer.Deserialize<JsonNode>(firebaseClaim.Value);
+			var email = deserializedToken["identities"]?["email"]?[0]?.GetValue<string>();
+			CurrentUserEmail = email;
+		}
+
 		var userIdClaim = HttpContext.User.Claims.ToList().FirstOrDefault(x => x.Type == "user_id");
 		CurrentUserId = userIdClaim?.Value;
 

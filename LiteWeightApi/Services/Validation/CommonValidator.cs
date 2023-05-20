@@ -1,10 +1,10 @@
-﻿using LiteWeightApi.Domain.SharedWorkouts;
-using LiteWeightApi.Domain.Users;
-using LiteWeightApi.Domain.Workouts;
-using LiteWeightApi.Errors.Exceptions;
-using LiteWeightApi.Errors.Exceptions.BaseExceptions;
+﻿using LiteWeightAPI.Domain.SharedWorkouts;
+using LiteWeightAPI.Domain.Users;
+using LiteWeightAPI.Domain.Workouts;
+using LiteWeightAPI.Errors.Exceptions;
+using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
 
-namespace LiteWeightApi.Services.Validation;
+namespace LiteWeightAPI.Services.Validation;
 
 public interface ICommonValidator
 {

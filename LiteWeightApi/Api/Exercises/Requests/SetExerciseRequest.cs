@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using LiteWeightApi.Imports;
+using LiteWeightAPI.Imports;
 
-namespace LiteWeightApi.Api.Exercises.Requests;
+namespace LiteWeightAPI.Api.Exercises.Requests;
 
 public class SetExerciseRequest
 {

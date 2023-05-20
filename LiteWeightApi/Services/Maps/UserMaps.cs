@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
-using LiteWeightApi.Api.CurrentUser.Responses;
-using LiteWeightApi.Api.Exercises.Requests;
-using LiteWeightApi.Api.Exercises.Responses;
-using LiteWeightApi.Domain.Users;
-using LiteWeightApi.Imports;
+using LiteWeightAPI.Api.Exercises.Requests;
+using LiteWeightAPI.Api.Exercises.Responses;
+using LiteWeightAPI.Api.Self.Responses;
+using LiteWeightAPI.Domain.Users;
+using LiteWeightAPI.ExtensionMethods;
+using LiteWeightAPI.Imports;
 
-namespace LiteWeightApi.Services.Maps;
+namespace LiteWeightAPI.Services.Maps;
 
 public class UserMaps : Profile
 {

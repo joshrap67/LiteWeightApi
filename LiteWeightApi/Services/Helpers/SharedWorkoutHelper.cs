@@ -1,7 +1,7 @@
-﻿using LiteWeightApi.Domain.SharedWorkouts;
-using LiteWeightApi.Domain.Users;
+﻿using LiteWeightAPI.Domain.SharedWorkouts;
+using LiteWeightAPI.Domain.Users;
 
-namespace LiteWeightApi.Services.Helpers;
+namespace LiteWeightAPI.Services.Helpers;
 
 public static class SharedWorkoutHelper
 {

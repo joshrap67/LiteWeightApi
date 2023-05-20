@@ -1,20 +1,23 @@
 ﻿using AutoMapper;
-using LiteWeightApi.Api.CurrentUser.Responses;
-using LiteWeightApi.Api.Users.Requests;
-using LiteWeightApi.Domain;
-using LiteWeightApi.Domain.SharedWorkouts;
-using LiteWeightApi.Domain.Users;
-using LiteWeightApi.Services.Helpers;
-using LiteWeightApi.Services.Notifications;
-using LiteWeightApi.Services.Validation;
+using LiteWeightAPI.Api.Self.Responses;
+using LiteWeightAPI.Api.Users.Requests;
+using LiteWeightAPI.Api.Users.Responses;
+using LiteWeightAPI.Domain;
+using LiteWeightAPI.Domain.SharedWorkouts;
+using LiteWeightAPI.Domain.Users;
+using LiteWeightAPI.Errors.Exceptions;
+using LiteWeightAPI.Services.Helpers;
+using LiteWeightAPI.Services.Notifications;
+using LiteWeightAPI.Services.Validation;
 using NodaTime;
 
-namespace LiteWeightApi.Services;
+namespace LiteWeightAPI.Services;
 
 public interface IUsersService
 {
-	Task<FriendResponse> SendFriendRequest(SendFriendRequestApiRequest request, string senderUserId);
-	Task<string> ShareWorkout(SendWorkoutRequest request, string senderUserId);
+	Task<SearchUserResponse> SearchByUsername(string username, string initiatorUserId);
+	Task<FriendResponse> SendFriendRequest(string recipientId, string senderUserId);
+	Task<string> ShareWorkout(SendWorkoutRequest request, string recipientId, string senderUserId);
 	Task AcceptFriendRequest(string acceptedUserId, string initiatorUserId);
 	Task RemoveFriend(string userIdToRemove, string initiatorUserId);
 	Task CancelFriendRequest(string userIdToCancel, string initiatorUserId);
@@ -39,27 +42,45 @@ public class UsersService : IUsersService
 		_pushNotificationService = pushNotificationService;
 	}
 
-	public async Task<FriendResponse> SendFriendRequest(SendFriendRequestApiRequest request, string senderUserId)
+	public async Task<SearchUserResponse> SearchByUsername(string username, string initiatorUserId)
 	{
-		// todo might consider adding endpoint for searching usernames to get user ids. But i don't like the idea of being able to find out easily other users in app like that
-		var senderUser = await _repository.GetUser(senderUserId);
-		var recipientUsername = request.RecipientUsername;
-		var recipientUser = await _repository.GetUserByUsername(recipientUsername);
+		var user = await _repository.GetUserByUsername(username);
 
-		_usersValidator.ValidSendFriendRequest(senderUser, recipientUser, recipientUsername);
+		// if user is private account, they should not show up in the search unless already friends (or pending friend) with the initiator
+		if (user.UserPreferences.PrivateAccount && user.Friends.All(x => x.UserId != initiatorUserId))
+		{
+			throw new UserNotFoundException($"User {username} not found");
+		}
+
+		return _mapper.Map<SearchUserResponse>(user);
+	}
+
+	public async Task<FriendResponse> SendFriendRequest(string recipientId, string senderUserId)
+	{
+		var senderUser = await _repository.GetUser(senderUserId);
+		var recipientUser = await _repository.GetUser(recipientId);
+
+		_usersValidator.ValidSendFriendRequest(senderUser, recipientUser, recipientId);
+
+		// if already sent, fail gracefully
+		var existingFriend = senderUser.Friends.FirstOrDefault(x => x.UserId == recipientId);
+		if (existingFriend != null)
+		{
+			return _mapper.Map<FriendResponse>(existingFriend);
+		}
 
 		var friendToAdd = new Friend
 		{
-			Username = recipientUsername,
+			Username = recipientUser.Username,
 			UserId = recipientUser.Id,
-			UserIcon = recipientUser.Icon
+			ProfilePicture = recipientUser.ProfilePicture
 		};
 		var now = _clock.GetCurrentInstant();
 		var friendRequest = new FriendRequest
 		{
 			UserId = senderUserId,
 			Username = senderUser.Username,
-			UserIcon = senderUser.Icon,
+			ProfilePicture = senderUser.ProfilePicture,
 			SentUtc = now
 		};
 		senderUser.Friends.Add(friendToAdd);
@@ -73,14 +94,13 @@ public class UsersService : IUsersService
 		return _mapper.Map<FriendResponse>(friendToAdd);
 	}
 
-	public async Task<string> ShareWorkout(SendWorkoutRequest request, string senderUserId)
+	public async Task<string> ShareWorkout(SendWorkoutRequest request, string recipientId, string senderUserId)
 	{
 		var senderUser = await _repository.GetUser(senderUserId);
-		var recipientUsername = request.RecipientUsername;
-		var recipientUser = await _repository.GetUserByUsername(recipientUsername);
+		var recipientUser = await _repository.GetUser(recipientId);
 		var workoutToSend = await _repository.GetWorkout(request.WorkoutId);
 
-		_usersValidator.ValidShareWorkout(senderUser, recipientUser, workoutToSend, recipientUsername);
+		_usersValidator.ValidShareWorkout(senderUser, recipientUser, workoutToSend, recipientId);
 
 		var sharedWorkoutId = Guid.NewGuid().ToString();
 		var sharedWorkoutInfo = new SharedWorkoutInfo
@@ -88,7 +108,7 @@ public class UsersService : IUsersService
 			SharedWorkoutId = sharedWorkoutId,
 			SenderId = senderUserId,
 			SenderUsername = senderUser.Username,
-			SenderIcon = senderUser.Icon,
+			SenderProfilePicture = senderUser.ProfilePicture,
 			WorkoutName = workoutToSend.Name,
 			SharedUtc = _clock.GetCurrentInstant(),
 			TotalDays = workoutToSend.Routine.TotalNumberOfDays,
@@ -97,7 +117,7 @@ public class UsersService : IUsersService
 		recipientUser.ReceivedWorkouts.Add(sharedWorkoutInfo);
 		senderUser.WorkoutsSent++;
 
-		var sharedWorkout = new SharedWorkout(workoutToSend, recipientUsername, sharedWorkoutId, senderUser);
+		var sharedWorkout = new SharedWorkout(workoutToSend, recipientId, sharedWorkoutId, senderUser);
 
 		await _repository.ExecuteBatchWrite(
 			usersToPut: new List<User> { senderUser, recipientUser },
@@ -127,7 +147,7 @@ public class UsersService : IUsersService
 		{
 			UserId = acceptedUser.Id,
 			Username = acceptedUser.Username,
-			UserIcon = acceptedUser.Icon,
+			ProfilePicture = acceptedUser.ProfilePicture,
 			Confirmed = true
 		};
 		initiator.FriendRequests.Remove(friendRequest);

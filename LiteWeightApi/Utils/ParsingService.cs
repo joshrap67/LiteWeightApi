@@ -2,7 +2,7 @@
 using NodaTime;
 using NodaTime.Text;
 
-namespace LiteWeightApi.Utils;
+namespace LiteWeightAPI.Utils;
 
 public static class ParsingService
 {

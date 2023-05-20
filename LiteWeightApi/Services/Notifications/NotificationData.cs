@@ -1,4 +1,4 @@
-﻿namespace LiteWeightApi.Services.Notifications;
+﻿namespace LiteWeightAPI.Services.Notifications;
 
 public class NotificationData
 {

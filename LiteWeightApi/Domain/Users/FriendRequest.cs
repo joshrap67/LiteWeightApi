@@ -1,16 +1,23 @@
 ﻿using Google.Cloud.Firestore;
-using LiteWeightApi.Domain.Converters;
+using LiteWeightAPI.Domain.Converters;
 using NodaTime;
 
-namespace LiteWeightApi.Domain.Users;
+namespace LiteWeightAPI.Domain.Users;
 
 [FirestoreData]
 public class FriendRequest
 {
-	[FirestoreProperty("userId")] public string UserId { get; set; }
-	[FirestoreProperty("username")] public string Username { get; set; }
-	[FirestoreProperty("userIcon")] public string UserIcon { get; set; }
-	[FirestoreProperty("seen")] public bool Seen { get; set; }
+	[FirestoreProperty("userId")]
+	public string UserId { get; set; }
+
+	[FirestoreProperty("username")]
+	public string Username { get; set; }
+
+	[FirestoreProperty("profilePicture")]
+	public string ProfilePicture { get; set; }
+
+	[FirestoreProperty("seen")]
+	public bool Seen { get; set; }
 
 	[FirestoreProperty("sentUtc", ConverterType = typeof(InstantConverter))]
 	public Instant SentUtc { get; set; }

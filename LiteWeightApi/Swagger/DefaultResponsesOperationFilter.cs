@@ -1,8 +1,8 @@
-﻿using LiteWeightApi.Api.Common.Responses.ErrorResponses;
+﻿using LiteWeightAPI.Errors.Responses;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace LiteWeightApi.Swagger;
+namespace LiteWeightAPI.Swagger;
 
 public class DefaultResponsesOperationFilter : IOperationFilter
 {

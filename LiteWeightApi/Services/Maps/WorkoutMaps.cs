@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using LiteWeightApi.Api.Workouts.Requests;
-using LiteWeightApi.Api.Workouts.Responses;
-using LiteWeightApi.Domain.Workouts;
+using LiteWeightAPI.Api.Workouts.Requests;
+using LiteWeightAPI.Api.Workouts.Responses;
+using LiteWeightAPI.Domain.Workouts;
 
-namespace LiteWeightApi.Services.Maps;
+namespace LiteWeightAPI.Services.Maps;
 
 public class WorkoutMaps : Profile
 {

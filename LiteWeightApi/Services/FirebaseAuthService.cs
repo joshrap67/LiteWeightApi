@@ -1,6 +1,6 @@
 ﻿using FirebaseAdmin.Auth;
 
-namespace LiteWeightApi.Services;
+namespace LiteWeightAPI.Services;
 
 public interface IFirebaseAuthService
 {

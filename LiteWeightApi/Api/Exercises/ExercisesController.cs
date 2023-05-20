@@ -1,12 +1,12 @@
-﻿using LiteWeightApi.Api.Common.Responses.ErrorResponses;
-using LiteWeightApi.Api.Exercises.Requests;
-using LiteWeightApi.Api.Exercises.Responses;
-using LiteWeightApi.Errors.ErrorAttributes;
-using LiteWeightApi.Services;
+﻿using LiteWeightAPI.Api.Exercises.Requests;
+using LiteWeightAPI.Api.Exercises.Responses;
+using LiteWeightAPI.Errors.Attributes;
+using LiteWeightAPI.Errors.Responses;
+using LiteWeightAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using ILogger = Serilog.ILogger;
 
-namespace LiteWeightApi.Api.Exercises;
+namespace LiteWeightAPI.Api.Exercises;
 
 [Route("exercises")]
 [ApiController]

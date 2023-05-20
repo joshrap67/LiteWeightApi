@@ -1,4 +1,4 @@
-﻿namespace LiteWeightApi.Errors.Exceptions.BaseExceptions;
+﻿namespace LiteWeightAPI.Errors.Exceptions.BaseExceptions;
 
 public class ForbiddenException : Exception
 {

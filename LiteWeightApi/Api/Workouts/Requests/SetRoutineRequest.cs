@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using LiteWeightApi.Imports;
+using LiteWeightAPI.Imports;
 
-namespace LiteWeightApi.Api.Workouts.Requests;
+namespace LiteWeightAPI.Api.Workouts.Requests;
 
 public class SetRoutineRequest
 {

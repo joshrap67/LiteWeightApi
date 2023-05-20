@@ -1,9 +1,9 @@
-﻿using LiteWeightApi.Domain.SharedWorkouts;
-using LiteWeightApi.Domain.Users;
-using LiteWeightApi.Errors.Exceptions;
-using LiteWeightApi.Imports;
+﻿using LiteWeightAPI.Domain.SharedWorkouts;
+using LiteWeightAPI.Domain.Users;
+using LiteWeightAPI.Errors.Exceptions;
+using LiteWeightAPI.Imports;
 
-namespace LiteWeightApi.Services.Validation;
+namespace LiteWeightAPI.Services.Validation;
 
 public interface ISharedWorkoutValidator
 {
@@ -77,7 +77,6 @@ public class SharedWorkoutValidator : ISharedWorkoutValidator
 
 	public void ValidDeclineSharedWorkout(SharedWorkout sharedWorkout, string userId)
 	{
-		_commonValidator.SharedWorkoutExists(sharedWorkout);
 		_commonValidator.EnsureSharedWorkoutOwnership(userId, sharedWorkout);
 	}
 }

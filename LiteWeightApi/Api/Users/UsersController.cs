@@ -1,14 +1,15 @@
-﻿using LiteWeightApi.Api.Common.Responses.ErrorResponses;
-using LiteWeightApi.Api.CurrentUser.Responses;
-using LiteWeightApi.Api.Users.Requests;
-using LiteWeightApi.Api.Users.Responses;
-using LiteWeightApi.Attributes;
-using LiteWeightApi.Errors.ErrorAttributes;
-using LiteWeightApi.Services;
+﻿using System.ComponentModel.DataAnnotations;
+using LiteWeightAPI.Api.Self.Responses;
+using LiteWeightAPI.Api.Users.Requests;
+using LiteWeightAPI.Api.Users.Responses;
+using LiteWeightAPI.Errors.Attributes;
+using LiteWeightAPI.Errors.Responses;
+using LiteWeightAPI.Imports;
+using LiteWeightAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using ILogger = Serilog.ILogger;
 
-namespace LiteWeightApi.Api.Users;
+namespace LiteWeightAPI.Api.Users;
 
 [Route("users")]
 [ApiController]
@@ -21,29 +22,47 @@ public class UsersController : BaseController
 		_usersService = usersService;
 	}
 
+	/// <summary>Search by Username</summary>
+	/// <remarks>Searches for a user by username. If the user is not found, a 400 response will be returned.</remarks>
+	/// <param name="username">Username to search by</param>
+	[HttpGet("search")]
+	[InvalidRequest, UserNotFound]
+	[ProducesResponseType(typeof(SearchUserResponse), 200)]
+	[ProducesResponseType(typeof(BadRequestResponse), 400)]
+	public async Task<ActionResult<SearchUserResponse>> SearchByUsername([FromQuery] [Required] string username)
+	{
+		var result = await _usersService.SearchByUsername(username, CurrentUserId);
+		return result;
+	}
+
 	/// <summary>Send Friend Request</summary>
 	/// <remarks>Sends a friend request to the specified user, assuming the recipient and current user have not reached maximum allowed friends.</remarks>
-	[HttpPost("send-friend-request")]
-	[MaxLimit, InvalidRequest, MiscError, AlreadyExists, UserNotFound]
+	/// <param name="userId">User id of the friend to send the friend request to</param>
+	[HttpPut("{userId}/send-friend-request")]
+	[MaxLimit, MiscError]
 	[PushNotification]
 	[ProducesResponseType(typeof(FriendResponse), 200)]
 	[ProducesResponseType(typeof(BadRequestResponse), 400)]
-	public async Task<ActionResult<FriendResponse>> SendFriendRequest(SendFriendRequestApiRequest request)
+	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
+	public async Task<ActionResult<FriendResponse>> SendFriendRequest(string userId)
 	{
-		var response = await _usersService.SendFriendRequest(request, CurrentUserId);
+		var response = await _usersService.SendFriendRequest(userId, CurrentUserId);
 		return response;
 	}
 
 	/// <summary>Share Workout</summary>
 	/// <remarks>Create a shared workout from a specified workout, and send it to a specified user.</remarks>
-	[HttpPost("share-workout")]
-	[InvalidRequest, MaxLimit, MiscError, UserNotFound, WorkoutNotFound]
+	/// <param name="request">Request</param>
+	/// <param name="userId">User id of the friend to share the workout to</param>
+	[HttpPost("{userId}/share-workout")]
+	[InvalidRequest, MaxLimit, MiscError, WorkoutNotFound]
 	[PushNotification]
 	[ProducesResponseType(typeof(ShareWorkoutResponse), 200)]
 	[ProducesResponseType(typeof(BadRequestResponse), 400)]
-	public async Task<ActionResult<ShareWorkoutResponse>> ShareWorkout(SendWorkoutRequest request)
+	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
+	public async Task<ActionResult<ShareWorkoutResponse>> ShareWorkout(SendWorkoutRequest request, string userId)
 	{
-		var createdWorkoutId = await _usersService.ShareWorkout(request, CurrentUserId);
+		var createdWorkoutId = await _usersService.ShareWorkout(request, userId, CurrentUserId);
 		return new ShareWorkoutResponse { SharedWorkoutId = createdWorkoutId };
 	}
 

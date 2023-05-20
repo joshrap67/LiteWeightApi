@@ -1,7 +1,7 @@
-﻿using LiteWeightApi.Api.CurrentUser.Responses;
-using LiteWeightApi.Api.Exercises.Responses;
+﻿using LiteWeightAPI.Api.Exercises.Responses;
+using LiteWeightAPI.Api.Self.Responses;
 
-namespace LiteWeightApi.Api.SharedWorkouts.Responses;
+namespace LiteWeightAPI.Api.SharedWorkouts.Responses;
 
 public class AcceptSharedWorkoutResponse
 {

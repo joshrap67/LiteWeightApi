@@ -1,6 +1,6 @@
-﻿using LiteWeightApi.Api.Common.Responses.ErrorResponses;
+﻿using LiteWeightAPI.Errors.Responses;
 
-namespace LiteWeightApi.Errors.Exceptions.BaseExceptions;
+namespace LiteWeightAPI.Errors.Exceptions.BaseExceptions;
 
 public class BadRequestException : Exception
 {

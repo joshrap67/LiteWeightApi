@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace LiteWeightApi.Services.Notifications;
+namespace LiteWeightAPI.Services.Notifications;
 
 public class NotificationMessage
 {

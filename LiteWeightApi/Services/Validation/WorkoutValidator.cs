@@ -1,18 +1,18 @@
-﻿using LiteWeightApi.Api.Workouts.Requests;
-using LiteWeightApi.Domain.Users;
-using LiteWeightApi.Domain.Workouts;
-using LiteWeightApi.Errors.Exceptions;
-using LiteWeightApi.Errors.Exceptions.BaseExceptions;
-using LiteWeightApi.Imports;
+﻿using LiteWeightAPI.Api.Workouts.Requests;
+using LiteWeightAPI.Domain.Users;
+using LiteWeightAPI.Domain.Workouts;
+using LiteWeightAPI.Errors.Exceptions;
+using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
+using LiteWeightAPI.Imports;
 
-namespace LiteWeightApi.Services.Validation;
+namespace LiteWeightAPI.Services.Validation;
 
 public interface IWorkoutValidator
 {
 	void ValidGetWorkout(Workout workout, string userId);
 	void ValidCreateWorkout(CreateWorkoutRequest request, User user);
 	void ValidSetRoutine(Workout workout, SetRoutineRequest request, User user);
-	void ValidUpdateWorkout(Workout workout, User user);
+	void ValidUpdateProgress(Workout workout, UpdateWorkoutProgressRequest updateWorkoutProgressRequest, User user);
 	void ValidRestartWorkout(Workout workout, User user);
 	void ValidDeleteWorkout(Workout workout, User user);
 	void ValidCopyWorkout(CopyWorkoutRequest request, Workout workoutToCopy, User user);
@@ -64,10 +64,12 @@ public class WorkoutWorkoutValidator : IWorkoutValidator
 		ValidRoutineDays(request);
 	}
 
-	public void ValidUpdateWorkout(Workout workout, User user)
+	public void ValidUpdateProgress(Workout workout, UpdateWorkoutProgressRequest request, User user)
 	{
 		_commonValidator.WorkoutExists(workout);
 		_commonValidator.EnsureWorkoutOwnership(user.Id, workout);
+		ValidRoutineWeeks(request.Routine);
+		ValidRoutineDays(request.Routine);
 	}
 
 	public void ValidRestartWorkout(Workout workout, User user)

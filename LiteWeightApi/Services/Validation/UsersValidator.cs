@@ -1,18 +1,19 @@
-﻿using LiteWeightApi.Domain.Users;
-using LiteWeightApi.Domain.Workouts;
-using LiteWeightApi.Errors.Exceptions;
-using LiteWeightApi.Imports;
+﻿using LiteWeightAPI.Domain.Users;
+using LiteWeightAPI.Domain.Workouts;
+using LiteWeightAPI.Errors.Exceptions;
+using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
+using LiteWeightAPI.Imports;
 
-namespace LiteWeightApi.Services.Validation;
+namespace LiteWeightAPI.Services.Validation;
 
 public interface IUsersValidator
 {
-	void ValidSendFriendRequest(User sender, User recipient, string recipientUsername);
-	void ValidShareWorkout(User senderUser, User recipientUser, Workout workoutToSend, string recipientUsername);
-	void ValidAcceptFriendRequest(User acceptedUser, User initiator, string usernameToAccept);
-	void ValidRemoveFriend(User userToRemove, string usernameToRemove);
-	void ValidCancelFriendRequest(User userToCancel, string usernameToCancel);
-	void ValidDeclineFriendRequest(User userToDecline, string usernameToDecline);
+	void ValidSendFriendRequest(User sender, User recipient, string recipientId);
+	void ValidShareWorkout(User senderUser, User recipientUser, Workout workoutToSend, string recipientId);
+	void ValidAcceptFriendRequest(User acceptedUser, User initiator, string userIdToAccept);
+	void ValidRemoveFriend(User userToRemove, string userIdToRemove);
+	void ValidCancelFriendRequest(User userToCancel, string userIdToCancel);
+	void ValidDeclineFriendRequest(User userToDecline, string userIdToDecline);
 }
 
 public class UsersValidator : IUsersValidator
@@ -24,10 +25,16 @@ public class UsersValidator : IUsersValidator
 		_commonValidator = commonValidator;
 	}
 
-	public void ValidSendFriendRequest(User sender, User recipient, string recipientUsername)
+	public void ValidSendFriendRequest(User sender, User recipient, string recipientId)
 	{
-		_commonValidator.UserExists(recipient, recipientUsername);
-		var senderUsername = sender.Username;
+		_commonValidator.UserExists(recipient, recipientId);
+		var senderUserId = sender.Id;
+
+		if (recipient.UserPreferences.PrivateAccount && recipient.Friends.All(x => x.UserId != senderUserId))
+		{
+			throw new ResourceNotFoundException("User");
+		}
+
 		if (sender.Friends.Count >= Globals.MaxNumberFriends)
 		{
 			throw new MaxLimitException("Max number of friends would be exceeded");
@@ -35,48 +42,36 @@ public class UsersValidator : IUsersValidator
 
 		if (recipient.FriendRequests.Count >= Globals.MaxFriendRequests)
 		{
-			throw new MaxLimitException($"{recipientUsername} has too many pending requests");
+			throw new MaxLimitException($"{recipientId} has too many pending requests");
 		}
 
-		if (sender.Friends.Any(x => x.Username == recipientUsername && !x.Confirmed))
-		{
-			// todo "already sent" error?
-			throw new AlreadyExistsException($"A friend request has already been sent to {recipientUsername}");
-		}
-
-		if (sender.Friends.Any(x => x.Username == recipientUsername && x.Confirmed))
-		{
-			throw new MiscErrorException($"You are already friends with {recipientUsername}");
-		}
-
-		if (sender.FriendRequests.Any(x => x.Username == recipientUsername))
+		if (sender.FriendRequests.Any(x => x.UserId == recipientId))
 		{
 			throw new MiscErrorException("This user has already sent you a friend request");
 		}
 
-		if (senderUsername.Equals(recipientUsername, StringComparison.InvariantCultureIgnoreCase))
+		if (senderUserId.Equals(senderUserId, StringComparison.InvariantCultureIgnoreCase))
 		{
 			throw new MiscErrorException("Cannot send a friend request to yourself");
 		}
 	}
 
-	public void ValidShareWorkout(User senderUser, User recipientUser, Workout workoutToSend, string recipientUsername)
+	public void ValidShareWorkout(User senderUser, User recipientUser, Workout workoutToSend, string recipientId)
 	{
-		_commonValidator.UserExists(recipientUser, recipientUsername);
+		_commonValidator.UserExists(recipientUser, recipientId);
 		_commonValidator.ReferencedWorkoutExists(workoutToSend);
 		_commonValidator.EnsureWorkoutOwnership(senderUser.Id, workoutToSend);
 
-		var senderUsername = senderUser.Username;
+		var senderId = senderUser.Id;
 
-		if (recipientUser.UserPreferences.PrivateAccount &&
-		    !recipientUser.Friends.Any(x => x.Username == senderUsername && x.Confirmed))
+		if (recipientUser.UserPreferences.PrivateAccount && recipientUser.Friends.All(x => x.UserId != senderId))
 		{
-			throw new UserNotFoundException($"User {recipientUsername} not found");
+			throw new ResourceNotFoundException("User");
 		}
 
 		if (recipientUser.ReceivedWorkouts.Count >= Globals.MaxReceivedWorkouts)
 		{
-			throw new MaxLimitException($"{recipientUsername} has too many received workouts");
+			throw new MaxLimitException($"{recipientId} has too many received workouts");
 		}
 
 		if (senderUser.WorkoutsSent >= Globals.MaxFreeWorkoutsSent)
@@ -84,15 +79,15 @@ public class UsersValidator : IUsersValidator
 			throw new MaxLimitException("You have reached the maximum number of workouts that you can send");
 		}
 
-		if (senderUsername == recipientUsername)
+		if (senderId == recipientId)
 		{
 			throw new MiscErrorException("Cannot send workout to yourself");
 		}
 	}
 
-	public void ValidAcceptFriendRequest(User acceptedUser, User initiator, string usernameToAccept)
+	public void ValidAcceptFriendRequest(User acceptedUser, User initiator, string userIdToAccept)
 	{
-		_commonValidator.UserExists(acceptedUser, usernameToAccept);
+		_commonValidator.UserExists(acceptedUser, userIdToAccept);
 
 		if (initiator.Friends.Count >= Globals.MaxNumberFriends)
 		{
@@ -100,18 +95,18 @@ public class UsersValidator : IUsersValidator
 		}
 	}
 
-	public void ValidRemoveFriend(User userToRemove, string usernameToRemove)
+	public void ValidRemoveFriend(User userToRemove, string userIdToRemove)
 	{
-		_commonValidator.UserExists(userToRemove, usernameToRemove);
+		_commonValidator.UserExists(userToRemove, userIdToRemove);
 	}
 
-	public void ValidCancelFriendRequest(User userToCancel, string usernameToCancel)
+	public void ValidCancelFriendRequest(User userToCancel, string userIdToCancel)
 	{
-		_commonValidator.UserExists(userToCancel, usernameToCancel);
+		_commonValidator.UserExists(userToCancel, userIdToCancel);
 	}
 
-	public void ValidDeclineFriendRequest(User userToDecline, string usernameToDecline)
+	public void ValidDeclineFriendRequest(User userToDecline, string userIdToDecline)
 	{
-		_commonValidator.UserExists(userToDecline, usernameToDecline);
+		_commonValidator.UserExists(userToDecline, userIdToDecline);
 	}
 }

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using LiteWeightApi.Imports;
+using LiteWeightAPI.Imports;
 
-namespace LiteWeightApi.Api.Workouts.Responses;
+namespace LiteWeightAPI.Api.Workouts.Responses;
 
 public class RoutineExerciseResponse
 {

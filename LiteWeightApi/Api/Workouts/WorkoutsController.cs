@@ -1,12 +1,11 @@
-﻿using LiteWeightApi.Api.Common.Responses;
-using LiteWeightApi.Api.Common.Responses.ErrorResponses;
-using LiteWeightApi.Api.Workouts.Requests;
-using LiteWeightApi.Api.Workouts.Responses;
-using LiteWeightApi.Errors.ErrorAttributes;
-using LiteWeightApi.Services;
+﻿using LiteWeightAPI.Api.Workouts.Requests;
+using LiteWeightAPI.Api.Workouts.Responses;
+using LiteWeightAPI.Errors.Attributes;
+using LiteWeightAPI.Errors.Responses;
+using LiteWeightAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LiteWeightApi.Api.Workouts;
+namespace LiteWeightAPI.Api.Workouts;
 
 [Route("workouts")]
 [ApiController]
@@ -68,16 +67,15 @@ public class WorkoutsController : BaseController
 		return response;
 	}
 
-	/// <summary>Update Workout</summary>
-	/// <remarks>Updates the specified workout.</remarks>
-	[HttpPut("{workoutId}/update")]
-	[InvalidRequest]
+	/// <summary>Update Workout Progress</summary>
+	/// <remarks>Updates the specified workout progress.</remarks>
+	[HttpPut("{workoutId}/update-progress")]
+	[InvalidRequest, InvalidRoutine]
 	[ProducesResponseType(typeof(BadRequestResponse), 400)]
 	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
-	public async Task<ActionResult> UpdateWorkout(string workoutId, UpdateWorkoutRequest request)
+	public async Task<ActionResult> UpdateProgress(string workoutId, UpdateWorkoutProgressRequest request)
 	{
-		// todo sync might actually be accurate still. Since not all the fields of the workout are being updated
-		await _workoutService.UpdateWorkout(workoutId, request, CurrentUserId);
+		await _workoutService.UpdateProgress(workoutId, request, CurrentUserId);
 		return Ok();
 	}
 

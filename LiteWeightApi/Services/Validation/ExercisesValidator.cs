@@ -1,10 +1,10 @@
-﻿using LiteWeightApi.Api.Exercises.Requests;
-using LiteWeightApi.Domain.Users;
-using LiteWeightApi.Errors.Exceptions;
-using LiteWeightApi.Errors.Exceptions.BaseExceptions;
-using LiteWeightApi.Imports;
+﻿using LiteWeightAPI.Api.Exercises.Requests;
+using LiteWeightAPI.Domain.Users;
+using LiteWeightAPI.Errors.Exceptions;
+using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
+using LiteWeightAPI.Imports;
 
-namespace LiteWeightApi.Services.Validation;
+namespace LiteWeightAPI.Services.Validation;
 
 public interface IExercisesValidator
 {

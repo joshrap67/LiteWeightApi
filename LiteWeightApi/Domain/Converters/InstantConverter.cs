@@ -1,8 +1,8 @@
 ﻿using Google.Cloud.Firestore;
-using LiteWeightApi.Utils;
+using LiteWeightAPI.Utils;
 using NodaTime;
 
-namespace LiteWeightApi.Domain.Converters;
+namespace LiteWeightAPI.Domain.Converters;
 
 public class InstantConverter : IFirestoreConverter<Instant>
 {

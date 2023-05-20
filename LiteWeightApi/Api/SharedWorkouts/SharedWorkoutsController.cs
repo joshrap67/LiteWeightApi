@@ -1,11 +1,11 @@
-﻿using LiteWeightApi.Api.Common.Responses.ErrorResponses;
-using LiteWeightApi.Api.SharedWorkouts.Requests;
-using LiteWeightApi.Api.SharedWorkouts.Responses;
-using LiteWeightApi.Errors.ErrorAttributes;
-using LiteWeightApi.Services;
+﻿using LiteWeightAPI.Api.SharedWorkouts.Requests;
+using LiteWeightAPI.Api.SharedWorkouts.Responses;
+using LiteWeightAPI.Errors.Attributes;
+using LiteWeightAPI.Errors.Responses;
+using LiteWeightAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LiteWeightApi.Api.SharedWorkouts;
+namespace LiteWeightAPI.Api.SharedWorkouts;
 
 [Route("shared-workouts")]
 [ApiController]
@@ -37,7 +37,7 @@ public class SharedWorkoutsController : BaseController
 	/// <param name="sharedWorkoutId">Id of the shared workout to accept</param>
 	/// <param name="request">Request</param>
 	[HttpPost("{sharedWorkoutId}/accept")]
-	[InvalidRequest, MaxLimit, UserNotFound, AlreadyExists]
+	[InvalidRequest, MaxLimit, AlreadyExists]
 	[ProducesResponseType(typeof(AcceptSharedWorkoutResponse), 200)]
 	[ProducesResponseType(typeof(BadRequestResponse), 400)]
 	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
@@ -52,10 +52,8 @@ public class SharedWorkoutsController : BaseController
 	/// <remarks>Declines a workout and deletes it from the database, assuming the recipient matches the authenticated user.</remarks>
 	[HttpPost("{sharedWorkoutId}/decline")]
 	[ProducesResponseType(200)]
-	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
 	public async Task<ActionResult> DeclineReceivedWorkout(string sharedWorkoutId)
 	{
-		// todo DELETE instead of POST?
 		await _sharedWorkoutService.DeclineWorkout(sharedWorkoutId, CurrentUserId);
 		return Ok();
 	}

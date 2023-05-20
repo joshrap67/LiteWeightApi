@@ -1,7 +1,7 @@
 ﻿using Google.Cloud.Firestore;
-using LiteWeightApi.Domain.Users;
+using LiteWeightAPI.Domain.Users;
 
-namespace LiteWeightApi.Domain.SharedWorkouts;
+namespace LiteWeightAPI.Domain.SharedWorkouts;
 
 [FirestoreData]
 public class SharedWorkoutDistinctExercise
@@ -13,7 +13,12 @@ public class SharedWorkoutDistinctExercise
 		Focuses = userExercise.Focuses;
 	}
 
-	[FirestoreProperty("exerciseName")] public string ExerciseName { get; set; }
-	[FirestoreProperty("videoUrl")] public string VideoUrl { get; set; }
-	[FirestoreProperty("focuses")] public IList<string> Focuses { get; set; }
+	[FirestoreProperty("exerciseName")]
+	public string ExerciseName { get; set; }
+
+	[FirestoreProperty("videoUrl")]
+	public string VideoUrl { get; set; }
+
+	[FirestoreProperty("focuses")]
+	public IList<string> Focuses { get; set; }
 }

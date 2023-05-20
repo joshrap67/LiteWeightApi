@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
-using LiteWeightApi.Api.Common.Responses.ErrorResponses;
-using LiteWeightApi.Errors.Exceptions;
-using LiteWeightApi.Swagger;
+using LiteWeightAPI.Errors.Exceptions;
+using LiteWeightAPI.Errors.Responses;
+using LiteWeightAPI.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -9,7 +9,7 @@ using Microsoft.OpenApi.Models;
 using NetCore.AutoRegisterDi;
 using NodaTime;
 
-namespace LiteWeightApi.ExtensionMethods;
+namespace LiteWeightAPI.ExtensionMethods;
 
 public static class ServiceCollectionExtensions
 {

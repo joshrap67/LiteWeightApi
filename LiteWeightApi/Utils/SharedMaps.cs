@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using NodaTime;
 
-namespace LiteWeightApi.Utils;
+namespace LiteWeightAPI.Utils;
 
 public class SharedMaps : Profile
 {

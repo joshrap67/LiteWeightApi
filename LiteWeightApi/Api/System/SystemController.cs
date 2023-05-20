@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ILogger = Serilog.ILogger;
 
-namespace LiteWeightApi.Api.System;
+namespace LiteWeightAPI.Api.System;
 
 [Route("system")]
 [ApiController]

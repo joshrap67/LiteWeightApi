@@ -1,8 +1,8 @@
-using LiteWeightApi.Attributes;
+using LiteWeightAPI.Imports;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace LiteWeightApi.Swagger;
+namespace LiteWeightAPI.Swagger;
 
 public class AppendPushNotificationIndicatorOperationFilter : IOperationFilter
 {

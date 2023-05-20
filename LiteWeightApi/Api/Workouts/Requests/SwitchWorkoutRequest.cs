@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using LiteWeightApi.Api.Workouts.Responses;
+using LiteWeightAPI.Api.Workouts.Responses;
 
-namespace LiteWeightApi.Api.Workouts.Requests;
+namespace LiteWeightAPI.Api.Workouts.Requests;
 
 public class SwitchWorkoutRequest
 {

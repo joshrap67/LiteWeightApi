@@ -1,6 +1,6 @@
 ﻿using Google.Cloud.Firestore;
 
-namespace LiteWeightApi.Domain.Users;
+namespace LiteWeightAPI.Domain.Users;
 
 [FirestoreData]
 public class User
@@ -8,7 +8,7 @@ public class User
 	[FirestoreDocumentId] public string Id { get; set; }
 	[FirestoreProperty("username")] public string Username { get; set; }
 	[FirestoreProperty("email")] public string Email { get; set; }
-	[FirestoreProperty("icon")] public string Icon { get; set; }
+	[FirestoreProperty("profilePicture")] public string ProfilePicture { get; set; }
 	[FirestoreProperty("firebaseMessagingToken")] public string FirebaseMessagingToken { get; set; }
 	[FirestoreProperty("premiumToken")] public string PremiumToken { get; set; }
 	[FirestoreProperty("currentWorkoutId")] public string CurrentWorkoutId { get; set; }

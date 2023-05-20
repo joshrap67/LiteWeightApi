@@ -1,4 +1,4 @@
-﻿namespace LiteWeightApi.Services.Notifications.Responses;
+﻿namespace LiteWeightAPI.Services.Notifications.Responses;
 
 public class RemovedAsFriendResponse
 {

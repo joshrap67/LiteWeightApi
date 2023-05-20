@@ -1,11 +1,12 @@
 ﻿using Google.Cloud.Firestore;
 
-namespace LiteWeightApi.Domain.Workouts;
+namespace LiteWeightAPI.Domain.Workouts;
 
 [FirestoreData]
 public class RoutineWeek
 {
-	[FirestoreProperty("days")] public IList<RoutineDay> Days { get; set; } = new List<RoutineDay>();
+	[FirestoreProperty("days")]
+	public IList<RoutineDay> Days { get; set; } = new List<RoutineDay>();
 
 	public void AppendDay(RoutineDay routineDay)
 	{
