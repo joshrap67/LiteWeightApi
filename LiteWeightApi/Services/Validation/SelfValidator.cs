@@ -26,7 +26,7 @@ public class SelfValidator : ISelfValidator
 		{
 			throw new AlreadyExistsException("User already exists with this username");
 		}
-		
+
 		// todo test
 		var userByEmail = await _repository.GetUserByEmail(username);
 		if (userByEmail != null)
@@ -37,6 +37,11 @@ public class SelfValidator : ISelfValidator
 
 	public void ValidSetCurrentWorkout(User user, string workoutId)
 	{
+		if (workoutId == null)
+		{
+			return;
+		}
+
 		if (user.Workouts.All(x => x.WorkoutId != workoutId))
 		{
 			throw new WorkoutNotFoundException($"{workoutId} does not exist for the current user");

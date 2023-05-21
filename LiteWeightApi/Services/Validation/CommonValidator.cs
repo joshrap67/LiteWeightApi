@@ -8,7 +8,7 @@ namespace LiteWeightAPI.Services.Validation;
 
 public interface ICommonValidator
 {
-	void UserExists(User user, string userId);
+	void UserExists(User user);
 	void WorkoutExists(Workout workout);
 	void ReferencedWorkoutExists(Workout workout);
 	void EnsureWorkoutOwnership(string userId, Workout workout);
@@ -19,11 +19,11 @@ public interface ICommonValidator
 
 public class CommonValidator : ICommonValidator
 {
-	public void UserExists(User user, string userId)
+	public void UserExists(User user)
 	{
 		if (user == null)
 		{
-			throw new UserNotFoundException($"User {userId} not found");
+			throw new ResourceNotFoundException("User");
 		}
 	}
 

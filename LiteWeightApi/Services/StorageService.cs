@@ -6,7 +6,7 @@ public interface IStorageService
 {
 	Task UploadProfilePicture(byte[] fileData, string fileName);
 	Task DeleteProfilePicture(string fileName);
-	Task<string> UploadDefaultProfilePicture();
+	Task<string> UploadDefaultProfilePicture(string fileName);
 }
 
 public class StorageService : IStorageService
@@ -29,9 +29,8 @@ public class StorageService : IStorageService
 		await storage.DeleteObjectAsync(ProfilePictureBucket, fileName);
 	}
 
-	public async Task<string> UploadDefaultProfilePicture()
+	public async Task<string> UploadDefaultProfilePicture(string fileName)
 	{
-		var fileName = Guid.NewGuid().ToString();
 		var storage = await StorageClient.CreateAsync();
 
 		var memoryStream = new MemoryStream();

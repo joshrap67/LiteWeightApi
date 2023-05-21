@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using LiteWeightAPI.Errors.Exceptions;
 using LiteWeightAPI.Errors.Responses;
+using LiteWeightAPI.Options;
 using LiteWeightAPI.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +14,9 @@ namespace LiteWeightAPI.ExtensionMethods;
 
 public static class ServiceCollectionExtensions
 {
-	public static void SetupApi(this IServiceCollection services)
+	private const string EnvRootKey = "LiteWeight_";
+
+	public static void ConfigureApi(this IServiceCollection services)
 	{
 		services.AddControllers();
 		services.AddHttpContextAccessor();
@@ -25,7 +28,7 @@ public static class ServiceCollectionExtensions
 		});
 	}
 
-	public static void SetupDependencies(this IServiceCollection services, IConfiguration configuration)
+	public static void ConfigureDependencies(this IServiceCollection services, IConfiguration configuration)
 	{
 		services.AddAutoMapper(typeof(Program));
 		services.AddSingleton<IClock>(SystemClock.Instance);
@@ -33,7 +36,14 @@ public static class ServiceCollectionExtensions
 		services.RegisterAssemblyPublicNonGenericClasses().AsPublicImplementedInterfaces();
 	}
 
-	public static void SetupSwagger(this IServiceCollection services)
+	public static void ConfigureOptions(this IServiceCollection services, IConfiguration configuration)
+	{
+		services.Configure<JwtOptions>(configuration.GetSection(EnvRootKey + "Jwt"));
+		services.Configure<FirebaseOptions>(configuration.GetSection(EnvRootKey + "Firebase"));
+		services.Configure<FirestoreOptions>(configuration.GetSection(EnvRootKey + "Firestore"));
+	}
+
+	public static void ConfigureSwagger(this IServiceCollection services)
 	{
 		services.AddSwaggerGen(options =>
 		{
@@ -65,15 +75,16 @@ public static class ServiceCollectionExtensions
 		});
 	}
 
-	public static void SetupAuthentication(this IServiceCollection services)
+	public static void ConfigureAuthentication(this IServiceCollection services, IConfiguration configuration)
 	{
+		var authorityUrl = configuration[EnvRootKey + "Jwt:AuthorityUrl"];
 		services.AddAuthentication(options =>
 		{
 			options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
 			options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 		}).AddJwtBearer(jwt =>
 		{
-			jwt.Authority = "https://securetoken.google.com/liteweight-faa1a"; // todo env var on config
+			jwt.Authority = authorityUrl;
 			jwt.TokenValidationParameters = new TokenValidationParameters
 			{
 				ValidateIssuer = true,

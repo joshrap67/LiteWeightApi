@@ -5,10 +5,11 @@ using Serilog;
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((_, config) => config.WriteTo.Console());
 
-builder.Services.SetupAuthentication();
-builder.Services.SetupDependencies(builder.Configuration);
-builder.Services.SetupApi();
-builder.Services.SetupSwagger();
+builder.Services.ConfigureAuthentication(builder.Configuration);
+builder.Services.ConfigureDependencies(builder.Configuration);
+builder.Services.ConfigureApi();
+builder.Services.ConfigureSwagger();
+builder.Services.ConfigureOptions(builder.Configuration);
 
 var app = builder.Build();
 

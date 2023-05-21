@@ -50,7 +50,7 @@ public class SharedWorkoutsController : BaseController
 
 	/// <summary>Decline Shared Workout</summary>
 	/// <remarks>Declines a workout and deletes it from the database, assuming the recipient matches the authenticated user.</remarks>
-	[HttpPost("{sharedWorkoutId}/decline")]
+	[HttpDelete("{sharedWorkoutId}/decline")]
 	[ProducesResponseType(200)]
 	public async Task<ActionResult> DeclineReceivedWorkout(string sharedWorkoutId)
 	{

@@ -68,7 +68,7 @@ public class SelfController : BaseController
 		return Ok();
 	}
 
-	/// <summary>Unset Firebase Token</summary>
+	/// <summary>Unlink Firebase Token</summary>
 	/// <remarks>Unlinks the firebase token associated for the authenticated user. This removes the authenticated user's ability to receive push notifications.</remarks>
 	[HttpDelete("unlink-firebase-token")]
 	public async Task<ActionResult> UnlinkFirebaseToken()

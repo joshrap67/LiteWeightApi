@@ -1,5 +1,5 @@
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
-WORKDIR /LiteWeightAPI
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build-env
+WORKDIR /LiteWeightApi
 
 # Copy everything
 COPY . ./
@@ -9,7 +9,8 @@ RUN dotnet restore
 RUN dotnet publish -c Release -o out
 
 # Build runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:6.0
-WORKDIR /app
-COPY --from=build-env /LightWeightAPI/out .
-ENTRYPOINT ["dotnet", "LightWeightAPI.dll"]
+FROM mcr.microsoft.com/dotnet/aspnet:7.0
+WORKDIR /LiteWeightApi
+COPY --from=build-env /LiteWeightApi/out .
+ENV ASPNETCORE_URLS=http://+:5000
+ENTRYPOINT ["dotnet", "LiteWeightApi.dll"]

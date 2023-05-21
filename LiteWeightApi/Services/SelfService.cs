@@ -62,7 +62,16 @@ public class SelfService : ISelfService
 		await _selfValidator.ValidCreateSelf(request.Username, email);
 
 		// whenever a user is created, give them a unique UUID file path that will always get updated
-		var fileName = await _storageService.UploadDefaultProfilePicture();
+		var fileName = Guid.NewGuid().ToString();
+		if (request.ProfilePictureData != null)
+		{
+			await _storageService.UploadProfilePicture(request.ProfilePictureData, fileName);
+		}
+		else
+		{
+			await _storageService.UploadDefaultProfilePicture(fileName);
+		}
+
 		var userPreferences = new UserPreferences
 		{
 			MetricUnits = request.MetricUnits,

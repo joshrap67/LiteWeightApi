@@ -120,5 +120,15 @@ public class UsersController : BaseController
 		return Ok();
 	}
 
-	// todo method for reporting a user
+	/// <summary>Report User</summary>
+	/// <remarks>Reports a user for the developers to review.</remarks>
+	/// <param name="userId">User id of the user to report</param>
+	[HttpPost("{userId}/report")]
+	[ProducesResponseType(typeof(ComplaintResponse), 200)]
+	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
+	public async Task<ActionResult<ComplaintResponse>> Report(string userId)
+	{
+		var response = await _usersService.ReportUser(userId, CurrentUserId);
+		return response;
+	}
 }

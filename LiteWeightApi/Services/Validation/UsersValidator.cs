@@ -10,10 +10,11 @@ public interface IUsersValidator
 {
 	void ValidSendFriendRequest(User sender, User recipient, string recipientId);
 	void ValidShareWorkout(User senderUser, User recipientUser, Workout workoutToSend, string recipientId);
-	void ValidAcceptFriendRequest(User acceptedUser, User initiator, string userIdToAccept);
-	void ValidRemoveFriend(User userToRemove, string userIdToRemove);
-	void ValidCancelFriendRequest(User userToCancel, string userIdToCancel);
-	void ValidDeclineFriendRequest(User userToDecline, string userIdToDecline);
+	void ValidAcceptFriendRequest(User acceptedUser, User initiator);
+	void ValidRemoveFriend(User userToRemove);
+	void ValidCancelFriendRequest(User userToCancel);
+	void ValidDeclineFriendRequest(User userToDecline);
+	void ValidReportUser(User userToReport);
 }
 
 public class UsersValidator : IUsersValidator
@@ -27,7 +28,7 @@ public class UsersValidator : IUsersValidator
 
 	public void ValidSendFriendRequest(User sender, User recipient, string recipientId)
 	{
-		_commonValidator.UserExists(recipient, recipientId);
+		_commonValidator.UserExists(recipient);
 		var senderUserId = sender.Id;
 
 		if (recipient.UserPreferences.PrivateAccount && recipient.Friends.All(x => x.UserId != senderUserId))
@@ -58,7 +59,7 @@ public class UsersValidator : IUsersValidator
 
 	public void ValidShareWorkout(User senderUser, User recipientUser, Workout workoutToSend, string recipientId)
 	{
-		_commonValidator.UserExists(recipientUser, recipientId);
+		_commonValidator.UserExists(recipientUser);
 		_commonValidator.ReferencedWorkoutExists(workoutToSend);
 		_commonValidator.EnsureWorkoutOwnership(senderUser.Id, workoutToSend);
 
@@ -85,9 +86,9 @@ public class UsersValidator : IUsersValidator
 		}
 	}
 
-	public void ValidAcceptFriendRequest(User acceptedUser, User initiator, string userIdToAccept)
+	public void ValidAcceptFriendRequest(User acceptedUser, User initiator)
 	{
-		_commonValidator.UserExists(acceptedUser, userIdToAccept);
+		_commonValidator.UserExists(acceptedUser);
 
 		if (initiator.Friends.Count >= Globals.MaxNumberFriends)
 		{
@@ -95,18 +96,23 @@ public class UsersValidator : IUsersValidator
 		}
 	}
 
-	public void ValidRemoveFriend(User userToRemove, string userIdToRemove)
+	public void ValidRemoveFriend(User userToRemove)
 	{
-		_commonValidator.UserExists(userToRemove, userIdToRemove);
+		_commonValidator.UserExists(userToRemove);
 	}
 
-	public void ValidCancelFriendRequest(User userToCancel, string userIdToCancel)
+	public void ValidCancelFriendRequest(User userToCancel)
 	{
-		_commonValidator.UserExists(userToCancel, userIdToCancel);
+		_commonValidator.UserExists(userToCancel);
 	}
 
-	public void ValidDeclineFriendRequest(User userToDecline, string userIdToDecline)
+	public void ValidDeclineFriendRequest(User userToDecline)
 	{
-		_commonValidator.UserExists(userToDecline, userIdToDecline);
+		_commonValidator.UserExists(userToDecline);
+	}
+
+	public void ValidReportUser(User userToReport)
+	{
+		_commonValidator.UserExists(userToReport);
 	}
 }

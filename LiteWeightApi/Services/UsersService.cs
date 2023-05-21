@@ -3,6 +3,7 @@ using LiteWeightAPI.Api.Self.Responses;
 using LiteWeightAPI.Api.Users.Requests;
 using LiteWeightAPI.Api.Users.Responses;
 using LiteWeightAPI.Domain;
+using LiteWeightAPI.Domain.Complaints;
 using LiteWeightAPI.Domain.SharedWorkouts;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Errors.Exceptions;
@@ -22,6 +23,7 @@ public interface IUsersService
 	Task RemoveFriend(string userIdToRemove, string initiatorUserId);
 	Task CancelFriendRequest(string userIdToCancel, string initiatorUserId);
 	Task DeclineFriendRequest(string userIdToDecline, string initiatorUserId);
+	Task<ComplaintResponse> ReportUser(string userIdToReport, string initiatorUserId);
 }
 
 public class UsersService : IUsersService
@@ -45,6 +47,11 @@ public class UsersService : IUsersService
 	public async Task<SearchUserResponse> SearchByUsername(string username, string initiatorUserId)
 	{
 		var user = await _repository.GetUserByUsername(username);
+
+		if (user == null)
+		{
+			throw new UserNotFoundException($"User {username} not found");
+		}
 
 		// if user is private account, they should not show up in the search unless already friends (or pending friend) with the initiator
 		if (user.UserPreferences.PrivateAccount && user.Friends.All(x => x.UserId != initiatorUserId))
@@ -134,7 +141,7 @@ public class UsersService : IUsersService
 		var initiator = await _repository.GetUser(initiatorUserId);
 		var acceptedUser = await _repository.GetUser(acceptedUserId);
 
-		_usersValidator.ValidAcceptFriendRequest(acceptedUser, initiator, initiatorUserId);
+		_usersValidator.ValidAcceptFriendRequest(acceptedUser, initiator);
 
 		var friendRequest = initiator.FriendRequests.FirstOrDefault(x => x.UserId == acceptedUserId);
 		if (friendRequest == null)
@@ -166,7 +173,7 @@ public class UsersService : IUsersService
 		var initiator = await _repository.GetUser(initiatorUserId);
 		var removedFriend = await _repository.GetUser(userIdToRemove);
 
-		_usersValidator.ValidRemoveFriend(removedFriend, userIdToRemove);
+		_usersValidator.ValidRemoveFriend(removedFriend);
 
 		var friendToRemove = initiator.Friends.FirstOrDefault(x => x.UserId == userIdToRemove);
 		var initiatorToRemove = removedFriend.Friends.FirstOrDefault(x => x.UserId == initiatorUserId);
@@ -189,7 +196,7 @@ public class UsersService : IUsersService
 		var initiator = await _repository.GetUser(initiatorUserId);
 		var userToCancel = await _repository.GetUser(userIdToCancel);
 
-		_usersValidator.ValidCancelFriendRequest(userToCancel, userIdToCancel);
+		_usersValidator.ValidCancelFriendRequest(userToCancel);
 
 		var pendingFriend = initiator.Friends.FirstOrDefault(x => x.UserId == userIdToCancel);
 		if (pendingFriend == null)
@@ -211,7 +218,7 @@ public class UsersService : IUsersService
 		var initiator = await _repository.GetUser(initiatorUserId);
 		var userToDecline = await _repository.GetUser(userIdToDecline);
 
-		_usersValidator.ValidDeclineFriendRequest(userToDecline, userIdToDecline);
+		_usersValidator.ValidDeclineFriendRequest(userToDecline);
 
 		var friendRequest = initiator.FriendRequests.FirstOrDefault(x => x.UserId == userIdToDecline);
 		if (friendRequest == null)
@@ -226,5 +233,23 @@ public class UsersService : IUsersService
 
 		// send a notification to the user who's friend request was declined
 		await _pushNotificationService.SendFriendRequestDeclinedNotification(userToDecline, initiator);
+	}
+
+	public async Task<ComplaintResponse> ReportUser(string userIdToReport, string initiatorUserId)
+	{
+		var userToReport = await _repository.GetUser(userIdToReport);
+
+		_usersValidator.ValidReportUser(userToReport);
+
+		var complaint = new Complaint
+		{
+			ReportedUserId = userIdToReport,
+			ReportedUsername = userToReport.Username,
+			ReportedUtc = _clock.GetCurrentInstant(),
+			ClaimantUserId = initiatorUserId
+		};
+		await _repository.CreateComplaint(complaint);
+
+		return _mapper.Map<ComplaintResponse>(complaint);
 	}
 }

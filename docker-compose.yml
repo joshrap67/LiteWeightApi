@@ -1,0 +1,17 @@
+version: "1.0"
+services:
+  api:
+    expose:
+      - "5000"
+    build:
+      context: .
+      dockerfile: ./LiteWeightApi/Dockerfile
+    ports:
+      - 127.0.0.1:5000:5000
+    environment:
+      - LiteWeight_Firebase__ProjectId=${LiteWeight_Firebase__ProjectId}
+      - LiteWeight_Firestore__ComplaintsCollection=${LiteWeight_Firestore__ComplaintsCollection}
+      - LiteWeight_Firestore__SharedWorkoutsCollection=${LiteWeight_Firestore__SharedWorkoutsCollection}
+      - LiteWeight_Firestore__UsersCollection=${LiteWeight_Firestore__UsersCollection}
+      - LiteWeight_Firestore__WorkoutsCollection=${LiteWeight_Firestore__WorkoutsCollection}
+      - LiteWeight_Jwt__AuthorityUrl=${LiteWeight_Jwt__AuthorityUrl}
