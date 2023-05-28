@@ -1,10 +1,8 @@
-using AutoFixture;
 using LiteWeightAPI.Commands.Self.DeleteSelf;
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
 using LiteWeightAPI.Services;
-using Moq;
 
 namespace LiteWeightApiTests.Commands.Self;
 

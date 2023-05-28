@@ -30,38 +30,36 @@ public class AcceptSharedWorkoutHandler : ICommandHandler<AcceptSharedWorkout, A
 	{
 		var user = await _repository.GetUser(command.UserId);
 		var workoutToAccept = await _repository.GetSharedWorkout(command.SharedWorkoutId);
-		var newExercises = SharedWorkoutUtils.GetNewExercisesFromSharedWorkout(workoutToAccept, user).ToList();
 
-		// lots of validation
 		CommonValidator.SharedWorkoutExists(workoutToAccept);
 		CommonValidator.EnsureSharedWorkoutOwnership(user.Id, workoutToAccept);
 
-		if (user.PremiumToken == null && user.Workouts.Count > Globals.MaxFreeWorkouts)
+		// lots of validation
+		var newExercises = SharedWorkoutUtils.GetNewExercisesFromSharedWorkout(workoutToAccept, user).ToList();
+		if (user.PremiumToken == null && user.Workouts.Count >= Globals.MaxFreeWorkouts)
 		{
 			throw new MaxLimitException("Maximum workouts would be exceeded");
 		}
 
-		if (user.PremiumToken != null && user.Workouts.Count > Globals.MaxWorkouts)
+		if (user.PremiumToken != null && user.Workouts.Count >= Globals.MaxWorkouts)
 		{
 			throw new MaxLimitException("Maximum workouts would be exceeded");
 		}
 
 		CommonValidator.ValidWorkoutName(command.NewName ?? workoutToAccept.WorkoutName, user);
 
-		var ownedExerciseNames = user.Exercises.Select(x => x.Name).ToHashSet();
-		var newExercisesHashSet = newExercises.Select(x => x.Name).ToHashSet();
+		var ownedExerciseNames = user.Exercises.Select(x => x.Name);
+		var newExercisesNames = newExercises.Select(x => x.Name);
 
-		var totalExercises = newExercisesHashSet.Union(ownedExerciseNames).ToList();
+		var totalExercises = newExercisesNames.Union(ownedExerciseNames).ToList();
 		if (user.PremiumToken == null && totalExercises.Count > Globals.MaxFreeExercises)
 		{
-			throw new MaxLimitException(
-				"Accepting this workout would put you above the amount of exercises allowed");
+			throw new MaxLimitException("Accepting this workout would put you above the amount of exercises allowed");
 		}
 
-		if (user.PremiumToken != null && totalExercises.Count > Globals.MaxPremiumExercises)
+		if (user.PremiumToken != null && totalExercises.Count > Globals.MaxExercises)
 		{
-			throw new MaxLimitException(
-				"Accepting this workout would put you above the amount of exercises allowed");
+			throw new MaxLimitException("Accepting this workout would put you above the amount of exercises allowed");
 		}
 
 		if (command.NewName != null)
@@ -92,7 +90,7 @@ public class AcceptSharedWorkoutHandler : ICommandHandler<AcceptSharedWorkout, A
 			WorkoutId = newWorkoutId
 		};
 		user.Workouts.Add(workoutInfo);
-		WorkoutUtils.UpdateOwnedExercisesOnCreation(user, newWorkout);
+		WorkoutUtils.UpdateOwnedExercisesOnCreation(user, newWorkout, false);
 
 		await _repository.ExecuteBatchWrite(
 			workoutsToPut: new List<Workout> { newWorkout },
@@ -103,7 +101,7 @@ public class AcceptSharedWorkoutHandler : ICommandHandler<AcceptSharedWorkout, A
 		return new AcceptSharedWorkoutResponse
 		{
 			NewWorkoutInfo = _mapper.Map<WorkoutInfoResponse>(workoutInfo),
-			NewExercises = _mapper.Map<IList<OwnedExerciseResponse>>(user.Exercises)
+			UserExercises = _mapper.Map<IList<OwnedExerciseResponse>>(user.Exercises)
 		};
 	}
 }

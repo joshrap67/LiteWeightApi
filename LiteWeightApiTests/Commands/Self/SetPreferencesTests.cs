@@ -1,8 +1,6 @@
-using AutoFixture;
 using LiteWeightAPI.Commands.Self.SetPreferences;
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Users;
-using Moq;
 
 namespace LiteWeightApiTests.Commands.Self;
 

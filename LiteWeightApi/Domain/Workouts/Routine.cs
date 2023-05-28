@@ -6,7 +6,8 @@ namespace LiteWeightAPI.Domain.Workouts;
 [FirestoreData]
 public class Routine
 {
-	private Routine()
+	// public constructor needed for unit tests
+	public Routine()
 	{
 	}
 

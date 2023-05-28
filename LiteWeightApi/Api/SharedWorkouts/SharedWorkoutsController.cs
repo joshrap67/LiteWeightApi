@@ -2,7 +2,7 @@
 using LiteWeightAPI.Api.SharedWorkouts.Responses;
 using LiteWeightAPI.Commands;
 using LiteWeightAPI.Commands.SharedWorkouts.AcceptSharedWorkout;
-using LiteWeightAPI.Commands.SharedWorkouts.DeclineWorkout;
+using LiteWeightAPI.Commands.SharedWorkouts.DeclineSharedWorkout;
 using LiteWeightAPI.Commands.SharedWorkouts.GetSharedWorkout;
 using LiteWeightAPI.Errors.Attributes;
 using LiteWeightAPI.Errors.Responses;
@@ -68,9 +68,9 @@ public class SharedWorkoutsController : BaseController
 	[HttpDelete("{sharedWorkoutId}/decline")]
 	[ProducesResponseType(200)]
 	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
-	public async Task<ActionResult> DeclineReceivedWorkout(string sharedWorkoutId)
+	public async Task<ActionResult> DeclineSharedWorkout(string sharedWorkoutId)
 	{
-		await _commandDispatcher.DispatchAsync<DeclineWorkout, bool>(new DeclineWorkout
+		await _commandDispatcher.DispatchAsync<DeclineSharedWorkout, bool>(new DeclineSharedWorkout
 		{
 			UserId = CurrentUserId, SharedWorkoutId = sharedWorkoutId
 		});

@@ -11,7 +11,7 @@ public class AcceptSharedWorkoutResponse
 	public WorkoutInfoResponse NewWorkoutInfo { get; set; }
 
 	/// <summary>
-	/// New exercises that were created as a result of accepting the workout.
+	/// New total list of exercises owned by the user as a result of accepting this workout. New exercises may have been added if the user did not already have them.
 	/// </summary>
-	public IEnumerable<OwnedExerciseResponse> NewExercises { get; set; }
+	public IEnumerable<OwnedExerciseResponse> UserExercises { get; set; }
 }

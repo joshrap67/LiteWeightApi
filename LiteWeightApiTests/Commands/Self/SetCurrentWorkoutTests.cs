@@ -1,9 +1,7 @@
-using AutoFixture;
 using LiteWeightAPI.Commands.Self.SetCurrentWorkout;
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Errors.Exceptions;
-using Moq;
 using NodaTime;
 
 namespace LiteWeightApiTests.Commands.Self;

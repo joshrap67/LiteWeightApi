@@ -1,10 +1,8 @@
-using AutoFixture;
 using LiteWeightAPI.Commands.Exercises.DeleteExercise;
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Domain.Workouts;
 using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
-using Moq;
 
 namespace LiteWeightApiTests.Commands.Exercises;
 

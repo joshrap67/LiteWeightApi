@@ -62,7 +62,7 @@ public class CopyWorkoutHandler : ICommandHandler<CopyWorkout, UserAndWorkoutRes
 			WorkoutName = newWorkout.Name
 		});
 		// update all the exercises that are now part of this workout
-		WorkoutUtils.UpdateOwnedExercisesOnCreation(user, newWorkout);
+		WorkoutUtils.UpdateOwnedExercisesOnCreation(user, newWorkout, false);
 
 		await _repository.ExecuteBatchWrite(
 			workoutsToPut: new List<Workout> { newWorkout },

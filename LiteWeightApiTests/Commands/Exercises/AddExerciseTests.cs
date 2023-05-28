@@ -1,4 +1,3 @@
-using AutoFixture;
 using AutoMapper;
 using LiteWeightAPI.Api.Exercises;
 using LiteWeightAPI.Commands.Exercises.AddExercise;
@@ -6,7 +5,6 @@ using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Errors.Exceptions;
 using LiteWeightAPI.Imports;
-using Moq;
 
 namespace LiteWeightApiTests.Commands.Exercises;
 
@@ -29,8 +27,8 @@ public class AddExerciseTests
 	public async Task Should_Create_Exercise()
 	{
 		var command = _fixture.Create<AddExercise>();
-		var exercises = Enumerable.Range(0, Globals.MaxPremiumExercises - 1)
-			.Select(x => _fixture.Build<OwnedExercise>().Create())
+		var exercises = Enumerable.Range(0, Globals.MaxExercises - 1)
+			.Select(_ => _fixture.Build<OwnedExercise>().Create())
 			.ToList();
 
 		var user = _fixture.Build<User>()
@@ -78,7 +76,7 @@ public class AddExerciseTests
 	{
 		var command = _fixture.Create<AddExercise>();
 		var exercises = Enumerable.Range(0, Globals.MaxFreeExercises + 1)
-			.Select(x => _fixture.Build<OwnedExercise>().Create())
+			.Select(_ => _fixture.Build<OwnedExercise>().Create())
 			.ToList();
 
 		_mockRepository
@@ -95,8 +93,8 @@ public class AddExerciseTests
 	public async Task Should_Throw_Exception_Max_Limit()
 	{
 		var command = _fixture.Create<AddExercise>();
-		var exercises = Enumerable.Range(0, Globals.MaxPremiumExercises + 1)
-			.Select(x => _fixture.Build<OwnedExercise>().Create())
+		var exercises = Enumerable.Range(0, Globals.MaxExercises + 1)
+			.Select(_ => _fixture.Build<OwnedExercise>().Create())
 			.ToList();
 
 		_mockRepository

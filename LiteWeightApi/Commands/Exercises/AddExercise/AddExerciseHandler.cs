@@ -34,7 +34,7 @@ public class AddExerciseHandler : ICommandHandler<AddExercise, OwnedExerciseResp
 			throw new MaxLimitException("Max exercise limit reached");
 		}
 
-		if (user.PremiumToken != null && user.Exercises.Count >= Globals.MaxPremiumExercises)
+		if (user.PremiumToken != null && user.Exercises.Count >= Globals.MaxExercises)
 		{
 			throw new MaxLimitException("Max exercise limit reached");
 		}

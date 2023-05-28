@@ -5,9 +5,9 @@ namespace LiteWeightAPI.Utils;
 
 public static class WorkoutUtils
 {
-	public static void UpdateOwnedExercisesOnCreation(User user, Workout newWorkout)
+	public static void UpdateOwnedExercisesOnCreation(User user, Workout newWorkout, bool updateWeight)
 	{
-		var updateDefaultWeight = user.Preferences.UpdateDefaultWeightOnSave;
+		var updateDefaultWeight = user.Preferences.UpdateDefaultWeightOnSave && updateWeight;
 		var exerciseIds = new HashSet<string>();
 		var exerciseIdToExercise = user.Exercises.ToDictionary(x => x.Id, x => x);
 		foreach (var week in newWorkout.Routine.Weeks)

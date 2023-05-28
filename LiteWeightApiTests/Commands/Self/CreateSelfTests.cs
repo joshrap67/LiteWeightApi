@@ -1,4 +1,3 @@
-using AutoFixture;
 using AutoMapper;
 using LiteWeightAPI.Api.Exercises;
 using LiteWeightAPI.Commands.Self.CreateSelf;
@@ -6,7 +5,6 @@ using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Errors.Exceptions;
 using LiteWeightAPI.Services;
-using Moq;
 
 namespace LiteWeightApiTests.Commands.Self;
 

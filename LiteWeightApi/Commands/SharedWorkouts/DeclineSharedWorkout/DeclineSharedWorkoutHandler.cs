@@ -3,18 +3,18 @@ using LiteWeightAPI.Domain.SharedWorkouts;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Utils;
 
-namespace LiteWeightAPI.Commands.SharedWorkouts.DeclineWorkout;
+namespace LiteWeightAPI.Commands.SharedWorkouts.DeclineSharedWorkout;
 
-public class DeclineWorkoutHandler : ICommandHandler<DeclineWorkout, bool>
+public class DeclineSharedWorkoutHandler : ICommandHandler<DeclineSharedWorkout, bool>
 {
 	private readonly IRepository _repository;
 
-	public DeclineWorkoutHandler(IRepository repository)
+	public DeclineSharedWorkoutHandler(IRepository repository)
 	{
 		_repository = repository;
 	}
 
-	public async Task<bool> HandleAsync(DeclineWorkout command)
+	public async Task<bool> HandleAsync(DeclineSharedWorkout command)
 	{
 		var user = await _repository.GetUser(command.UserId);
 		var workoutToDecline = await _repository.GetSharedWorkout(command.SharedWorkoutId);
@@ -22,7 +22,7 @@ public class DeclineWorkoutHandler : ICommandHandler<DeclineWorkout, bool>
 		CommonValidator.SharedWorkoutExists(workoutToDecline);
 		CommonValidator.EnsureSharedWorkoutOwnership(command.UserId, workoutToDecline);
 
-		var workoutToRemove = user.ReceivedWorkouts.First(x => x.SharedWorkoutId == command.SharedWorkoutId);
+		var workoutToRemove = user.ReceivedWorkouts.FirstOrDefault(x => x.SharedWorkoutId == command.SharedWorkoutId);
 		user.ReceivedWorkouts.Remove(workoutToRemove);
 
 		await _repository.ExecuteBatchWrite(

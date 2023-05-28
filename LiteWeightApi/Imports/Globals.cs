@@ -11,7 +11,7 @@ public static class Globals
 	public const int MaxNumberFriends = 200;
 	public const int MaxFriendRequests = 200;
 	public const int MaxFreeExercises = 100;
-	public const int MaxPremiumExercises = 200;
+	public const int MaxExercises = 200;
 	public const int MaxFreeWorkoutsSent = 50;
 	public const int MaxDayTagLength = 50;
 	public const double MaxWeight = 99999.0;

@@ -1,10 +1,7 @@
-using AutoFixture;
-using LiteWeightAPI.Commands.Self.SetPreferences;
 using LiteWeightAPI.Commands.Self.UpdateProfilePicture;
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Services;
-using Moq;
 
 namespace LiteWeightApiTests.Commands.Self;
 

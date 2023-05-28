@@ -66,7 +66,7 @@ public class CreateWorkoutHandler : ICommandHandler<CreateWorkout, UserAndWorkou
 		}
 
 		// update all the exercises that are now part of this workout
-		WorkoutUtils.UpdateOwnedExercisesOnCreation(user, newWorkout);
+		WorkoutUtils.UpdateOwnedExercisesOnCreation(user, newWorkout, true);
 
 		await _repository.ExecuteBatchWrite(
 			workoutsToPut: new List<Workout> { newWorkout },
