@@ -2,6 +2,7 @@
 
 public class UpgradeRequiredResponse
 {
+	// todo this is now unnecessary with the frontend reading directly from firebase for first load
 	/// <summary>
 	/// Message describing the error.
 	/// </summary>

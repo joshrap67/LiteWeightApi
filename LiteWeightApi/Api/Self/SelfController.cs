@@ -1,8 +1,18 @@
-﻿using LiteWeightAPI.Api.Self.Requests;
+﻿using AutoMapper;
+using LiteWeightAPI.Api.Self.Requests;
 using LiteWeightAPI.Api.Self.Responses;
+using LiteWeightAPI.Commands;
+using LiteWeightAPI.Commands.Self.CreateSelf;
+using LiteWeightAPI.Commands.Self.DeleteSelf;
+using LiteWeightAPI.Commands.Self.GetSelf;
+using LiteWeightAPI.Commands.Self.SetAllFriendRequestsSeen;
+using LiteWeightAPI.Commands.Self.SetCurrentWorkout;
+using LiteWeightAPI.Commands.Self.SetFirebaseToken;
+using LiteWeightAPI.Commands.Self.SetPreferences;
+using LiteWeightAPI.Commands.Self.SetReceivedWorkoutSeen;
+using LiteWeightAPI.Commands.Self.UpdateProfilePicture;
 using LiteWeightAPI.Errors.Attributes;
 using LiteWeightAPI.Errors.Responses;
-using LiteWeightAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LiteWeightAPI.Api.Self;
@@ -11,11 +21,13 @@ namespace LiteWeightAPI.Api.Self;
 [ApiController]
 public class SelfController : BaseController
 {
-	private readonly ISelfService _selfService;
+	private readonly ICommandDispatcher _commandDispatcher;
+	private readonly IMapper _mapper;
 
-	public SelfController(ISelfService selfService, Serilog.ILogger logger) : base(logger)
+	public SelfController(ICommandDispatcher commandDispatcher, IMapper mapper, Serilog.ILogger logger) : base(logger)
 	{
-		_selfService = selfService;
+		_commandDispatcher = commandDispatcher;
+		_mapper = mapper;
 	}
 
 	/// <summary>Get Self</summary>
@@ -25,14 +37,14 @@ public class SelfController : BaseController
 	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
 	public async Task<ActionResult<UserResponse>> GetSelf()
 	{
-		var user = await _selfService.GetSelf(CurrentUserId);
+		var user = await _commandDispatcher.DispatchAsync<GetSelf, UserResponse>(new GetSelf { UserId = CurrentUserId });
 		return user;
 	}
 
 	/// <summary>Create Self</summary>
 	/// <remarks>
 	/// Creates a user in the database using the email/firebase id in the authenticated token.
-	/// <br/>Note that a single verified, authenticated user can only have one user in the database - this is determined by the firebase UUID in the authenticated token.
+	/// <br/><br/>Note that a single verified, authenticated user can only have one user in the database - this is determined by the firebase UUID in the authenticated token.
 	/// </remarks>
 	[HttpPost]
 	[AlreadyExists, InvalidRequest]
@@ -40,19 +52,26 @@ public class SelfController : BaseController
 	[ProducesResponseType(typeof(BadRequestResponse), 400)]
 	public async Task<ActionResult<UserResponse>> CreateSelf(CreateUserRequest request)
 	{
-		var user = await _selfService.CreateSelf(request, CurrentUserEmail, CurrentUserId);
+		var command = _mapper.Map<CreateSelf>(request);
+		command.UserEmail = CurrentUserEmail;
+		command.UserId = CurrentUserId;
+
+		var user = await _commandDispatcher.DispatchAsync<CreateSelf, UserResponse>(command);
 		return user;
 	}
 
 	/// <summary>Update Profile Picture</summary>
-	/// <remarks>Updates the user's profile picture. Note that it just replaces the old picture using the same image url.</remarks>
+	/// <remarks>Updates the user's profile picture. Note that it simply replaces the old picture using the same image url.</remarks>
 	[HttpPut("profile-picture")]
 	[InvalidRequest]
 	[ProducesResponseType(200)]
 	[ProducesResponseType(typeof(BadRequestResponse), 400)]
-	public async Task<ActionResult> UpdateProfilePicture(UpdateProfilePictureRequest updateProfilePictureRequest)
+	public async Task<ActionResult> UpdateProfilePicture(UpdateProfilePictureRequest request)
 	{
-		await _selfService.UpdateProfilePicture(updateProfilePictureRequest, CurrentUserId);
+		await _commandDispatcher.DispatchAsync<UpdateProfilePicture, bool>(new UpdateProfilePicture
+		{
+			UserId = CurrentUserId, ImageData = request.ImageData
+		});
 		return Ok();
 	}
 
@@ -64,25 +83,34 @@ public class SelfController : BaseController
 	[ProducesResponseType(typeof(BadRequestResponse), 400)]
 	public async Task<ActionResult> LinkFirebaseToken(LinkFirebaseTokenRequest request)
 	{
-		await _selfService.LinkFirebaseToken(request.FirebaseToken, CurrentUserId);
+		await _commandDispatcher.DispatchAsync<SetFirebaseToken, bool>(new SetFirebaseToken
+		{
+			UserId = CurrentUserId, Token = request.FirebaseToken
+		});
 		return Ok();
 	}
 
 	/// <summary>Unlink Firebase Token</summary>
 	/// <remarks>Unlinks the firebase token associated for the authenticated user. This removes the authenticated user's ability to receive push notifications.</remarks>
-	[HttpDelete("unlink-firebase-token")]
+	[HttpPut("unlink-firebase-token")]
 	public async Task<ActionResult> UnlinkFirebaseToken()
 	{
-		await _selfService.UnlinkFirebaseToken(CurrentUserId);
+		await _commandDispatcher.DispatchAsync<SetFirebaseToken, bool>(new SetFirebaseToken
+		{
+			UserId = CurrentUserId, Token = null
+		});
 		return Ok();
 	}
 
 	/// <summary>Set All Friend Requests Seen</summary>
-	/// <remarks>Sets all friend requests on the authenticated user seen.</remarks>
+	/// <remarks>Sets all friend requests on the authenticated user as seen.</remarks>
 	[HttpPut("all-friend-requests-seen")]
 	public async Task<ActionResult> SetAllFriendRequestsSeen()
 	{
-		await _selfService.SetAllFriendRequestsSeen(CurrentUserId);
+		await _commandDispatcher.DispatchAsync<SetAllFriendRequestsSeen, bool>(new SetAllFriendRequestsSeen
+		{
+			UserId = CurrentUserId
+		});
 		return Ok();
 	}
 
@@ -92,9 +120,12 @@ public class SelfController : BaseController
 	[InvalidRequest]
 	[ProducesResponseType(200)]
 	[ProducesResponseType(typeof(BadRequestResponse), 400)]
-	public async Task<ActionResult> SetUserPreferences(UserPreferencesResponse request)
+	public async Task<ActionResult> SetPreferences(UserPreferencesResponse request)
 	{
-		await _selfService.SetUserPreferences(request, CurrentUserId);
+		var command = _mapper.Map<SetPreferences>(request);
+		command.UserId = command.UserId;
+
+		await _commandDispatcher.DispatchAsync<SetPreferences, bool>(command);
 		return Ok();
 	}
 
@@ -103,36 +134,49 @@ public class SelfController : BaseController
 	[HttpPut("current-workout")]
 	public async Task<ActionResult> SetCurrentWorkout(SetCurrentWorkoutRequest request)
 	{
-		await _selfService.SetCurrentWorkout(request.WorkoutId, CurrentUserId);
+		await _commandDispatcher.DispatchAsync<SetCurrentWorkout, bool>(new SetCurrentWorkout
+		{
+			UserId = CurrentUserId, WorkoutId = request.WorkoutId
+		});
 		return Ok();
 	}
 
 	/// <summary>Set All Received Workouts Seen</summary>
-	/// <remarks>Sets all received workouts on the authenticated user to seen.</remarks>
+	/// <remarks>Sets all received workouts on the authenticated user as seen.</remarks>
 	[HttpPut("received-workouts/all-seen")]
 	public async Task<ActionResult> SetAllReceivedWorkoutsSeen()
 	{
-		await _selfService.SetAllReceivedWorkoutsSeen(CurrentUserId);
+		await _commandDispatcher.DispatchAsync<SetAllFriendRequestsSeen, bool>(new SetAllFriendRequestsSeen
+		{
+			UserId = CurrentUserId
+		});
 		return Ok();
 	}
 
 	/// <summary>Set Received Workout Seen</summary>
-	/// <remarks>Sets a given received workout on the authenticated user to seen.</remarks>
-	[HttpPut("received-workouts/{workoutId}/seen")]
-	public async Task<ActionResult> SetReceivedWorkoutSeen(string workoutId)
+	/// <remarks>Sets a given received workout on the authenticated user as seen.</remarks>
+	/// <param name="sharedWorkoutId">Received workout to set as seen</param>
+	[HttpPut("received-workouts/{sharedWorkoutId}/seen")]
+	public async Task<ActionResult> SetReceivedWorkoutSeen(string sharedWorkoutId)
 	{
-		await _selfService.SetReceivedWorkoutSeen(workoutId, CurrentUserId);
+		await _commandDispatcher.DispatchAsync<SetReceivedWorkoutSeen, bool>(new SetReceivedWorkoutSeen
+		{
+			UserId = CurrentUserId, SharedWorkoutId = sharedWorkoutId
+		});
 		return Ok();
 	}
 
-	/// <summary>Delete Current User</summary>
+	/// <summary>Delete Self</summary>
 	/// <remarks>
-	/// Deletes a user and all data associated with it.<br/>
-	/// Data deleted: user, workouts belonging to user, shared workouts sent to user, images belonging to user.</remarks>
+	/// Deletes a user and all data associated with it.<br/><br/>
+	/// Data deleted: user, workouts belonging to user, shared workouts sent to user, images belonging to user. The user is also removed as a friend from any other users, and any friend requests they sent are canceled.
+	/// </remarks>
 	[HttpDelete]
-	public async Task<ActionResult> DeleteUser()
+	[ProducesResponseType(200)]
+	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
+	public async Task<ActionResult> DeleteSelf()
 	{
-		await _selfService.DeleteUser(CurrentUserId);
+		await _commandDispatcher.DispatchAsync<DeleteSelf, bool>(new DeleteSelf { UserId = CurrentUserId });
 		return Ok();
 	}
 }

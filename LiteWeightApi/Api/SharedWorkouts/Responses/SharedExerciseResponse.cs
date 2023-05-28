@@ -9,7 +9,7 @@ public class SharedExerciseResponse
 	public string ExerciseName { get; set; }
 
 	/// <summary>
-	/// Weight of the exercise.
+	/// Weight of the exercise (lb).
 	/// </summary>
 	/// <example>215.0</example>
 	public double Weight { get; set; }

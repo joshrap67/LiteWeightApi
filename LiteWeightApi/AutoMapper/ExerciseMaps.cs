@@ -1,0 +1,22 @@
+using AutoMapper;
+using LiteWeightAPI.Api.Exercises.Requests;
+using LiteWeightAPI.Api.Exercises.Responses;
+using LiteWeightAPI.Commands.Exercises.AddExercise;
+using LiteWeightAPI.Commands.Exercises.UpdateExercise;
+using LiteWeightAPI.Domain.Users;
+using LiteWeightAPI.ExtensionMethods;
+
+namespace LiteWeightAPI.AutoMapper;
+
+public class ExerciseMaps : Profile
+{
+	public ExerciseMaps()
+	{
+		CreateMap<SetExerciseRequest, AddExercise>().Ignore(x => x.UserId);
+		CreateMap<SetExerciseRequest, UpdateExercise>().Ignore(x => x.UserId).Ignore(x => x.ExerciseId);
+		CreateMap<AddExercise, OwnedExercise>().Ignore(x => x.Workouts).Ignore(x => x.Id);
+
+		CreateMap<OwnedExercise, OwnedExerciseResponse>();
+		CreateMap<OwnedExerciseWorkout, OwnedExerciseWorkoutResponse>();
+	}
+}

@@ -9,7 +9,7 @@ public class ComplaintResponse
 	public string Id { get; set; }
 
 	/// <summary>
-	/// User id of the user who made the report.
+	/// User id of the user who made the complaint.
 	/// </summary>
 	/// <example>3f96d8c2-127c-4605-8272-003630d8c1a1</example>
 	public string ClaimantUserId { get; set; }
@@ -27,7 +27,7 @@ public class ComplaintResponse
 	public string ReportedUsername { get; set; }
 
 	/// <summary>
-	/// Timestamp of when the report was created (Zulu).
+	/// Timestamp of when the complaint was created (UTC).
 	/// </summary>
 	/// <example>2023-05-20T08:43:44.685341Z</example>
 	public string ReportedUtc { get; set; }

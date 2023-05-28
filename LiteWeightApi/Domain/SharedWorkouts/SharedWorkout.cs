@@ -7,27 +7,6 @@ namespace LiteWeightAPI.Domain.SharedWorkouts;
 [FirestoreData]
 public class SharedWorkout
 {
-	[FirestoreDocumentId]
-	public string Id { get; set; }
-
-	[FirestoreProperty("workoutName")]
-	public string WorkoutName { get; set; }
-
-	[FirestoreProperty("senderId")]
-	public string SenderId { get; set; }
-
-	[FirestoreProperty("senderUsername")]
-	public string SenderUsername { get; set; }
-
-	[FirestoreProperty("recipientId")]
-	public string RecipientId { get; set; }
-
-	[FirestoreProperty("routine")]
-	public SharedRoutine Routine { get; set; }
-
-	[FirestoreProperty("distinctExercises")]
-	public IList<SharedWorkoutDistinctExercise> DistinctExercises { get; set; }
-
 	public SharedWorkout(Workout workout, string recipientId, string sharedWorkoutId, User sender)
 	{
 		Id = sharedWorkoutId;
@@ -51,4 +30,25 @@ public class SharedWorkout
 			DistinctExercises.Add(sharedWorkoutExercise);
 		}
 	}
+
+	[FirestoreDocumentId]
+	public string Id { get; set; }
+
+	[FirestoreProperty("workoutName")]
+	public string WorkoutName { get; set; }
+
+	[FirestoreProperty("senderId")]
+	public string SenderId { get; set; }
+
+	[FirestoreProperty("senderUsername")]
+	public string SenderUsername { get; set; }
+
+	[FirestoreProperty("recipientId")]
+	public string RecipientId { get; set; }
+
+	[FirestoreProperty("routine")]
+	public SharedRoutine Routine { get; set; }
+
+	[FirestoreProperty("distinctExercises")]
+	public IList<SharedWorkoutDistinctExercise> DistinctExercises { get; set; }
 }

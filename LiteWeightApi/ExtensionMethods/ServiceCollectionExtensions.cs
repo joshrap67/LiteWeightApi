@@ -23,12 +23,12 @@ public static class ServiceCollectionExtensions
 		services.AddRouting(options => options.LowercaseUrls = true);
 		services.Configure<ApiBehaviorOptions>(options =>
 		{
-			// anytime models are incorrectly bound or have validation error, throw an error that ensures an explicit, defined response
+			// when models are incorrectly bound or have validation error, throw an error that ensures an explicit, defined response
 			options.InvalidModelStateResponseFactory = ModelBindingErrorHandler;
 		});
 	}
 
-	public static void ConfigureDependencies(this IServiceCollection services, IConfiguration configuration)
+	public static void ConfigureDependencies(this IServiceCollection services)
 	{
 		services.AddAutoMapper(typeof(Program));
 		services.AddSingleton<IClock>(SystemClock.Instance);

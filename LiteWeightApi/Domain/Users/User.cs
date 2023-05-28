@@ -29,8 +29,8 @@ public class User
 	[FirestoreProperty("workoutsSent")]
 	public int WorkoutsSent { get; set; }
 
-	[FirestoreProperty("userPreferences")]
-	public UserPreferences UserPreferences { get; set; }
+	[FirestoreProperty("preferences")]
+	public UserPreferences Preferences { get; set; }
 
 	[FirestoreProperty("workouts")]
 	public List<WorkoutInfo> Workouts { get; set; } = new();

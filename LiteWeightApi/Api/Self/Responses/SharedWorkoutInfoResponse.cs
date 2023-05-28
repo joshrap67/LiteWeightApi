@@ -15,7 +15,7 @@ public class SharedWorkoutInfoResponse
 	public string WorkoutName { get; set; }
 
 	/// <summary>
-	/// Timestamp of when the workout was shared (Zulu)
+	/// Timestamp of when the workout was shared (UTC).
 	/// </summary>
 	/// <example>2023-04-23T13:43:44.685341Z</example>
 	public string SharedUtc { get; set; }

@@ -12,7 +12,7 @@ public class RoutineExercise
 	public string ExerciseId { get; set; }
 
 	[FirestoreProperty("weight")]
-	public double Weight { get; set; }
+	public double Weight { get; set; } // stored in lbs
 
 	[FirestoreProperty("sets")]
 	public int Sets { get; set; }

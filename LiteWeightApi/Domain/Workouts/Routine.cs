@@ -6,7 +6,7 @@ namespace LiteWeightAPI.Domain.Workouts;
 [FirestoreData]
 public class Routine
 {
-	public Routine()
+	private Routine()
 	{
 	}
 
@@ -48,7 +48,7 @@ public class Routine
 
 	public int TotalNumberOfDays => Weeks.Sum(x => x.Days.Count);
 
-	public void AppendWeek(RoutineWeek week)
+	private void AppendWeek(RoutineWeek week)
 	{
 		Weeks.Add(week);
 	}

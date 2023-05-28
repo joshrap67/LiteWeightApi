@@ -14,7 +14,7 @@ public class SetExerciseRequest
 	public string Name { get; set; }
 
 	/// <summary>
-	/// Default weight of the exercise in pounds. Value that the exercise will be defaulted to when adding it to a workout.
+	/// Default weight of the exercise (lb). Value that the exercise will be defaulted to when adding it to a workout.
 	/// </summary>
 	/// <example>225.5</example>
 	[Required]
@@ -43,6 +43,7 @@ public class SetExerciseRequest
 	/// <example>["Chest", "Strength Training"]</example>
 	[Required]
 	[MinLength(1)]
+	[MaxLength(Globals.MaxFocusesLength)]
 	public IList<string> Focuses { get; set; } = new List<string>();
 
 	/// <summary>

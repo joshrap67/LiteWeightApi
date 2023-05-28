@@ -3,7 +3,7 @@
 public class OwnedExerciseResponse
 {
 	/// <summary>
-	/// Id of the exercise
+	/// Id of the exercise.
 	/// </summary>
 	/// <example>88a54457-2253-404e-ac09-82a8f2ce5fb8</example>
 	public string Id { get; set; }

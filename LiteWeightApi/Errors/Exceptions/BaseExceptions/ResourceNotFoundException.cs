@@ -4,8 +4,6 @@ public class ResourceNotFoundException : Exception
 {
 	private const string DefaultMessage = "Resource not found";
 
-	public string FormattedMessage { get; } = DefaultMessage;
-
 	public ResourceNotFoundException() : base(DefaultMessage)
 	{
 	}
@@ -14,6 +12,8 @@ public class ResourceNotFoundException : Exception
 	{
 		FormattedMessage = GetFormattedMessage(resourceName);
 	}
+
+	public string FormattedMessage { get; } = DefaultMessage;
 
 	private static string GetFormattedMessage(string resourceName)
 	{

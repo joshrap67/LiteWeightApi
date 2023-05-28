@@ -2,10 +2,19 @@
 using LiteWeightAPI.Api.Self.Responses;
 using LiteWeightAPI.Api.Users.Requests;
 using LiteWeightAPI.Api.Users.Responses;
+using LiteWeightAPI.Commands;
+using LiteWeightAPI.Commands.Users.AcceptFriendRequest;
+using LiteWeightAPI.Commands.Users.CancelFriendRequest;
+using LiteWeightAPI.Commands.Users.DeclineFriendRequest;
+using LiteWeightAPI.Commands.Users.RemoveFriend;
+using LiteWeightAPI.Commands.Users.ReportUser;
+using LiteWeightAPI.Commands.Users.SearchByUsername;
+using LiteWeightAPI.Commands.Users.SendFriendRequest;
+using LiteWeightAPI.Commands.Users.ShareWorkout;
 using LiteWeightAPI.Errors.Attributes;
+using LiteWeightAPI.Errors.Attributes.Setup;
 using LiteWeightAPI.Errors.Responses;
 using LiteWeightAPI.Imports;
-using LiteWeightAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 using ILogger = Serilog.ILogger;
 
@@ -15,11 +24,11 @@ namespace LiteWeightAPI.Api.Users;
 [ApiController]
 public class UsersController : BaseController
 {
-	private readonly IUsersService _usersService;
+	private readonly ICommandDispatcher _commandDispatcher;
 
-	public UsersController(ILogger logger, IUsersService usersService) : base(logger)
+	public UsersController(ILogger logger, ICommandDispatcher commandDispatcher) : base(logger)
 	{
-		_usersService = usersService;
+		_commandDispatcher = commandDispatcher;
 	}
 
 	/// <summary>Search by Username</summary>
@@ -31,13 +40,29 @@ public class UsersController : BaseController
 	[ProducesResponseType(typeof(BadRequestResponse), 400)]
 	public async Task<ActionResult<SearchUserResponse>> SearchByUsername([FromQuery] [Required] string username)
 	{
-		var result = await _usersService.SearchByUsername(username, CurrentUserId);
+		var result = await _commandDispatcher.DispatchAsync<SearchByUsername, SearchUserResponse>(new SearchByUsername
+		{
+			Username = username,
+			InitiatorId = CurrentUserId
+		});
+
+		// breaking exception pattern since this is not a "real" error that should be logged
+		if (result == null)
+		{
+			// todo test
+			return BadRequest(new BadRequestResponse
+			{
+				Message = "User not found",
+				ErrorType = ErrorTypes.UserNotFound
+			});
+		}
+
 		return result;
 	}
 
 	/// <summary>Send Friend Request</summary>
-	/// <remarks>Sends a friend request to the specified user, assuming the recipient and current user have not reached maximum allowed friends.</remarks>
-	/// <param name="userId">User id of the friend to send the friend request to</param>
+	/// <remarks>Sends a friend request to the specified user, assuming the recipient and authenticated user have not reached the maximum allowed friends.</remarks>
+	/// <param name="userId">User id of the user to send the friend request to</param>
 	[HttpPut("{userId}/send-friend-request")]
 	[MaxLimit, MiscError]
 	[PushNotification]
@@ -46,29 +71,38 @@ public class UsersController : BaseController
 	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
 	public async Task<ActionResult<FriendResponse>> SendFriendRequest(string userId)
 	{
-		var response = await _usersService.SendFriendRequest(userId, CurrentUserId);
+		var response = await _commandDispatcher.DispatchAsync<SendFriendRequest, FriendResponse>(new SendFriendRequest
+		{
+			SenderId = CurrentUserId,
+			RecipientId = userId
+		});
 		return response;
 	}
 
 	/// <summary>Share Workout</summary>
-	/// <remarks>Create a shared workout from a specified workout, and send it to a specified user.</remarks>
+	/// <remarks>Create a shared workout from a specified workout, and send it to the specified user.</remarks>
 	/// <param name="request">Request</param>
-	/// <param name="userId">User id of the friend to share the workout to</param>
+	/// <param name="userId">User id of the user to share the workout to</param>
 	[HttpPost("{userId}/share-workout")]
 	[InvalidRequest, MaxLimit, MiscError, WorkoutNotFound]
 	[PushNotification]
 	[ProducesResponseType(typeof(ShareWorkoutResponse), 200)]
 	[ProducesResponseType(typeof(BadRequestResponse), 400)]
 	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
-	public async Task<ActionResult<ShareWorkoutResponse>> ShareWorkout(SendWorkoutRequest request, string userId)
+	public async Task<ActionResult<ShareWorkoutResponse>> ShareWorkout(ShareWorkoutRequest request, string userId)
 	{
-		var createdWorkoutId = await _usersService.ShareWorkout(request, userId, CurrentUserId);
+		var createdWorkoutId = await _commandDispatcher.DispatchAsync<ShareWorkout, string>(new ShareWorkout
+		{
+			WorkoutId = request.WorkoutId,
+			RecipientUserId = userId,
+			SenderUserId = CurrentUserId
+		});
 		return new ShareWorkoutResponse { SharedWorkoutId = createdWorkoutId };
 	}
 
 	/// <summary>Accept Friend Request</summary>
-	/// <remarks>Accepts a friend request from the specified user.</remarks>
-	/// <param name="userId">User id of the friend to accept as a friend</param>
+	/// <remarks>Accepts a friend request from the specified user, assuming authenticated user does not have maximum amount of friends allowed.</remarks>
+	/// <param name="userId">User id of the user to accept as a friend</param>
 	[HttpPut("{userId}/accept-friend-request")]
 	[MaxLimit]
 	[PushNotification]
@@ -77,12 +111,16 @@ public class UsersController : BaseController
 	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
 	public async Task<ActionResult> AcceptFriendRequest(string userId)
 	{
-		await _usersService.AcceptFriendRequest(userId, CurrentUserId);
+		await _commandDispatcher.DispatchAsync<AcceptFriendRequest, bool>(new AcceptFriendRequest
+		{
+			InitiatorUserId = CurrentUserId,
+			AcceptedUserId = userId
+		});
 		return Ok();
 	}
 
 	/// <summary>Remove Friend</summary>
-	/// <remarks>Removes the specified user from the current user's friend's list. This action also removes the current user from the specified user's friend's list.</remarks>
+	/// <remarks>Removes the specified user from the authenticated user's friend's list. This action also removes the authenticated user from the specified user's friend's list.</remarks>
 	/// <param name="userId">User id of the user to remove as a friend</param>
 	[HttpDelete("{userId}/friend")]
 	[PushNotification]
@@ -90,7 +128,11 @@ public class UsersController : BaseController
 	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
 	public async Task<ActionResult> RemoveFriend(string userId)
 	{
-		await _usersService.RemoveFriend(userId, CurrentUserId);
+		await _commandDispatcher.DispatchAsync<RemoveFriend, bool>(new RemoveFriend
+		{
+			InitiatorUserId = CurrentUserId,
+			RemovedUserId = userId
+		});
 		return Ok();
 	}
 
@@ -103,12 +145,16 @@ public class UsersController : BaseController
 	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
 	public async Task<ActionResult> CancelFriendRequest(string userId)
 	{
-		await _usersService.CancelFriendRequest(userId, CurrentUserId);
+		await _commandDispatcher.DispatchAsync<CancelFriendRequest, bool>(new CancelFriendRequest
+		{
+			InitiatorUserId = CurrentUserId,
+			UserIdToCancel = userId
+		});
 		return Ok();
 	}
 
 	/// <summary>Decline Friend Request</summary>
-	/// <remarks>Declines a friend request that was sent from the specified user.</remarks>
+	/// <remarks>Declines a friend request that was sent from the specified user. This action removes the authenticated user from the specified user's friend's list.</remarks>
 	/// <param name="userId">User id of the user to cancel the pending friend request</param>
 	[HttpPut("{userId}/decline-friend-request")]
 	[PushNotification]
@@ -116,19 +162,27 @@ public class UsersController : BaseController
 	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
 	public async Task<ActionResult> DeclineFriendRequest(string userId)
 	{
-		await _usersService.DeclineFriendRequest(userId, CurrentUserId);
+		await _commandDispatcher.DispatchAsync<DeclineFriendRequest, bool>(new DeclineFriendRequest
+		{
+			InitiatorUserId = CurrentUserId,
+			UserIdToDecline = userId
+		});
 		return Ok();
 	}
 
 	/// <summary>Report User</summary>
-	/// <remarks>Reports a user for the developers to review.</remarks>
+	/// <remarks>Creates a complaint for the specified user for the developers to review.</remarks>
 	/// <param name="userId">User id of the user to report</param>
 	[HttpPost("{userId}/report")]
 	[ProducesResponseType(typeof(ComplaintResponse), 200)]
 	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
 	public async Task<ActionResult<ComplaintResponse>> Report(string userId)
 	{
-		var response = await _usersService.ReportUser(userId, CurrentUserId);
+		var response = await _commandDispatcher.DispatchAsync<ReportUser, ComplaintResponse>(new ReportUser
+		{
+			InitiatorUserId = CurrentUserId,
+			ReportedUserId = userId
+		});
 		return response;
 	}
 }

@@ -15,7 +15,7 @@ public class WorkoutResponse
 	public string Name { get; set; }
 
 	/// <summary>
-	/// Timestamp of when the workout was created (Zulu).
+	/// Timestamp of when the workout was created (UTC).
 	/// </summary>
 	/// <example>2023-04-23T16:49:02.310661Z</example>
 	public string CreationUtc { get; set; }

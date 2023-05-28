@@ -33,7 +33,7 @@ public class OwnedExercise
 	public IList<OwnedExerciseWorkout> Workouts { get; set; } = new List<OwnedExerciseWorkout>();
 
 	public void Update(string exerciseName, double defaultWeight, int defaultSets, int defaultReps,
-		string defaultDetails, string videoUrl)
+		string defaultDetails, string videoUrl, IList<string> focuses)
 	{
 		Name = exerciseName;
 		DefaultWeight = defaultWeight;
@@ -41,5 +41,6 @@ public class OwnedExercise
 		DefaultReps = defaultReps;
 		DefaultDetails = defaultDetails;
 		VideoUrl = videoUrl;
+		Focuses = focuses;
 	}
 }

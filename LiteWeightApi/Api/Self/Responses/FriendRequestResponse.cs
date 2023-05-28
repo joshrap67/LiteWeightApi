@@ -26,7 +26,7 @@ public class FriendRequestResponse
 	public bool Seen { get; set; }
 
 	/// <summary>
-	/// Timestamp of when the request was sent (Zulu time).
+	/// Timestamp of when the request was sent (UTC).
 	/// </summary>
 	/// <example>2023-04-19T13:43:44.685341Z</example>
 	public string SentUtc { get; set; }

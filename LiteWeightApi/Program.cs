@@ -6,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((_, config) => config.WriteTo.Console());
 
 builder.Services.ConfigureAuthentication(builder.Configuration);
-builder.Services.ConfigureDependencies(builder.Configuration);
+builder.Services.ConfigureDependencies();
 builder.Services.ConfigureApi();
 builder.Services.ConfigureSwagger();
 builder.Services.ConfigureOptions(builder.Configuration);

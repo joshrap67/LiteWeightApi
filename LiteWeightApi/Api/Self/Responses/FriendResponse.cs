@@ -3,7 +3,7 @@
 public class FriendResponse
 {
 	/// <summary>
-	/// Unique identifier of the friend.
+	/// Unique identifier of the user who is a friend.
 	/// </summary>
 	/// <example>53c68af6-9400-438b-aece-344d4d2024c6</example>
 	public string UserId { get; set; }
@@ -21,7 +21,7 @@ public class FriendResponse
 	public string ProfilePicture { get; set; }
 
 	/// <summary>
-	/// Is the friend confirmed? If yes they are a friend, else they are a pending friend (pending until this user accepts friend request).
+	/// Is the friend confirmed? If yes they are a friend, else they are a pending friend (pending until this user accepts the friend request).
 	/// </summary>
 	public bool Confirmed { get; set; }
 }

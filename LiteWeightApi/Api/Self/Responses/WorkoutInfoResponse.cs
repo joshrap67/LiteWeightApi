@@ -15,16 +15,16 @@ public class WorkoutInfoResponse
 	public string WorkoutName { get; set; }
 
 	/// <summary>
-	/// Timestamp of when the workout was last set as the current workout.
+	/// Timestamp of when the workout was last set as the current workout (UTC).
 	/// </summary>
 	/// <example>2023-04-06T23:20:39.665047Z</example>
 	public string LastSetAsCurrentUtc { get; set; }
 
 	/// <summary>
-	/// Total times the workout has been completed (restarted).
+	/// Total times the workout has been restarted.
 	/// </summary>
 	/// <example>15</example>
-	public int TimesCompleted { get; set; }
+	public int TimesRestarted { get; set; }
 
 	/// <summary>
 	/// Average of all exercises completed on the workout.

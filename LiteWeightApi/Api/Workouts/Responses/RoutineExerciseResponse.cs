@@ -17,7 +17,7 @@ public class RoutineExerciseResponse
 	public bool Completed { get; set; }
 
 	/// <summary>
-	/// Weight of the exercise.
+	/// Weight of the exercise (lb).
 	/// </summary>
 	/// <example>30.0</example>
 	[Range(0.0, Globals.MaxWeight)]

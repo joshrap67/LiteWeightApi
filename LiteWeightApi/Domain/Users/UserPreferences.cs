@@ -16,4 +16,13 @@ public class UserPreferences
 
 	[FirestoreProperty("metricUnits")]
 	public bool MetricUnits { get; set; }
+
+	public void Update(bool privateAccount, bool updateDefaultWeightOnSave, bool updateDefaultWeightOnRestart,
+		bool metricUnits)
+	{
+		PrivateAccount = privateAccount;
+		UpdateDefaultWeightOnSave = updateDefaultWeightOnSave;
+		UpdateDefaultWeightOnRestart = updateDefaultWeightOnRestart;
+		MetricUnits = metricUnits;
+	}
 }

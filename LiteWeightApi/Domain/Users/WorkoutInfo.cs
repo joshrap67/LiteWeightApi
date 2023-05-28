@@ -16,8 +16,8 @@ public class WorkoutInfo
 	[FirestoreProperty("lastSetAsCurrentUtc", ConverterType = typeof(InstantConverter))]
 	public Instant LastSetAsCurrentUtc { get; set; }
 
-	[FirestoreProperty("timesCompleted")]
-	public int TimesCompleted { get; set; }
+	[FirestoreProperty("timesRestarted")]
+	public int TimesRestarted { get; set; }
 
 	[FirestoreProperty("averageExercisesCompleted")]
 	public double AverageExercisesCompleted { get; set; }
