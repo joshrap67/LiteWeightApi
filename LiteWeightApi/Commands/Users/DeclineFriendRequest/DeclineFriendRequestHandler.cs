@@ -22,16 +22,14 @@ public class DeclineFriendRequestHandler : ICommandHandler<DeclineFriendRequest,
 		var initiator = await _repository.GetUser(command.InitiatorUserId);
 		var userToDecline = await _repository.GetUser(command.UserIdToDecline);
 
-		CommonValidator.UserExists(userToDecline);
+		ValidationUtils.UserExists(userToDecline);
 
 		var friendRequest = initiator.FriendRequests.FirstOrDefault(x => x.UserId == command.UserIdToDecline);
-		if (friendRequest == null)
-		{
-			return false;
-		}
-
+		if (friendRequest == null) return false;
 		initiator.FriendRequests.Remove(friendRequest);
-		userToDecline.Friends.RemoveAll(x => x.UserId == command.InitiatorUserId);
+
+		var initiatorToRemove = userToDecline.Friends.FirstOrDefault(x => x.UserId == command.InitiatorUserId);
+		userToDecline.Friends.Remove(initiatorToRemove);
 
 		await _repository.ExecuteBatchWrite(usersToPut: new List<User> { initiator, userToDecline });
 

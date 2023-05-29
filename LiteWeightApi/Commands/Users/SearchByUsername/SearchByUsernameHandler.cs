@@ -1,7 +1,6 @@
 using AutoMapper;
 using LiteWeightAPI.Api.Users.Responses;
 using LiteWeightAPI.Domain;
-using LiteWeightAPI.Errors.Exceptions;
 
 namespace LiteWeightAPI.Commands.Users.SearchByUsername;
 
@@ -10,7 +9,7 @@ public class SearchByUsernameHandler : ICommandHandler<SearchByUsername, SearchU
 	private readonly IMapper _mapper;
 	private readonly IRepository _repository;
 
-	public SearchByUsernameHandler(IMapper mapper, IRepository repository)
+	public SearchByUsernameHandler(IRepository repository, IMapper mapper)
 	{
 		_mapper = mapper;
 		_repository = repository;
@@ -28,7 +27,7 @@ public class SearchByUsernameHandler : ICommandHandler<SearchByUsername, SearchU
 		// if user is private account, they should not show up in the search unless already friends (or pending friend) with the initiator
 		if (user.Preferences.PrivateAccount && user.Friends.All(x => x.UserId != command.InitiatorId))
 		{
-			throw new UserNotFoundException($"User {command.Username} not found");
+			return null;
 		}
 
 		return _mapper.Map<SearchUserResponse>(user);

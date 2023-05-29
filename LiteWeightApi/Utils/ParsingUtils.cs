@@ -4,7 +4,7 @@ using NodaTime.Text;
 
 namespace LiteWeightAPI.Utils;
 
-public static class ParsingService
+public static class ParsingUtils
 {
 	private const string DateFormat = "yyyy-MM-dd";
 

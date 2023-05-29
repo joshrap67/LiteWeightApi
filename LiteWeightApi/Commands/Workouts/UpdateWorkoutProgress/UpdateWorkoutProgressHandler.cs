@@ -22,9 +22,9 @@ public class UpdateWorkoutProgressHandler : ICommandHandler<UpdateWorkoutProgres
 		var workoutToUpdate = await _repository.GetWorkout(command.WorkoutId);
 		var routine = _mapper.Map<Routine>(command.Routine);
 
-		CommonValidator.WorkoutExists(workoutToUpdate);
-		CommonValidator.EnsureWorkoutOwnership(user.Id, workoutToUpdate);
-		CommonValidator.ValidRoutine(routine);
+		ValidationUtils.WorkoutExists(workoutToUpdate);
+		ValidationUtils.EnsureWorkoutOwnership(user.Id, workoutToUpdate);
+		ValidationUtils.ValidRoutine(routine);
 
 		workoutToUpdate.Routine = routine;
 		workoutToUpdate.CurrentWeek = command.CurrentWeek;

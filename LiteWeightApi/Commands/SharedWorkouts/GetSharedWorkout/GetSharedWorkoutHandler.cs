@@ -19,8 +19,8 @@ public class GetSharedWorkoutHandler : ICommandHandler<GetSharedWorkout, SharedW
 	public async Task<SharedWorkoutResponse> HandleAsync(GetSharedWorkout command)
 	{
 		var sharedWorkout = await _repository.GetSharedWorkout(command.SharedWorkoutId);
-		CommonValidator.SharedWorkoutExists(sharedWorkout);
-		CommonValidator.EnsureSharedWorkoutOwnership(command.UserId, sharedWorkout);
+		ValidationUtils.SharedWorkoutExists(sharedWorkout);
+		ValidationUtils.EnsureSharedWorkoutOwnership(command.UserId, sharedWorkout);
 
 		return _mapper.Map<SharedWorkoutResponse>(sharedWorkout);
 	}

@@ -24,7 +24,7 @@ public class ReportUserHandler : ICommandHandler<ReportUser, ComplaintResponse>
 	{
 		var userToReport = await _repository.GetUser(command.ReportedUserId);
 
-		CommonValidator.UserExists(userToReport);
+		ValidationUtils.UserExists(userToReport);
 
 		var complaint = new Complaint
 		{

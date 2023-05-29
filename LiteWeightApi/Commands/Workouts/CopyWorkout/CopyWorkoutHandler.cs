@@ -29,8 +29,8 @@ public class CopyWorkoutHandler : ICommandHandler<CopyWorkout, UserAndWorkoutRes
 		var user = await _repository.GetUser(command.UserId);
 		var workoutToCopy = await _repository.GetWorkout(command.WorkoutId);
 
-		CommonValidator.WorkoutExists(workoutToCopy);
-		CommonValidator.EnsureWorkoutOwnership(user.Id, workoutToCopy);
+		ValidationUtils.WorkoutExists(workoutToCopy);
+		ValidationUtils.EnsureWorkoutOwnership(user.Id, workoutToCopy);
 
 		if (user.Workouts.Count > Globals.MaxFreeWorkouts && user.PremiumToken == null)
 		{
@@ -42,7 +42,7 @@ public class CopyWorkoutHandler : ICommandHandler<CopyWorkout, UserAndWorkoutRes
 			throw new MaxLimitException("Maximum workouts exceeded");
 		}
 
-		CommonValidator.ValidWorkoutName(command.NewName, user);
+		ValidationUtils.ValidWorkoutName(command.NewName, user);
 
 		var newWorkoutId = Guid.NewGuid().ToString();
 		var now = _clock.GetCurrentInstant();

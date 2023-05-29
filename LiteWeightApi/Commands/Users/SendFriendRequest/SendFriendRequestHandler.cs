@@ -6,7 +6,6 @@ using LiteWeightAPI.Errors.Exceptions;
 using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
 using LiteWeightAPI.Imports;
 using LiteWeightAPI.Services;
-using LiteWeightAPI.Services.Notifications;
 using LiteWeightAPI.Utils;
 using NodaTime;
 
@@ -32,15 +31,19 @@ public class SendFriendRequestHandler : ICommandHandler<SendFriendRequest, Frien
 	{
 		var recipientId = command.RecipientId;
 		var senderId = command.SenderId;
+		if (recipientId.Equals(command.SenderId, StringComparison.InvariantCultureIgnoreCase))
+		{
+			throw new MiscErrorException("Cannot send a friend request to yourself");
+		}
 
 		var senderUser = await _repository.GetUser(senderId);
 		var recipientUser = await _repository.GetUser(recipientId);
 
 		// validation
-		CommonValidator.UserExists(recipientUser);
+		ValidationUtils.UserExists(recipientUser);
 		var senderUserId = senderUser.Id;
 
-		if (recipientUser.Preferences.PrivateAccount && recipientUser.Friends.All(x => x.UserId != senderUserId))
+		if (recipientUser.Preferences.PrivateAccount)
 		{
 			throw new ResourceNotFoundException("User");
 		}
@@ -60,12 +63,7 @@ public class SendFriendRequestHandler : ICommandHandler<SendFriendRequest, Frien
 			throw new MiscErrorException("This user has already sent you a friend request");
 		}
 
-		if (senderUserId.Equals(senderUserId, StringComparison.InvariantCultureIgnoreCase))
-		{
-			throw new MiscErrorException("Cannot send a friend request to yourself");
-		}
-
-		// if already sent, fail gracefully
+		// if already sent or friends, fail gracefully
 		var existingFriend = senderUser.Friends.FirstOrDefault(x => x.UserId == recipientId);
 		if (existingFriend != null)
 		{

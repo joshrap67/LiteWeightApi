@@ -19,8 +19,8 @@ public class DeclineSharedWorkoutHandler : ICommandHandler<DeclineSharedWorkout,
 		var user = await _repository.GetUser(command.UserId);
 		var workoutToDecline = await _repository.GetSharedWorkout(command.SharedWorkoutId);
 
-		CommonValidator.SharedWorkoutExists(workoutToDecline);
-		CommonValidator.EnsureSharedWorkoutOwnership(command.UserId, workoutToDecline);
+		ValidationUtils.SharedWorkoutExists(workoutToDecline);
+		ValidationUtils.EnsureSharedWorkoutOwnership(command.UserId, workoutToDecline);
 
 		var workoutToRemove = user.ReceivedWorkouts.FirstOrDefault(x => x.SharedWorkoutId == command.SharedWorkoutId);
 		user.ReceivedWorkouts.Remove(workoutToRemove);

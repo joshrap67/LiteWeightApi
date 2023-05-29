@@ -19,8 +19,8 @@ public class DeleteWorkoutHandler : ICommandHandler<DeleteWorkout, bool>
 		var workoutToDelete = await _repository.GetWorkout(command.WorkoutId);
 		var user = await _repository.GetUser(command.UserId);
 
-		CommonValidator.WorkoutExists(workoutToDelete);
-		CommonValidator.EnsureWorkoutOwnership(user.Id, workoutToDelete);
+		ValidationUtils.WorkoutExists(workoutToDelete);
+		ValidationUtils.EnsureWorkoutOwnership(user.Id, workoutToDelete);
 
 		user.Workouts.RemoveAll(x => x.WorkoutId == command.WorkoutId);
 		foreach (var ownedExercise in user.Exercises)

@@ -3,7 +3,6 @@ using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Errors.Exceptions;
 using LiteWeightAPI.Imports;
 using LiteWeightAPI.Services;
-using LiteWeightAPI.Services.Notifications;
 using LiteWeightAPI.Utils;
 
 namespace LiteWeightAPI.Commands.Users.AcceptFriendRequest;
@@ -24,7 +23,7 @@ public class AcceptFriendRequestHandler : ICommandHandler<AcceptFriendRequest, b
 		var initiator = await _repository.GetUser(command.InitiatorUserId);
 		var acceptedUser = await _repository.GetUser(command.AcceptedUserId);
 
-		CommonValidator.UserExists(acceptedUser);
+		ValidationUtils.UserExists(acceptedUser);
 
 		if (initiator.Friends.Count >= Globals.MaxNumberFriends)
 		{
@@ -32,10 +31,7 @@ public class AcceptFriendRequestHandler : ICommandHandler<AcceptFriendRequest, b
 		}
 
 		var friendRequest = initiator.FriendRequests.FirstOrDefault(x => x.UserId == command.AcceptedUserId);
-		if (friendRequest == null)
-		{
-			return false;
-		}
+		if (friendRequest == null) return false;
 
 		// remove request from user who initiated accepting, and add the new friend
 		var newFriend = new Friend
@@ -48,7 +44,8 @@ public class AcceptFriendRequestHandler : ICommandHandler<AcceptFriendRequest, b
 		initiator.FriendRequests.Remove(friendRequest);
 		initiator.Friends.Add(newFriend);
 		// update friend to accepted for the user who sent the request
-		acceptedUser.Friends.First(x => x.UserId == command.AcceptedUserId).Confirmed = true;
+		var initiatorToRemove = acceptedUser.Friends.FirstOrDefault(x => x.UserId == command.InitiatorUserId);
+		if (initiatorToRemove != null) initiatorToRemove.Confirmed = true;
 
 		await _repository.ExecuteBatchWrite(usersToPut: new List<User> { initiator, acceptedUser });
 

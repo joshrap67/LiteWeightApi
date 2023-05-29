@@ -105,8 +105,8 @@ public class Repository : IRepository
 	public async Task<User> GetUserByUsername(string username)
 	{
 		var db = GetDb();
-		var citiesRef = db.Collection(_fireStoreOptions.UsersCollection);
-		var query = citiesRef.WhereEqualTo("username", username);
+		var usersRef = db.Collection(_fireStoreOptions.UsersCollection);
+		var query = usersRef.WhereEqualTo("username", username);
 		var querySnapshot = await query.GetSnapshotAsync();
 
 		var user = querySnapshot.Documents.ToList().FirstOrDefault();
@@ -116,8 +116,8 @@ public class Repository : IRepository
 	public async Task<User> GetUserByEmail(string email)
 	{
 		var db = GetDb();
-		var citiesRef = db.Collection(_fireStoreOptions.UsersCollection);
-		var query = citiesRef.WhereEqualTo("email", email);
+		var usersRef = db.Collection(_fireStoreOptions.UsersCollection);
+		var query = usersRef.WhereEqualTo("email", email);
 		var querySnapshot = await query.GetSnapshotAsync();
 
 		var user = querySnapshot.Documents.ToList().FirstOrDefault();

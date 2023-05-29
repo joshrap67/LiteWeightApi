@@ -1,7 +1,6 @@
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Services;
-using LiteWeightAPI.Services.Notifications;
 using LiteWeightAPI.Utils;
 
 namespace LiteWeightAPI.Commands.Users.CancelFriendRequest;
@@ -22,7 +21,7 @@ public class CancelFriendRequestHandler : ICommandHandler<CancelFriendRequest, b
 		var initiator = await _repository.GetUser(command.InitiatorUserId);
 		var userToCancel = await _repository.GetUser(command.UserIdToCancel);
 
-		CommonValidator.UserExists(userToCancel);
+		ValidationUtils.UserExists(userToCancel);
 
 		var pendingFriend = initiator.Friends.FirstOrDefault(x => x.UserId == command.UserIdToCancel);
 		if (pendingFriend == null)
@@ -31,7 +30,10 @@ public class CancelFriendRequestHandler : ICommandHandler<CancelFriendRequest, b
 		}
 
 		initiator.Friends.Remove(pendingFriend);
-		userToCancel.FriendRequests.RemoveAll(x => x.UserId == command.InitiatorUserId);
+
+		var initiatorFriendRequest =
+			userToCancel.FriendRequests.FirstOrDefault(x => x.UserId == command.InitiatorUserId);
+		userToCancel.FriendRequests.Remove(initiatorFriendRequest);
 
 		await _repository.ExecuteBatchWrite(usersToPut: new List<User> { initiator, userToCancel });
 

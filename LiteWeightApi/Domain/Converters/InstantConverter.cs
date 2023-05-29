@@ -15,7 +15,7 @@ public class InstantConverter : IFirestoreConverter<Instant>
 	{
 		return value switch
 		{
-			string timestamp => ParsingService.ParseStringToInstant(timestamp),
+			string timestamp => ParsingUtils.ParseStringToInstant(timestamp),
 			null => throw new ArgumentNullException(nameof(value)),
 			_ => throw new ArgumentException($"Unexpected data: {value.GetType()}")
 		};

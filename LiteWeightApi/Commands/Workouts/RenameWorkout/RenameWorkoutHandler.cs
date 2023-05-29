@@ -19,9 +19,9 @@ public class RenameWorkoutHandler : ICommandHandler<RenameWorkout, bool>
 		var workout = await _repository.GetWorkout(command.WorkoutId);
 		var user = await _repository.GetUser(command.UserId);
 
-		CommonValidator.WorkoutExists(workout);
-		CommonValidator.EnsureWorkoutOwnership(user.Id, workout);
-		CommonValidator.ValidWorkoutName(command.NewName, user);
+		ValidationUtils.WorkoutExists(workout);
+		ValidationUtils.EnsureWorkoutOwnership(user.Id, workout);
+		ValidationUtils.ValidWorkoutName(command.NewName, user);
 
 		var newName = command.NewName;
 		workout.Name = newName;

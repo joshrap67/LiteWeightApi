@@ -8,8 +8,8 @@ public class SharedMaps : Profile
 {
 	public SharedMaps()
 	{
-		CreateMap<string, LocalDate>().ConvertUsing(x => ParsingService.ParseStringToLocalDate(x));
-		CreateMap<Instant, string>().ConvertUsing(x => ParsingService.ConvertInstantToString(x));
-		CreateMap<LocalDate, string>().ConvertUsing(x => ParsingService.ConvertLocalDateToString(x));
+		CreateMap<string, LocalDate>().ConvertUsing(x => ParsingUtils.ParseStringToLocalDate(x));
+		CreateMap<Instant, string>().ConvertUsing(x => ParsingUtils.ConvertInstantToString(x));
+		CreateMap<LocalDate, string>().ConvertUsing(x => ParsingUtils.ConvertLocalDateToString(x));
 	}
 }

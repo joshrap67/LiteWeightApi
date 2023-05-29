@@ -37,7 +37,7 @@ public class SetFirebaseTokenTests
 	[Fact]
 	public async Task Should_Set_Current_Workout_Null()
 	{
-		var command = _fixture.Build<SetFirebaseToken>().With(x => x.Token, () => null!).Create();
+		var command = _fixture.Build<SetFirebaseToken>().With(x => x.Token, (string)null).Create();
 		var user = _fixture.Build<User>().With(x => x.Id, command.UserId).Create();
 
 		_mockRepository

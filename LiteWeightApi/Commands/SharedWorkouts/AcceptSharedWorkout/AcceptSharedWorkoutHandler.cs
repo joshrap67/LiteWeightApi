@@ -31,11 +31,11 @@ public class AcceptSharedWorkoutHandler : ICommandHandler<AcceptSharedWorkout, A
 		var user = await _repository.GetUser(command.UserId);
 		var workoutToAccept = await _repository.GetSharedWorkout(command.SharedWorkoutId);
 
-		CommonValidator.SharedWorkoutExists(workoutToAccept);
-		CommonValidator.EnsureSharedWorkoutOwnership(user.Id, workoutToAccept);
+		ValidationUtils.SharedWorkoutExists(workoutToAccept);
+		ValidationUtils.EnsureSharedWorkoutOwnership(user.Id, workoutToAccept);
 
 		// lots of validation
-		var newExercises = SharedWorkoutUtils.GetNewExercisesFromSharedWorkout(workoutToAccept, user).ToList();
+		var newExercises = GetNewExercisesFromSharedWorkout(workoutToAccept, user).ToList();
 		if (user.PremiumToken == null && user.Workouts.Count >= Globals.MaxFreeWorkouts)
 		{
 			throw new MaxLimitException("Maximum workouts would be exceeded");
@@ -46,7 +46,7 @@ public class AcceptSharedWorkoutHandler : ICommandHandler<AcceptSharedWorkout, A
 			throw new MaxLimitException("Maximum workouts would be exceeded");
 		}
 
-		CommonValidator.ValidWorkoutName(command.NewName ?? workoutToAccept.WorkoutName, user);
+		ValidationUtils.ValidWorkoutName(command.NewName ?? workoutToAccept.WorkoutName, user);
 
 		var ownedExerciseNames = user.Exercises.Select(x => x.Name);
 		var newExercisesNames = newExercises.Select(x => x.Name);
@@ -103,5 +103,39 @@ public class AcceptSharedWorkoutHandler : ICommandHandler<AcceptSharedWorkout, A
 			NewWorkoutInfo = _mapper.Map<WorkoutInfoResponse>(workoutInfo),
 			UserExercises = _mapper.Map<IList<OwnedExerciseResponse>>(user.Exercises)
 		};
+	}
+
+	private static IEnumerable<OwnedExercise> GetNewExercisesFromSharedWorkout(SharedWorkout sharedWorkout, User user)
+	{
+		if (sharedWorkout == null || user == null)
+		{
+			return new List<OwnedExercise>();
+		}
+
+		var newExercises = new List<OwnedExercise>();
+		var sharedExerciseNames = sharedWorkout.Routine.Weeks
+			.SelectMany(x => x.Days)
+			.SelectMany(x => x.Exercises)
+			.Select(x => x.ExerciseName)
+			.ToHashSet();
+
+		var ownedExerciseNames = user.Exercises.Select(x => x.Name).ToHashSet();
+
+		sharedExerciseNames.ExceptWith(ownedExerciseNames);
+
+		foreach (var exerciseName in sharedExerciseNames)
+		{
+			// for each of the exercises that the user doesn't own, make a new entry for them
+			var sharedExercise = sharedWorkout.DistinctExercises.First(x => x.ExerciseName == exerciseName);
+			var ownedExercise = new OwnedExercise
+			{
+				Name = exerciseName,
+				Focuses = sharedExercise.Focuses,
+				VideoUrl = sharedExercise.VideoUrl
+			};
+			newExercises.Add(ownedExercise);
+		}
+
+		return newExercises;
 	}
 }

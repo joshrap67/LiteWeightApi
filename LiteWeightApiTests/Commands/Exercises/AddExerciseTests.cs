@@ -83,7 +83,7 @@ public class AddExerciseTests
 			.Setup(x => x.GetUser(It.Is<string>(y => y == command.UserId)))
 			.ReturnsAsync(_fixture.Build<User>()
 				.With(x => x.Exercises, exercises)
-				.With(x => x.PremiumToken, () => null!)
+				.With(x => x.PremiumToken, (string)null)
 				.Create());
 
 		await Assert.ThrowsAsync<MaxLimitException>(() => _handler.HandleAsync(command));

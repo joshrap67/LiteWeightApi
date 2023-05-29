@@ -25,8 +25,8 @@ public class RestartWorkoutHandler : ICommandHandler<RestartWorkout, UserAndWork
 		var workout = await _repository.GetWorkout(command.WorkoutId);
 		var routine = _mapper.Map<Routine>(command.Routine);
 
-		CommonValidator.WorkoutExists(workout);
-		CommonValidator.EnsureWorkoutOwnership(user.Id, workout);
+		ValidationUtils.WorkoutExists(workout);
+		ValidationUtils.EnsureWorkoutOwnership(user.Id, workout);
 
 		var workoutInfo = user.Workouts.First(x => x.WorkoutId == command.WorkoutId);
 		RestartWorkout(routine, workoutInfo, user);

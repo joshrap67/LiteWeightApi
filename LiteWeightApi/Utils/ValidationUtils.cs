@@ -7,7 +7,7 @@ using LiteWeightAPI.Imports;
 
 namespace LiteWeightAPI.Utils;
 
-public static class CommonValidator
+public static class ValidationUtils
 {
 	public static void UserExists(User user)
 	{

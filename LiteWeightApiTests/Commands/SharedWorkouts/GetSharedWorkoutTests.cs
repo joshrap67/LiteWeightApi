@@ -5,6 +5,7 @@ using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.SharedWorkouts;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
+using LiteWeightApiTests.TestHelpers;
 
 namespace LiteWeightApiTests.Commands.SharedWorkouts;
 
@@ -48,7 +49,7 @@ public class GetSharedWorkoutTests
 
 		_mockRepository
 			.Setup(x => x.GetSharedWorkout(It.Is<string>(y => y == command.SharedWorkoutId)))
-			.ReturnsAsync((SharedWorkout)null!);
+			.ReturnsAsync((SharedWorkout)null);
 
 		await Assert.ThrowsAsync<ResourceNotFoundException>(() => _handler.HandleAsync(command));
 	}

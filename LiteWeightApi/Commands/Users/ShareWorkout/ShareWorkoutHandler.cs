@@ -1,12 +1,10 @@
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.SharedWorkouts;
 using LiteWeightAPI.Domain.Users;
-using LiteWeightAPI.Domain.Workouts;
 using LiteWeightAPI.Errors.Exceptions;
 using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
 using LiteWeightAPI.Imports;
 using LiteWeightAPI.Services;
-using LiteWeightAPI.Services.Notifications;
 using LiteWeightAPI.Utils;
 using NodaTime;
 
@@ -17,12 +15,15 @@ public class ShareWorkoutHandler : ICommandHandler<ShareWorkout, string>
 	private readonly IRepository _repository;
 	private readonly IPushNotificationService _pushNotificationService;
 	private readonly IClock _clock;
+	private readonly IStatisticsService _statisticsService;
 
-	public ShareWorkoutHandler(IRepository repository, IPushNotificationService pushNotificationService, IClock clock)
+	public ShareWorkoutHandler(IRepository repository, IPushNotificationService pushNotificationService, IClock clock,
+		IStatisticsService statisticsService)
 	{
 		_repository = repository;
 		_pushNotificationService = pushNotificationService;
 		_clock = clock;
+		_statisticsService = statisticsService;
 	}
 
 	public async Task<string> HandleAsync(ShareWorkout command)
@@ -31,13 +32,17 @@ public class ShareWorkoutHandler : ICommandHandler<ShareWorkout, string>
 		var recipientUser = await _repository.GetUser(command.RecipientUserId);
 		var workoutToSend = await _repository.GetWorkout(command.WorkoutId);
 
-		CommonValidator.UserExists(recipientUser);
-		CommonValidator.ReferencedWorkoutExists(workoutToSend);
-		CommonValidator.EnsureWorkoutOwnership(senderUser.Id, workoutToSend);
+		if (command.SenderUserId == command.RecipientUserId)
+		{
+			throw new MiscErrorException("Cannot send workout to yourself");
+		}
 
-		var senderId = senderUser.Id;
+		ValidationUtils.UserExists(recipientUser);
+		ValidationUtils.ReferencedWorkoutExists(workoutToSend);
+		ValidationUtils.EnsureWorkoutOwnership(command.SenderUserId, workoutToSend);
 
-		if (recipientUser.Preferences.PrivateAccount && recipientUser.Friends.All(x => x.UserId != senderId))
+		if (recipientUser.Preferences.PrivateAccount &&
+		    recipientUser.Friends.All(x => x.UserId != command.SenderUserId))
 		{
 			throw new ResourceNotFoundException("User");
 		}
@@ -47,14 +52,9 @@ public class ShareWorkoutHandler : ICommandHandler<ShareWorkout, string>
 			throw new MaxLimitException($"{command.RecipientUserId} has too many received workouts");
 		}
 
-		if (senderUser.WorkoutsSent >= Globals.MaxFreeWorkoutsSent)
+		if (senderUser.PremiumToken == null && senderUser.WorkoutsSent >= Globals.MaxFreeWorkoutsSent)
 		{
 			throw new MaxLimitException("You have reached the maximum number of workouts that you can send");
-		}
-
-		if (senderId == command.RecipientUserId)
-		{
-			throw new MiscErrorException("Cannot send workout to yourself");
 		}
 
 		var sharedWorkoutId = Guid.NewGuid().ToString();
@@ -67,7 +67,8 @@ public class ShareWorkoutHandler : ICommandHandler<ShareWorkout, string>
 			WorkoutName = workoutToSend.Name,
 			SharedUtc = _clock.GetCurrentInstant(),
 			TotalDays = workoutToSend.Routine.TotalNumberOfDays,
-			MostFrequentFocus = FindMostFrequentFocus(senderUser, workoutToSend.Routine)
+			MostFrequentFocus = _statisticsService
+				.FindMostFrequentFocus(senderUser.Exercises.ToDictionary(x => x.Id, x => x), workoutToSend.Routine)
 		};
 		recipientUser.ReceivedWorkouts.Add(sharedWorkoutInfo);
 		senderUser.WorkoutsSent++;
@@ -82,43 +83,5 @@ public class ShareWorkoutHandler : ICommandHandler<ShareWorkout, string>
 		await _pushNotificationService.SendWorkoutPushNotification(recipientUser, sharedWorkoutInfo);
 
 		return sharedWorkoutId;
-	}
-
-	private static string FindMostFrequentFocus(User user, Routine routine)
-	{
-		var exerciseIdToExercise = user.Exercises.ToDictionary(x => x.Id, x => x);
-		var focusCount = new Dictionary<string, int>();
-		foreach (var week in routine.Weeks)
-		{
-			foreach (var day in week.Days)
-			{
-				foreach (var routineExercise in day.Exercises)
-				{
-					var exerciseId = routineExercise.ExerciseId;
-					foreach (var focus in exerciseIdToExercise[exerciseId].Focuses)
-					{
-						if (!focusCount.ContainsKey(focus))
-						{
-							focusCount[focus] = 1;
-						}
-						else
-						{
-							focusCount[focus]++;
-						}
-					}
-				}
-			}
-		}
-
-		var max = focusCount.Values.Max();
-
-		var maxFocuses = (from focus in focusCount.Keys
-				let count = focusCount[focus]
-				where count == max
-				select focus)
-			.ToList();
-
-		var retVal = string.Join(",", maxFocuses);
-		return retVal;
 	}
 }

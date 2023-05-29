@@ -2,7 +2,7 @@ using LiteWeightAPI.Domain.SharedWorkouts;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Domain.Workouts;
 
-namespace LiteWeightApiTests.Commands.SharedWorkouts;
+namespace LiteWeightApiTests.TestHelpers;
 
 public static class SharedWorkoutHelper
 {

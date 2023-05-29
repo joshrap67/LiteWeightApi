@@ -20,8 +20,8 @@ public class GetWorkoutHandler : ICommandHandler<GetWorkout, WorkoutResponse>
 	{
 		var workout = await _repository.GetWorkout(command.WorkoutId);
 
-		CommonValidator.WorkoutExists(workout);
-		CommonValidator.EnsureWorkoutOwnership(command.UserId, workout);
+		ValidationUtils.WorkoutExists(workout);
+		ValidationUtils.EnsureWorkoutOwnership(command.UserId, workout);
 
 		return _mapper.Map<WorkoutResponse>(workout);
 	}

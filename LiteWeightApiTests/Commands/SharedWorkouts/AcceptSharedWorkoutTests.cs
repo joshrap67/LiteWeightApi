@@ -7,6 +7,7 @@ using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Errors.Exceptions;
 using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
 using LiteWeightAPI.Imports;
+using LiteWeightApiTests.TestHelpers;
 using NodaTime;
 
 namespace LiteWeightApiTests.Commands.SharedWorkouts;
@@ -68,7 +69,7 @@ public class AcceptSharedWorkoutTests
 	[Fact]
 	public async Task Should_Accept_Workout_Name_Not_Specified()
 	{
-		var command = _fixture.Build<AcceptSharedWorkout>().With(x => x.NewName, () => null!).Create();
+		var command = _fixture.Build<AcceptSharedWorkout>().With(x => x.NewName, (string)null).Create();
 
 		var sharedWorkout = SharedWorkoutHelper.GetSharedWorkout(command.UserId);
 
@@ -143,7 +144,7 @@ public class AcceptSharedWorkoutTests
 		var user = _fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
 			.With(x => x.Workouts, workouts)
-			.With(x => x.PremiumToken, () => null!)
+			.With(x => x.PremiumToken, (string)null)
 			.Create();
 
 		var sharedWorkout = SharedWorkoutHelper.GetSharedWorkout(command.UserId);
@@ -212,7 +213,7 @@ public class AcceptSharedWorkoutTests
 	[Fact]
 	public async Task Should_Throw_Exception_Workout_Name_Duplicate()
 	{
-		var command = _fixture.Build<AcceptSharedWorkout>().With(x => x.NewName, () => null!).Create();
+		var command = _fixture.Build<AcceptSharedWorkout>().With(x => x.NewName, (string)null).Create();
 		var workoutName = _fixture.Create<string>();
 		var workouts = Enumerable.Range(0, Globals.MaxWorkouts / 2)
 			.Select(_ => _fixture.Build<WorkoutInfo>().With(y => y.WorkoutName, workoutName).Create())
@@ -239,7 +240,7 @@ public class AcceptSharedWorkoutTests
 	[Fact]
 	public async Task Should_Throw_Exception_Max_Free_Exercises_Exceeded()
 	{
-		var command = _fixture.Build<AcceptSharedWorkout>().With(x => x.NewName, () => null!).Create();
+		var command = _fixture.Build<AcceptSharedWorkout>().With(x => x.NewName, (string)null).Create();
 
 		var sharedWorkout = SharedWorkoutHelper.GetSharedWorkout(command.UserId);
 
@@ -255,7 +256,7 @@ public class AcceptSharedWorkoutTests
 		var user = _fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
 			.With(x => x.Workouts, workouts)
-			.With(x => x.PremiumToken, () => null!)
+			.With(x => x.PremiumToken, (string)null)
 			.With(x => x.Exercises, ownedExercises)
 			.Create();
 
@@ -273,7 +274,7 @@ public class AcceptSharedWorkoutTests
 	[Fact]
 	public async Task Should_Throw_Exception_Max_Exercises_Exceeded()
 	{
-		var command = _fixture.Build<AcceptSharedWorkout>().With(x => x.NewName, () => null!).Create();
+		var command = _fixture.Build<AcceptSharedWorkout>().With(x => x.NewName, (string)null).Create();
 
 		var sharedWorkout = SharedWorkoutHelper.GetSharedWorkout(command.UserId);
 

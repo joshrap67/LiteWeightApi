@@ -22,14 +22,11 @@ public class RemoveFriendHandler : ICommandHandler<RemoveFriend, bool>
 		var initiator = await _repository.GetUser(command.InitiatorUserId);
 		var removedFriend = await _repository.GetUser(command.RemovedUserId);
 
-		CommonValidator.UserExists(removedFriend);
+		ValidationUtils.UserExists(removedFriend);
 
 		var friendToRemove = initiator.Friends.FirstOrDefault(x => x.UserId == command.RemovedUserId);
 		var initiatorToRemove = removedFriend.Friends.FirstOrDefault(x => x.UserId == command.InitiatorUserId);
-		if (friendToRemove == null)
-		{
-			return false;
-		}
+		if (friendToRemove == null) return false;
 
 		initiator.Friends.Remove(friendToRemove);
 		removedFriend.Friends.Remove(initiatorToRemove);

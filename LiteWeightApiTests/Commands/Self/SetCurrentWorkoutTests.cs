@@ -46,7 +46,7 @@ public class SetCurrentWorkoutTests
 	[Fact]
 	public async Task Should_Set_Current_Workout_Null()
 	{
-		var command = _fixture.Build<SetCurrentWorkout>().With(x => x.WorkoutId, () => null!).Create();
+		var command = _fixture.Build<SetCurrentWorkout>().With(x => x.WorkoutId, (string)null).Create();
 		var user = _fixture.Build<User>().With(x => x.Id, command.UserId).Create();
 
 		_mockRepository
