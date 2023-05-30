@@ -8,7 +8,7 @@ public static class Globals
 	public const int MaxWeeksRoutine = 10;
 	public const int MaxReceivedWorkouts = 1000;
 	public const int MaxDaysRoutine = 7;
-	public const int MaxNumberFriends = 200;
+	public const int MaxNumberFriends = 200; // todo make more reasonable
 	public const int MaxFriendRequests = 200;
 	public const int MaxFreeExercises = 100;
 	public const int MaxExercises = 200;

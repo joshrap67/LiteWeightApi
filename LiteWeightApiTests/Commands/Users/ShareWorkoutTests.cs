@@ -78,7 +78,7 @@ public class ShareWorkoutTests
 		var response = await _handler.HandleAsync(command);
 		Assert.NotNull(response);
 		_mockPushNotificationService.Verify(
-			x => x.SendWorkoutPushNotification(It.IsAny<User>(), It.IsAny<SharedWorkoutInfo>()), Times.Once);
+			x => x.SendReceivedWorkoutPushNotification(It.IsAny<User>(), It.IsAny<SharedWorkoutInfo>()), Times.Once);
 	}
 
 	[Fact]
@@ -126,7 +126,7 @@ public class ShareWorkoutTests
 		var response = await _handler.HandleAsync(command);
 		Assert.NotNull(response);
 		_mockPushNotificationService.Verify(
-			x => x.SendWorkoutPushNotification(It.IsAny<User>(), It.IsAny<SharedWorkoutInfo>()), Times.Once);
+			x => x.SendReceivedWorkoutPushNotification(It.IsAny<User>(), It.IsAny<SharedWorkoutInfo>()), Times.Once);
 	}
 
 	[Fact]

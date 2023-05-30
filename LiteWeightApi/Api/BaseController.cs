@@ -2,6 +2,7 @@
 using System.Text.Json.Nodes;
 using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
 using LiteWeightAPI.Imports;
+using LiteWeightAPI.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -49,7 +50,7 @@ public class BaseController : Controller
 		var firebaseClaim = HttpContext.User.Claims.ToList().FirstOrDefault(x => x.Type == "firebase");
 		if (firebaseClaim != null)
 		{
-			var deserializedToken = JsonSerializer.Deserialize<JsonNode>(firebaseClaim.Value);
+			var deserializedToken = JsonUtils.Deserialize<JsonNode>(firebaseClaim.Value);
 			var email = deserializedToken["identities"]?["email"]?[0]?.GetValue<string>();
 			CurrentUserEmail = email;
 		}

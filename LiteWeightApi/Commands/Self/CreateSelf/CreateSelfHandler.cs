@@ -38,7 +38,7 @@ public class CreateSelfHandler : ICommandHandler<CreateSelf, UserResponse>
 
 		// whenever a user is created, give them a unique UUID file path that will always get updated
 		var fileName = Guid.NewGuid().ToString();
-		if (command.ProfilePictureData != null)
+		if (command.ProfilePictureData != null && command.ProfilePictureData.Length > 0)
 		{
 			await _storageService.UploadProfilePicture(command.ProfilePictureData, fileName);
 		}

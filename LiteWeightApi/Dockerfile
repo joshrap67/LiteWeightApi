@@ -12,5 +12,5 @@ RUN dotnet publish -c Release -o out
 FROM mcr.microsoft.com/dotnet/aspnet:7.0
 WORKDIR /LiteWeightApi
 COPY --from=build-env /LiteWeightApi/out .
-ENV ASPNETCORE_URLS=http://+:5000
+ENV ASPNETCORE_URLS=http://+:8080
 ENTRYPOINT ["dotnet", "LiteWeightApi.dll"]

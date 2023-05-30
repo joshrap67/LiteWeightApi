@@ -284,7 +284,7 @@ public static class Defaults
 			new()
 			{
 				Id = Guid.NewGuid().ToString(),
-				Name = "One Arm Tricep Extension",
+				Name = "One Arm Triceps Extension",
 				VideoUrl = "https://youtu.be/_gsUck-7M74?t=5",
 				Focuses = new List<string> { "Triceps" }
 			},
@@ -424,14 +424,14 @@ public static class Defaults
 			new()
 			{
 				Id = Guid.NewGuid().ToString(),
-				Name = "Tricep Dip",
+				Name = "Triceps Dip",
 				VideoUrl = "https://youtu.be/0326dy_-CzM?t=10",
 				Focuses = new List<string> { "Chest", "Triceps" }
 			},
 			new()
 			{
 				Id = Guid.NewGuid().ToString(),
-				Name = "Tricep Pushdown",
+				Name = "Triceps Pushdown",
 				VideoUrl = "https://youtu.be/2-LAMcpzODU?t=15",
 				Focuses = new List<string> { "Triceps" }
 			},

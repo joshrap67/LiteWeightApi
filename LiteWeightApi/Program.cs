@@ -1,3 +1,6 @@
+using FirebaseAdmin;
+using FirebaseAdmin.Messaging;
+using Google.Apis.Auth.OAuth2;
 using LiteWeightAPI.ExtensionMethods;
 using LiteWeightAPI.Middleware;
 using Serilog;
@@ -20,6 +23,11 @@ if (app.Environment.IsDevelopment())
 }
 
 // todo rate throttling
+FirebaseApp.Create(new AppOptions
+{
+	Credential = GoogleCredential.GetApplicationDefault(),
+	ProjectId = builder.Configuration["LiteWeight_Firebase:ProjectId"]
+});
 
 app.UseCustomExceptionHandling();
 app.UseHttpsRedirection();

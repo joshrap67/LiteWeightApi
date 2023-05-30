@@ -20,7 +20,15 @@ public class StorageService : IStorageService
 		using var stream = new MemoryStream(fileData);
 		var storage = await StorageClient.CreateAsync();
 
-		await storage.UploadObjectAsync(ProfilePictureBucket, fileName, "image/jpeg", stream);
+		var obj = new Google.Apis.Storage.v1.Data.Object
+		{
+			Bucket = ProfilePictureBucket,
+			Name = fileName,
+			ContentType = "image/jpeg",
+			CacheControl = "public,max-age=0"
+		};
+
+		await storage.UploadObjectAsync(obj, stream);
 	}
 
 	public async Task DeleteProfilePicture(string fileName)

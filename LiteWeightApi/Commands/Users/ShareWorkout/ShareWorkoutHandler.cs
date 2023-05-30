@@ -80,7 +80,7 @@ public class ShareWorkoutHandler : ICommandHandler<ShareWorkout, string>
 			sharedWorkoutsToPut: new List<SharedWorkout> { sharedWorkout }
 		);
 
-		await _pushNotificationService.SendWorkoutPushNotification(recipientUser, sharedWorkoutInfo);
+		await _pushNotificationService.SendReceivedWorkoutPushNotification(recipientUser, sharedWorkoutInfo);
 
 		return sharedWorkoutId;
 	}

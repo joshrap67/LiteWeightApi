@@ -18,6 +18,11 @@ public class WorkoutMaps : Profile
 		CreateMap<SetRoutineDayRequest, SetRoutineDay>();
 		CreateMap<SetRoutineExerciseRequest, SetRoutineExercise>();
 
+		CreateMap<SetRoutine, Routine>();
+		CreateMap<SetRoutineWeek, RoutineWeek>();
+		CreateMap<SetRoutineDay, RoutineDay>();
+		CreateMap<SetRoutineExercise, RoutineExercise>();
+
 		CreateMap<Workout, WorkoutResponse>();
 		CreateMap<Routine, RoutineResponse>();
 		CreateMap<RoutineWeek, RoutineWeekResponse>();

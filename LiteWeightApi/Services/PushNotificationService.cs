@@ -1,13 +1,13 @@
-﻿using System.Text.Json;
-using LiteWeightAPI.Domain.Users;
+﻿using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Services.Notifications;
 using LiteWeightAPI.Services.Notifications.Responses;
+using LiteWeightAPI.Utils;
 
 namespace LiteWeightAPI.Services;
 
 public interface IPushNotificationService
 {
-	Task SendWorkoutPushNotification(User recipientUser, SharedWorkoutInfo sharedWorkoutInfo);
+	Task SendReceivedWorkoutPushNotification(User recipientUser, SharedWorkoutInfo sharedWorkoutInfo);
 	Task SendNewFriendRequestNotification(User recipientUser, FriendRequest friendRequest);
 	Task SendFriendRequestAcceptedNotification(User acceptedUser, User initiator);
 	Task SendFriendRequestCanceledNotification(User canceledUser, User initiator);
@@ -24,13 +24,13 @@ public class PushNotificationService : IPushNotificationService
 		_fcmService = fcmService;
 	}
 
-	public async Task SendWorkoutPushNotification(User recipientUser, SharedWorkoutInfo sharedWorkoutInfo)
+	public async Task SendReceivedWorkoutPushNotification(User recipientUser, SharedWorkoutInfo sharedWorkoutInfo)
 	{
 		await _fcmService.SendPushNotification(recipientUser.FirebaseMessagingToken,
 			new NotificationData
 			{
 				Action = FcmService.ReceivedWorkoutAction,
-				JsonPayload = JsonSerializer.Serialize(sharedWorkoutInfo)
+				JsonPayload = JsonUtils.Serialize(sharedWorkoutInfo)
 			});
 	}
 
@@ -40,7 +40,7 @@ public class PushNotificationService : IPushNotificationService
 			new NotificationData
 			{
 				Action = FcmService.FriendRequestAction,
-				JsonPayload = JsonSerializer.Serialize(friendRequest)
+				JsonPayload = JsonUtils.Serialize(friendRequest)
 			});
 	}
 
@@ -50,7 +50,7 @@ public class PushNotificationService : IPushNotificationService
 			new NotificationData
 			{
 				Action = FcmService.AcceptedFriendRequestAction,
-				JsonPayload = JsonSerializer.Serialize(new AcceptedFriendRequestResponse
+				JsonPayload = JsonUtils.Serialize(new AcceptedFriendRequestResponse
 					{ UserId = initiator.Id, Username = initiator.Username })
 			});
 	}
@@ -61,7 +61,7 @@ public class PushNotificationService : IPushNotificationService
 			new NotificationData
 			{
 				Action = FcmService.CanceledFriendRequestAction,
-				JsonPayload = JsonSerializer.Serialize(new CanceledFriendRequestResponse
+				JsonPayload = JsonUtils.Serialize(new CanceledFriendRequestResponse
 					{ UserId = initiator.Id, Username = initiator.Username })
 			});
 	}
@@ -72,7 +72,7 @@ public class PushNotificationService : IPushNotificationService
 			new NotificationData
 			{
 				Action = FcmService.DeclinedFriendRequestAction,
-				JsonPayload = JsonSerializer.Serialize(new DeclinedFriendRequestResponse
+				JsonPayload = JsonUtils.Serialize(new DeclinedFriendRequestResponse
 					{ UserId = initiator.Id, Username = initiator.Username })
 			});
 	}
@@ -83,7 +83,7 @@ public class PushNotificationService : IPushNotificationService
 			new NotificationData
 			{
 				Action = FcmService.RemovedAsFriendAction,
-				JsonPayload = JsonSerializer.Serialize(new RemovedAsFriendResponse
+				JsonPayload = JsonUtils.Serialize(new RemovedAsFriendResponse
 					{ UserId = initiator.Id, Username = initiator.Username })
 			});
 	}

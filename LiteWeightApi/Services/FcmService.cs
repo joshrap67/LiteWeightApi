@@ -1,6 +1,6 @@
-﻿using System.Text.Json;
-using FirebaseAdmin.Messaging;
+﻿using FirebaseAdmin.Messaging;
 using LiteWeightAPI.Services.Notifications;
+using LiteWeightAPI.Utils;
 
 namespace LiteWeightAPI.Services;
 
@@ -25,20 +25,12 @@ public class FcmService : IFcmService
 			return;
 		}
 
-		var data = new NotificationMessage
-		{
-			InnerMsg = new NotificationMessage.InnerMessage
-			{
-				Metadata = JsonSerializer.Serialize(notificationData)
-			}
-		};
-
-		var dataJson = JsonSerializer.Serialize(data);
+		var dataJson = JsonUtils.Serialize(notificationData);
 
 		var message = new Message
 		{
 			Token = targetToken,
-			Data = JsonSerializer.Deserialize<Dictionary<string, string>>(dataJson)
+			Data = JsonUtils.Deserialize<Dictionary<string, string>>(dataJson)
 		};
 
 		await FirebaseMessaging.DefaultInstance.SendAsync(message);
