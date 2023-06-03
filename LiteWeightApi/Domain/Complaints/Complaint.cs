@@ -19,6 +19,9 @@ public class Complaint
 	[FirestoreProperty("reportedUsername")]
 	public string ReportedUsername { get; set; }
 
+	[FirestoreProperty("description")]
+	public string Description { get; set; }
+
 	// in the future could add profile picture if wanting to persist a potentially offensive profile picture
 
 	[FirestoreProperty("reportedUtc", ConverterType = typeof(InstantConverter))]

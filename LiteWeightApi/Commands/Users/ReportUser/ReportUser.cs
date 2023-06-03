@@ -6,4 +6,5 @@ public class ReportUser : ICommand<ComplaintResponse>
 {
 	public string InitiatorUserId { get; set; }
 	public string ReportedUserId { get; set; }
+	public string Description { get; set; }
 }

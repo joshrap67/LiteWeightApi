@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using LiteWeightAPI.Api.Self.Responses;
 using LiteWeightAPI.Api.Users.Requests;
 using LiteWeightAPI.Api.Users.Responses;
@@ -171,17 +171,21 @@ public class UsersController : BaseController
 	}
 
 	/// <summary>Report User</summary>
-	/// <remarks>Creates a complaint for the specified user for the developers to review.</remarks>
+	/// <remarks>Creates a complaint against the specified user for the developers to review.</remarks>
 	/// <param name="userId">User id of the user to report</param>
+	/// <param name="request">Request</param>
 	[HttpPost("{userId}/report")]
+	[InvalidRequest]
 	[ProducesResponseType(typeof(ComplaintResponse), 200)]
+	[ProducesResponseType(typeof(BadRequestResponse), 400)]
 	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
-	public async Task<ActionResult<ComplaintResponse>> Report(string userId)
+	public async Task<ActionResult<ComplaintResponse>> Report(string userId, ReportUserRequest request)
 	{
 		var response = await _commandDispatcher.DispatchAsync<ReportUser, ComplaintResponse>(new ReportUser
 		{
 			InitiatorUserId = CurrentUserId,
-			ReportedUserId = userId
+			ReportedUserId = userId,
+			Description = request.Description
 		});
 		return response;
 	}

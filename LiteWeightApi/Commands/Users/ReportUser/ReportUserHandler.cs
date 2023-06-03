@@ -31,7 +31,8 @@ public class ReportUserHandler : ICommandHandler<ReportUser, ComplaintResponse>
 			ReportedUserId = command.ReportedUserId,
 			ReportedUsername = userToReport.Username,
 			ReportedUtc = _clock.GetCurrentInstant(),
-			ClaimantUserId = command.InitiatorUserId
+			ClaimantUserId = command.InitiatorUserId,
+			Description = command.Description
 		};
 		await _repository.CreateComplaint(complaint);
 

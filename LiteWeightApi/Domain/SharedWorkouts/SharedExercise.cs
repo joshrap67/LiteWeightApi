@@ -1,4 +1,4 @@
-﻿using Google.Cloud.Firestore;
+using Google.Cloud.Firestore;
 using LiteWeightAPI.Domain.Workouts;
 
 namespace LiteWeightAPI.Domain.SharedWorkouts;
@@ -6,6 +6,9 @@ namespace LiteWeightAPI.Domain.SharedWorkouts;
 [FirestoreData]
 public class SharedExercise
 {
+	// public ctor needed for firebase serialization
+	public SharedExercise() { }
+
 	public SharedExercise(RoutineExercise exercise, string exerciseName)
 	{
 		ExerciseName = exerciseName;
