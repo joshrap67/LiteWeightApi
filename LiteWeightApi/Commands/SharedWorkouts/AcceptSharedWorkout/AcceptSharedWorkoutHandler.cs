@@ -90,6 +90,7 @@ public class AcceptSharedWorkoutHandler : ICommandHandler<AcceptSharedWorkout, A
 			WorkoutId = newWorkoutId
 		};
 		user.Workouts.Add(workoutInfo);
+		user.ReceivedWorkouts.RemoveAll(x => x.SharedWorkoutId == command.SharedWorkoutId);
 		WorkoutUtils.UpdateOwnedExercisesOnCreation(user, newWorkout, false);
 
 		await _repository.ExecuteBatchWrite(

@@ -64,6 +64,7 @@ public class AcceptSharedWorkoutTests
 		Assert.Equal(originalExerciseCount + sharedWorkout.DistinctExercises.Count, response.UserExercises.Count());
 		Assert.Equal(command.NewName, response.NewWorkoutInfo.WorkoutName);
 		Assert.Contains(user.Workouts, x => x.WorkoutId == response.NewWorkoutInfo.WorkoutId);
+		Assert.True(user.ReceivedWorkouts.All(x => x.SharedWorkoutId != command.SharedWorkoutId));
 	}
 
 	[Fact]
@@ -101,6 +102,7 @@ public class AcceptSharedWorkoutTests
 		Assert.Equal(originalExerciseCount + sharedWorkout.DistinctExercises.Count, response.UserExercises.Count());
 		Assert.Equal(sharedWorkout.WorkoutName, response.NewWorkoutInfo.WorkoutName);
 		Assert.Contains(user.Workouts, x => x.WorkoutId == response.NewWorkoutInfo.WorkoutId);
+		Assert.True(user.ReceivedWorkouts.All(x => x.SharedWorkoutId != command.SharedWorkoutId));
 	}
 
 	[Fact]
