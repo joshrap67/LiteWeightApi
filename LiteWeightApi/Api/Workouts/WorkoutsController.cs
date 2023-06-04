@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using LiteWeightAPI.Api.Self.Requests;
 using LiteWeightAPI.Api.Workouts.Requests;
 using LiteWeightAPI.Api.Workouts.Responses;
@@ -15,7 +15,6 @@ using LiteWeightAPI.Commands.Workouts.RestartWorkout;
 using LiteWeightAPI.Commands.Workouts.UpdateRoutine;
 using LiteWeightAPI.Commands.Workouts.UpdateWorkoutProgress;
 using LiteWeightAPI.Errors.Attributes;
-using LiteWeightAPI.Errors.Responses;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LiteWeightAPI.Api.Workouts;
@@ -37,22 +36,22 @@ public class WorkoutsController : BaseController
 	/// <remarks>Creates a workout and adds it to the authenticated user's list of workouts.</remarks>
 	[HttpPost]
 	[InvalidRequest, InvalidRoutine, MaxLimit]
-	[ProducesResponseType(typeof(UserAndWorkoutResponse), 200)]
-	[ProducesResponseType(typeof(BadRequestResponse), 400)]
+	[ProducesResponseType(StatusCodes.Status201Created)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	public async Task<ActionResult<UserAndWorkoutResponse>> CreateWorkout(CreateWorkoutRequest request)
 	{
 		var command = _mapper.Map<CreateWorkout>(request);
 		command.UserId = CurrentUserId;
 
 		var response = await _dispatcher.DispatchAsync<CreateWorkout, UserAndWorkoutResponse>(command);
-		return response;
+		return new ObjectResult(response) { StatusCode = StatusCodes.Status201Created };
 	}
 
 	/// <summary>Get Workout</summary>
 	/// <remarks>Fetches a workout assuming it belongs to the authenticated user.</remarks>
 	[HttpGet("{workoutId}")]
-	[ProducesResponseType(typeof(WorkoutResponse), 200)]
-	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult<WorkoutResponse>> GetWorkout(string workoutId)
 	{
 		var response = await _dispatcher.DispatchAsync<GetWorkout, WorkoutResponse>(new GetWorkout
@@ -67,9 +66,9 @@ public class WorkoutsController : BaseController
 	/// <remarks>Copies a workout as a new workout.</remarks>
 	[HttpPost("{workoutId}/copy")]
 	[InvalidRequest, AlreadyExists, MaxLimit]
-	[ProducesResponseType(typeof(UserAndWorkoutResponse), 200)]
-	[ProducesResponseType(typeof(BadRequestResponse), 400)]
-	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
+	[ProducesResponseType(StatusCodes.Status201Created)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult<UserAndWorkoutResponse>> CopyWorkout(string workoutId, CopyWorkoutRequest request)
 	{
 		var response = await _dispatcher.DispatchAsync<CopyWorkout, UserAndWorkoutResponse>(new CopyWorkout()
@@ -78,16 +77,16 @@ public class WorkoutsController : BaseController
 			NewName = request.NewName,
 			WorkoutId = workoutId
 		});
-		return response;
+		return new ObjectResult(response) { StatusCode = StatusCodes.Status201Created };
 	}
 
 	/// <summary>Set Routine</summary>
 	/// <remarks>Sets the routine of a given workout.</remarks>
 	[HttpPut("{workoutId}/routine")]
 	[InvalidRequest, InvalidRoutine]
-	[ProducesResponseType(typeof(UserAndWorkoutResponse), 200)]
-	[ProducesResponseType(typeof(BadRequestResponse), 400)]
-	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult<UserAndWorkoutResponse>> SetRoutine(SetRoutineRequest request, string workoutId)
 	{
 		var response = await _dispatcher.DispatchAsync<UpdateRoutine, UserAndWorkoutResponse>(new UpdateRoutine
@@ -103,9 +102,9 @@ public class WorkoutsController : BaseController
 	/// <remarks>Updates the specified workout's progress.</remarks>
 	[HttpPut("{workoutId}/update-progress")]
 	[InvalidRequest, InvalidRoutine]
-	[ProducesResponseType(200)]
-	[ProducesResponseType(typeof(BadRequestResponse), 400)]
-	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult> UpdateProgress(string workoutId, UpdateWorkoutProgressRequest request)
 	{
 		var command = new UpdateWorkoutProgress
@@ -117,14 +116,14 @@ public class WorkoutsController : BaseController
 			CurrentDay = request.CurrentDay
 		};
 		await _dispatcher.DispatchAsync<UpdateWorkoutProgress, bool>(command);
-		return Ok();
+		return NoContent();
 	}
 
 	/// <summary>Reset Statistics</summary>
 	/// <remarks>Resets the statistics for a given workout, if it exists.</remarks>
 	[HttpPut("{workoutId}/reset-statistics")]
-	[ProducesResponseType(200)]
-	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult> ResetStatistics(string workoutId)
 	{
 		await _dispatcher.DispatchAsync<ResetStatistics, bool>(new ResetStatistics
@@ -132,7 +131,7 @@ public class WorkoutsController : BaseController
 			UserId = CurrentUserId,
 			WorkoutId = workoutId
 		});
-		return Ok();
+		return NoContent();
 	}
 
 	/// <summary>Restart Workout</summary>
@@ -142,9 +141,9 @@ public class WorkoutsController : BaseController
 	/// </remarks>
 	[HttpPost("{workoutId}/restart")]
 	[InvalidRequest]
-	[ProducesResponseType(typeof(UserAndWorkoutResponse), 200)]
-	[ProducesResponseType(typeof(BadRequestResponse), 400)]
-	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult<UserAndWorkoutResponse>> RestartWorkout(string workoutId,
 		RestartWorkoutRequest request)
 	{
@@ -161,9 +160,9 @@ public class WorkoutsController : BaseController
 	/// <remarks>Renames a given workout. Name must be unique.</remarks>
 	[HttpPut("{workoutId}/rename")]
 	[InvalidRequest, AlreadyExists]
-	[ProducesResponseType(200)]
-	[ProducesResponseType(typeof(UserAndWorkoutResponse), 400)]
-	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult> RenameWorkout(string workoutId, RenameWorkoutRequest request)
 	{
 		await _dispatcher.DispatchAsync<RenameWorkout, bool>(new RenameWorkout
@@ -172,15 +171,15 @@ public class WorkoutsController : BaseController
 			WorkoutId = workoutId,
 			NewName = request.NewName
 		});
-		return Ok();
+		return NoContent();
 	}
 
 	/// <summary>Delete Workout</summary>
 	/// <remarks>Deletes a given workout. Removes it from the authenticated user's list of workouts, and from the list of workouts on the exercises of the deleted workout.</remarks>
 	/// <param name="workoutId">Id of the workout to delete</param>
 	[HttpDelete("{workoutId}")]
-	[ProducesResponseType(200)]
-	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult> DeleteWorkout(string workoutId)
 	{
 		await _dispatcher.DispatchAsync<DeleteWorkout, bool>(new DeleteWorkout
@@ -188,7 +187,7 @@ public class WorkoutsController : BaseController
 			UserId = CurrentUserId,
 			WorkoutId = workoutId
 		});
-		return Ok();
+		return NoContent();
 	}
 
 	/// <summary>Delete Workout and Set Current</summary>
@@ -200,9 +199,9 @@ public class WorkoutsController : BaseController
 	/// <param name="request">Request</param>
 	[HttpPut("{workoutId}/delete-and-set-current")]
 	[WorkoutNotFound]
-	[ProducesResponseType(200)]
-	[ProducesResponseType(typeof(BadRequestResponse), 400)]
-	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult> DeleteWorkoutAndSetCurrent(string workoutId, SetCurrentWorkoutRequest request)
 	{
 		// combining these two actions since it is a really bad state to be in on the app atm if the delete succeeds and the set current workout does not. So need a transactional request
@@ -212,6 +211,6 @@ public class WorkoutsController : BaseController
 			WorkoutToDeleteId = workoutId,
 			CurrentWorkoutId = request.WorkoutId
 		});
-		return Ok();
+		return NoContent();
 	}
 }

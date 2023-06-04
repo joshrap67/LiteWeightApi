@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using LiteWeightAPI.Imports;
 
 namespace LiteWeightAPI.Api.Self.Requests;
 
@@ -9,6 +10,7 @@ public class CreateUserRequest
 	/// </summary>
 	/// <example>randy_bo_bandy</example>
 	[Required]
+	[MaxLength(Globals.MaxUsernameLength)]
 	public string Username { get; set; }
 
 	/// <summary>

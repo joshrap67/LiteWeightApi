@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using LiteWeightAPI.Api.Exercises.Requests;
 using LiteWeightAPI.Api.Exercises.Responses;
 using LiteWeightAPI.Commands;
@@ -6,7 +6,6 @@ using LiteWeightAPI.Commands.Exercises.AddExercise;
 using LiteWeightAPI.Commands.Exercises.DeleteExercise;
 using LiteWeightAPI.Commands.Exercises.UpdateExercise;
 using LiteWeightAPI.Errors.Attributes;
-using LiteWeightAPI.Errors.Responses;
 using Microsoft.AspNetCore.Mvc;
 using ILogger = Serilog.ILogger;
 
@@ -30,15 +29,15 @@ public class ExercisesController : BaseController
 	/// <remarks>Creates an exercise to be owned by the authenticated user. The name of the exercise must not already exist for the user.</remarks>
 	[HttpPost]
 	[AlreadyExists, InvalidRequest, MaxLimit]
-	[ProducesResponseType(typeof(OwnedExerciseResponse), 200)]
-	[ProducesResponseType(typeof(BadRequestResponse), 400)]
+	[ProducesResponseType(StatusCodes.Status201Created)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	public async Task<ActionResult<OwnedExerciseResponse>> CreateExercise(SetExerciseRequest request)
 	{
 		var command = _mapper.Map<AddExercise>(request);
 		command.UserId = CurrentUserId;
 
 		var response = await _commandDispatcher.DispatchAsync<AddExercise, OwnedExerciseResponse>(command);
-		return response;
+		return new ObjectResult(response) { StatusCode = StatusCodes.Status201Created };
 	}
 
 	/// <summary>Update Exercise</summary>
@@ -47,9 +46,9 @@ public class ExercisesController : BaseController
 	/// <param name="request">Request</param>
 	[HttpPut("{exerciseId}")]
 	[AlreadyExists, InvalidRequest]
-	[ProducesResponseType(200)]
-	[ProducesResponseType(typeof(BadRequestResponse), 400)]
-	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult> UpdateExercise(string exerciseId, SetExerciseRequest request)
 	{
 		var command = _mapper.Map<UpdateExercise>(request);
@@ -57,19 +56,19 @@ public class ExercisesController : BaseController
 		command.ExerciseId = exerciseId;
 
 		await _commandDispatcher.DispatchAsync<UpdateExercise, bool>(command);
-		return Ok();
+		return NoContent();
 	}
 
 	/// <summary>Delete Exercise</summary>
 	/// <remarks>Removes an exercise owned by the authenticated user. Removes the deleted exercise from any workout it was a part of.</remarks>
 	/// <param name="exerciseId">Id of the exercise to delete</param>
 	[HttpDelete("{exerciseId}")]
-	[ProducesResponseType(200)]
-	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult> DeleteExercise(string exerciseId)
 	{
 		var command = new DeleteExercise { ExerciseId = exerciseId, UserId = CurrentUserId };
 		await _commandDispatcher.DispatchAsync<DeleteExercise, bool>(command);
-		return Ok();
+		return NoContent();
 	}
 }

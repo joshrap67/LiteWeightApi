@@ -40,6 +40,7 @@ public static class WorkoutUtils
 
 	public static void FixCurrentDayAndWeek(Workout editedWorkout)
 	{
+		// todo get rid of this. frontend can do this automatically?
 		// make sure that the current week according to the request is actually valid
 		var currentDay = editedWorkout.CurrentDay;
 		var currentWeek = editedWorkout.CurrentWeek;

@@ -28,8 +28,7 @@ public class CreateSelfHandler : ICommandHandler<CreateSelf, UserResponse>
 		{
 			throw new AlreadyExistsException("User already exists with this username");
 		}
-
-		// todo test
+		
 		var userByEmail = await _repository.GetUserByEmail(command.UserEmail);
 		if (userByEmail != null)
 		{

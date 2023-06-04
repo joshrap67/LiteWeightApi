@@ -36,8 +36,8 @@ public class UsersController : BaseController
 	/// <param name="username">Username to search by</param>
 	[HttpGet("search")]
 	[InvalidRequest, UserNotFound]
-	[ProducesResponseType(typeof(SearchUserResponse), 200)]
-	[ProducesResponseType(typeof(BadRequestResponse), 400)]
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	public async Task<ActionResult<SearchUserResponse>> SearchByUsername([FromQuery] [Required] string username)
 	{
 		var result = await _commandDispatcher.DispatchAsync<SearchByUsername, SearchUserResponse>(new SearchByUsername
@@ -49,7 +49,6 @@ public class UsersController : BaseController
 		// breaking exception pattern since this is not a "real" error that should be logged
 		if (result == null)
 		{
-			// todo test
 			return BadRequest(new BadRequestResponse
 			{
 				Message = "User not found",
@@ -66,9 +65,9 @@ public class UsersController : BaseController
 	[HttpPut("{userId}/send-friend-request")]
 	[MaxLimit, MiscError]
 	[PushNotification]
-	[ProducesResponseType(typeof(FriendResponse), 200)]
-	[ProducesResponseType(typeof(BadRequestResponse), 400)]
-	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult<FriendResponse>> SendFriendRequest(string userId)
 	{
 		var response = await _commandDispatcher.DispatchAsync<SendFriendRequest, FriendResponse>(new SendFriendRequest
@@ -86,9 +85,9 @@ public class UsersController : BaseController
 	[HttpPost("{userId}/share-workout")]
 	[InvalidRequest, MaxLimit, MiscError, WorkoutNotFound]
 	[PushNotification]
-	[ProducesResponseType(typeof(ShareWorkoutResponse), 200)]
-	[ProducesResponseType(typeof(BadRequestResponse), 400)]
-	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
+	[ProducesResponseType(StatusCodes.Status201Created)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult<ShareWorkoutResponse>> ShareWorkout(ShareWorkoutRequest request, string userId)
 	{
 		var createdWorkoutId = await _commandDispatcher.DispatchAsync<ShareWorkout, string>(new ShareWorkout
@@ -97,7 +96,8 @@ public class UsersController : BaseController
 			RecipientUserId = userId,
 			SenderUserId = CurrentUserId
 		});
-		return new ShareWorkoutResponse { SharedWorkoutId = createdWorkoutId };
+		return new ObjectResult(new ShareWorkoutResponse { SharedWorkoutId = createdWorkoutId })
+			{ StatusCode = StatusCodes.Status201Created };
 	}
 
 	/// <summary>Accept Friend Request</summary>
@@ -106,9 +106,9 @@ public class UsersController : BaseController
 	[HttpPut("{userId}/accept-friend-request")]
 	[MaxLimit]
 	[PushNotification]
-	[ProducesResponseType(200)]
-	[ProducesResponseType(typeof(BadRequestResponse), 400)]
-	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult> AcceptFriendRequest(string userId)
 	{
 		await _commandDispatcher.DispatchAsync<AcceptFriendRequest, bool>(new AcceptFriendRequest
@@ -116,7 +116,7 @@ public class UsersController : BaseController
 			InitiatorUserId = CurrentUserId,
 			AcceptedUserId = userId
 		});
-		return Ok();
+		return NoContent();
 	}
 
 	/// <summary>Remove Friend</summary>
@@ -124,8 +124,8 @@ public class UsersController : BaseController
 	/// <param name="userId">User id of the user to remove as a friend</param>
 	[HttpDelete("{userId}/friend")]
 	[PushNotification]
-	[ProducesResponseType(200)]
-	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult> RemoveFriend(string userId)
 	{
 		await _commandDispatcher.DispatchAsync<RemoveFriend, bool>(new RemoveFriend
@@ -133,7 +133,7 @@ public class UsersController : BaseController
 			InitiatorUserId = CurrentUserId,
 			RemovedUserId = userId
 		});
-		return Ok();
+		return NoContent();
 	}
 
 	/// <summary>Cancel Friend Request</summary>
@@ -141,8 +141,8 @@ public class UsersController : BaseController
 	/// <param name="userId">User id of the user to cancel the friend request of</param>
 	[HttpPut("{userId}/cancel-friend-request")]
 	[PushNotification]
-	[ProducesResponseType(200)]
-	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult> CancelFriendRequest(string userId)
 	{
 		await _commandDispatcher.DispatchAsync<CancelFriendRequest, bool>(new CancelFriendRequest
@@ -150,7 +150,7 @@ public class UsersController : BaseController
 			InitiatorUserId = CurrentUserId,
 			UserIdToCancel = userId
 		});
-		return Ok();
+		return NoContent();
 	}
 
 	/// <summary>Decline Friend Request</summary>
@@ -158,8 +158,8 @@ public class UsersController : BaseController
 	/// <param name="userId">User id of the user to cancel the pending friend request</param>
 	[HttpPut("{userId}/decline-friend-request")]
 	[PushNotification]
-	[ProducesResponseType(200)]
-	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult> DeclineFriendRequest(string userId)
 	{
 		await _commandDispatcher.DispatchAsync<DeclineFriendRequest, bool>(new DeclineFriendRequest
@@ -167,7 +167,7 @@ public class UsersController : BaseController
 			InitiatorUserId = CurrentUserId,
 			UserIdToDecline = userId
 		});
-		return Ok();
+		return NoContent();
 	}
 
 	/// <summary>Report User</summary>
@@ -176,9 +176,9 @@ public class UsersController : BaseController
 	/// <param name="request">Request</param>
 	[HttpPost("{userId}/report")]
 	[InvalidRequest]
-	[ProducesResponseType(typeof(ComplaintResponse), 200)]
-	[ProducesResponseType(typeof(BadRequestResponse), 400)]
-	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
+	[ProducesResponseType(StatusCodes.Status201Created)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult<ComplaintResponse>> Report(string userId, ReportUserRequest request)
 	{
 		var response = await _commandDispatcher.DispatchAsync<ReportUser, ComplaintResponse>(new ReportUser
@@ -187,6 +187,6 @@ public class UsersController : BaseController
 			ReportedUserId = userId,
 			Description = request.Description
 		});
-		return response;
+		return new ObjectResult(response) { StatusCode = StatusCodes.Status201Created };
 	}
 }

@@ -25,8 +25,8 @@ public class UpdateRoutineHandler : ICommandHandler<UpdateRoutine, UserAndWorkou
 		var workout = await _repository.GetWorkout(command.WorkoutId);
 		var routine = _mapper.Map<Routine>(command.Routine);
 
-		ValidationUtils.EnsureWorkoutOwnership(user.Id, workout);
 		ValidationUtils.WorkoutExists(workout);
+		ValidationUtils.EnsureWorkoutOwnership(user.Id, workout);
 		ValidationUtils.ValidRoutine(routine);
 
 		UpdateOwnedExercisesOnEdit(user, routine, workout);

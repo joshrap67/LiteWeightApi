@@ -92,6 +92,12 @@ public static class ValidationUtils
 					throw new InvalidRoutineException(
 						$"Day tag for Week: {weekIndex} Day: {dayIndex} exceeds maximum length");
 				}
+
+				if (day.Exercises.Count > Globals.MaxExercises)
+				{
+					throw new InvalidRoutineException(
+						$"Day for Week: {weekIndex} Day: {dayIndex} exceeds maximum exercises allowed");
+				}
 			}
 		}
 	}

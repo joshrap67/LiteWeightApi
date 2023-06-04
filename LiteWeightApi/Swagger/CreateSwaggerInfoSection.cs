@@ -39,6 +39,7 @@ public class CreateSwaggerInfoSection : IConfigureOptions<SwaggerGenOptions>
 
 	private string GetDescription()
 	{
+		// todo if possible, decouple this from api and handle this in separate project where the docs are published
 		var now = SystemClock.Instance.GetCurrentInstant();
 		var lastUpdated = $"_Last updated {now.ToString()}_";
 

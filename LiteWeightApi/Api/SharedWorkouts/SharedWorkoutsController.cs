@@ -1,11 +1,10 @@
-﻿using LiteWeightAPI.Api.SharedWorkouts.Requests;
+using LiteWeightAPI.Api.SharedWorkouts.Requests;
 using LiteWeightAPI.Api.SharedWorkouts.Responses;
 using LiteWeightAPI.Commands;
 using LiteWeightAPI.Commands.SharedWorkouts.AcceptSharedWorkout;
 using LiteWeightAPI.Commands.SharedWorkouts.DeclineSharedWorkout;
 using LiteWeightAPI.Commands.SharedWorkouts.GetSharedWorkout;
 using LiteWeightAPI.Errors.Attributes;
-using LiteWeightAPI.Errors.Responses;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LiteWeightAPI.Api.SharedWorkouts;
@@ -24,8 +23,8 @@ public class SharedWorkoutsController : BaseController
 	/// <summary>Get Shared Workout</summary>
 	/// <remarks>Returns a shared workout, assuming it was sent to the authenticated user.</remarks>
 	[HttpGet("{sharedWorkoutId}")]
-	[ProducesResponseType(typeof(SharedWorkoutResponse), 200)]
-	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
+	[ProducesResponseType(StatusCodes.Status200OK)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult<SharedWorkoutResponse>> GetSharedWorkout(string sharedWorkoutId)
 	{
 		var sharedWorkout = await _commandDispatcher.DispatchAsync<GetSharedWorkout, SharedWorkoutResponse>(
@@ -46,9 +45,9 @@ public class SharedWorkoutsController : BaseController
 	/// <param name="request">Request</param>
 	[HttpPost("{sharedWorkoutId}/accept")]
 	[InvalidRequest, MaxLimit, AlreadyExists]
-	[ProducesResponseType(typeof(AcceptSharedWorkoutResponse), 200)]
-	[ProducesResponseType(typeof(BadRequestResponse), 400)]
-	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
+	[ProducesResponseType(StatusCodes.Status201Created)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult<AcceptSharedWorkoutResponse>> AcceptSharedWorkout(string sharedWorkoutId,
 		AcceptSharedWorkoutRequest request)
 	{
@@ -59,21 +58,21 @@ public class SharedWorkoutsController : BaseController
 				SharedWorkoutId = sharedWorkoutId,
 				NewName = request.NewName
 			});
-		return response;
+		return new ObjectResult(response) { StatusCode = StatusCodes.Status201Created };
 	}
 
 	/// <summary>Decline Shared Workout</summary>
 	/// <remarks>Declines a workout and deletes it from the database, assuming the recipient matches the authenticated user.</remarks>
 	/// <param name="sharedWorkoutId">Id of the shared workout to decline</param>
 	[HttpDelete("{sharedWorkoutId}/decline")]
-	[ProducesResponseType(200)]
-	[ProducesResponseType(typeof(ResourceNotFoundResponse), 404)]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult> DeclineSharedWorkout(string sharedWorkoutId)
 	{
 		await _commandDispatcher.DispatchAsync<DeclineSharedWorkout, bool>(new DeclineSharedWorkout
 		{
 			UserId = CurrentUserId, SharedWorkoutId = sharedWorkoutId
 		});
-		return Ok();
+		return NoContent();
 	}
 }

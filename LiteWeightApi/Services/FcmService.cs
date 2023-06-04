@@ -11,13 +11,6 @@ public interface IFcmService
 
 public class FcmService : IFcmService
 {
-	public const string FriendRequestAction = "friendRequest";
-	public const string CanceledFriendRequestAction = "canceledFriendRequest";
-	public const string AcceptedFriendRequestAction = "acceptedFriendRequest";
-	public const string DeclinedFriendRequestAction = "declinedFriendRequest";
-	public const string RemovedAsFriendAction = "removedAsFriend";
-	public const string ReceivedWorkoutAction = "receivedWorkout";
-
 	public async Task SendPushNotification(string targetToken, NotificationData notificationData)
 	{
 		if (targetToken == null)

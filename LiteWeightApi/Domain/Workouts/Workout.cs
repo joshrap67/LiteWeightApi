@@ -26,5 +26,5 @@ public class Workout
 	public int CurrentDay { get; set; }
 
 	[FirestoreProperty("currentWeek")]
-	public int CurrentWeek { get; set; }
+	public int CurrentWeek { get; set; } // todo i think this should move to workout info...
 }

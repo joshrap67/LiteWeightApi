@@ -19,6 +19,13 @@ public class PushNotificationService : IPushNotificationService
 {
 	private readonly IFcmService _fcmService;
 
+	private const string FriendRequestAction = "friendRequest";
+	private const string CanceledFriendRequestAction = "canceledFriendRequest";
+	private const string AcceptedFriendRequestAction = "acceptedFriendRequest";
+	private const string DeclinedFriendRequestAction = "declinedFriendRequest";
+	private const string RemovedAsFriendAction = "removedAsFriend";
+	private const string ReceivedWorkoutAction = "receivedWorkout";
+
 	public PushNotificationService(IFcmService fcmService)
 	{
 		_fcmService = fcmService;
@@ -29,7 +36,7 @@ public class PushNotificationService : IPushNotificationService
 		await _fcmService.SendPushNotification(recipientUser.FirebaseMessagingToken,
 			new NotificationData
 			{
-				Action = FcmService.ReceivedWorkoutAction,
+				Action = ReceivedWorkoutAction,
 				JsonPayload = JsonUtils.Serialize(sharedWorkoutInfo)
 			});
 	}
@@ -39,7 +46,7 @@ public class PushNotificationService : IPushNotificationService
 		await _fcmService.SendPushNotification(recipientUser.FirebaseMessagingToken,
 			new NotificationData
 			{
-				Action = FcmService.FriendRequestAction,
+				Action = FriendRequestAction,
 				JsonPayload = JsonUtils.Serialize(friendRequest)
 			});
 	}
@@ -49,7 +56,7 @@ public class PushNotificationService : IPushNotificationService
 		await _fcmService.SendPushNotification(acceptedUser.FirebaseMessagingToken,
 			new NotificationData
 			{
-				Action = FcmService.AcceptedFriendRequestAction,
+				Action = AcceptedFriendRequestAction,
 				JsonPayload = JsonUtils.Serialize(new AcceptedFriendRequestResponse
 					{ UserId = initiator.Id, Username = initiator.Username })
 			});
@@ -60,7 +67,7 @@ public class PushNotificationService : IPushNotificationService
 		await _fcmService.SendPushNotification(canceledUser.FirebaseMessagingToken,
 			new NotificationData
 			{
-				Action = FcmService.CanceledFriendRequestAction,
+				Action = CanceledFriendRequestAction,
 				JsonPayload = JsonUtils.Serialize(new CanceledFriendRequestResponse
 					{ UserId = initiator.Id, Username = initiator.Username })
 			});
@@ -71,7 +78,7 @@ public class PushNotificationService : IPushNotificationService
 		await _fcmService.SendPushNotification(declinedUser.FirebaseMessagingToken,
 			new NotificationData
 			{
-				Action = FcmService.DeclinedFriendRequestAction,
+				Action = DeclinedFriendRequestAction,
 				JsonPayload = JsonUtils.Serialize(new DeclinedFriendRequestResponse
 					{ UserId = initiator.Id, Username = initiator.Username })
 			});
@@ -82,7 +89,7 @@ public class PushNotificationService : IPushNotificationService
 		await _fcmService.SendPushNotification(removedFriend.FirebaseMessagingToken,
 			new NotificationData
 			{
-				Action = FcmService.RemovedAsFriendAction,
+				Action = RemovedAsFriendAction,
 				JsonPayload = JsonUtils.Serialize(new RemovedAsFriendResponse
 					{ UserId = initiator.Id, Username = initiator.Username })
 			});

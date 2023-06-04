@@ -1,4 +1,5 @@
-﻿using LiteWeightAPI.Errors.Responses;
+using LiteWeightAPI.Errors.Responses;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -65,5 +66,51 @@ public class DefaultResponsesOperationFilter : IOperationFilter
 					}
 				}
 			};
+
+		context.ApiDescription.TryGetMethodInfo(out var methodInfo);
+		if (methodInfo == null)
+		{
+			return;
+		}
+
+		// if any api method is explicitly defined to return a specific HTTP code, add the formatted response to the swagger spec
+		var attributes = (IEnumerable<ProducesResponseTypeAttribute>)Attribute.GetCustomAttributes(methodInfo,
+			typeof(ProducesResponseTypeAttribute));
+		foreach (var attribute in attributes)
+		{
+			switch (attribute.StatusCode)
+			{
+				case StatusCodes.Status400BadRequest:
+					operation.Responses[StatusCodes.Status400BadRequest.ToString()] =
+						new OpenApiResponse
+						{
+							Description = "Bad Request",
+							Content = new Dictionary<string, OpenApiMediaType>
+							{
+								[contentType] = new()
+								{
+									Schema = context.SchemaGenerator.GenerateSchema(typeof(BadRequestResponse),
+										context.SchemaRepository)
+								}
+							}
+						};
+					break;
+				case StatusCodes.Status404NotFound:
+					operation.Responses[StatusCodes.Status404NotFound.ToString()] =
+						new OpenApiResponse
+						{
+							Description = "Not Found",
+							Content = new Dictionary<string, OpenApiMediaType>
+							{
+								[contentType] = new()
+								{
+									Schema = context.SchemaGenerator.GenerateSchema(typeof(ResourceNotFoundResponse),
+										context.SchemaRepository)
+								}
+							}
+						};
+					break;
+			}
+		}
 	}
 }

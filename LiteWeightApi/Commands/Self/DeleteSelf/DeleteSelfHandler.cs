@@ -72,7 +72,7 @@ public class DeleteSelfHandler : ICommandHandler<DeleteSelf, bool>
 			await _repository.PutUser(otherUser);
 		}
 
-		// todo send push notifications for removed/canceled? Might be a bit overkill
+		// todo send push notifications for friend removed/canceled? Might be a bit overkill
 		await _repository.DeleteUser(command.UserId);
 		await _firebaseAuthService.DeleteUser(command.UserId);
 
