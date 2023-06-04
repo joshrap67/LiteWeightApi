@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using LiteWeightAPI.Api.Self.Requests;
 using LiteWeightAPI.Api.Self.Responses;
 using LiteWeightAPI.Commands;
@@ -6,6 +6,7 @@ using LiteWeightAPI.Commands.Self.CreateSelf;
 using LiteWeightAPI.Commands.Self.DeleteSelf;
 using LiteWeightAPI.Commands.Self.GetSelf;
 using LiteWeightAPI.Commands.Self.SetAllFriendRequestsSeen;
+using LiteWeightAPI.Commands.Self.SetAllReceivedWorkoutsSeen;
 using LiteWeightAPI.Commands.Self.SetCurrentWorkout;
 using LiteWeightAPI.Commands.Self.SetFirebaseToken;
 using LiteWeightAPI.Commands.Self.SetPreferences;
@@ -146,7 +147,7 @@ public class SelfController : BaseController
 	[HttpPut("received-workouts/all-seen")]
 	public async Task<ActionResult> SetAllReceivedWorkoutsSeen()
 	{
-		await _commandDispatcher.DispatchAsync<SetAllFriendRequestsSeen, bool>(new SetAllFriendRequestsSeen
+		await _commandDispatcher.DispatchAsync<SetAllReceivedWorkoutsSeen, bool>(new SetAllReceivedWorkoutsSeen
 		{
 			UserId = CurrentUserId
 		});
