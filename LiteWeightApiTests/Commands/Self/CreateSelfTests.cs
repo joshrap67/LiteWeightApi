@@ -41,7 +41,7 @@ public class CreateSelfTests
 		Assert.Equal(command.Username, createdUser.Username);
 		Assert.Equal(command.UserEmail, createdUser.Email);
 		Assert.Equal(command.UserId, createdUser.Id);
-		Assert.Equal(command.MetricUnits, createdUser.Preferences.MetricUnits);
+		Assert.Equal(command.MetricUnits, createdUser.Settings.MetricUnits);
 		Assert.NotNull(createdUser.ProfilePicture);
 	}
 

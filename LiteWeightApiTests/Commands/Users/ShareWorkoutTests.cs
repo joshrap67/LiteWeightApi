@@ -46,10 +46,10 @@ public class ShareWorkoutTests
 				.Create())
 			.ToList();
 
-		var preferences = new UserPreferences { PrivateAccount = true };
+		var preferences = new UserSettings { PrivateAccount = true };
 		var recipientUser = _fixture.Build<User>()
 			.With(x => x.Id, command.RecipientUserId)
-			.With(x => x.Preferences, preferences)
+			.With(x => x.Settings, preferences)
 			.With(x => x.Friends, new List<Friend>()
 			{
 				_fixture.Build<Friend>().With(x => x.UserId, command.SenderUserId).Create()
@@ -98,10 +98,10 @@ public class ShareWorkoutTests
 			.Select(exerciseId => _fixture.Build<OwnedExercise>().With(x => x.Id, exerciseId).Create())
 			.ToList();
 
-		var preferences = new UserPreferences { PrivateAccount = false };
+		var preferences = new UserSettings { PrivateAccount = false };
 		var recipientUser = _fixture.Build<User>()
 			.With(x => x.Id, command.RecipientUserId)
-			.With(x => x.Preferences, preferences)
+			.With(x => x.Settings, preferences)
 			.Create();
 
 		var senderUser = _fixture.Build<User>()
@@ -134,10 +134,10 @@ public class ShareWorkoutTests
 	{
 		var command = _fixture.Create<ShareWorkout>();
 
-		var preferences = new UserPreferences { PrivateAccount = false };
+		var preferences = new UserSettings { PrivateAccount = false };
 		var recipientUser = _fixture.Build<User>()
 			.With(x => x.Id, command.RecipientUserId)
-			.With(x => x.Preferences, preferences)
+			.With(x => x.Settings, preferences)
 			.Create();
 
 		var senderUser = _fixture.Build<User>()
@@ -170,13 +170,13 @@ public class ShareWorkoutTests
 	{
 		var command = _fixture.Create<ShareWorkout>();
 
-		var preferences = new UserPreferences { PrivateAccount = false };
+		var preferences = new UserSettings { PrivateAccount = false };
 		var receivedWorkouts = Enumerable.Range(0, Globals.MaxReceivedWorkouts + 1)
 			.Select(_ => _fixture.Build<SharedWorkoutInfo>().Create())
 			.ToList();
 		var recipientUser = _fixture.Build<User>()
 			.With(x => x.Id, command.RecipientUserId)
-			.With(x => x.Preferences, preferences)
+			.With(x => x.Settings, preferences)
 			.With(x => x.ReceivedWorkouts, receivedWorkouts)
 			.Create();
 
@@ -200,10 +200,10 @@ public class ShareWorkoutTests
 	{
 		var command = _fixture.Create<ShareWorkout>();
 
-		var preferences = new UserPreferences { PrivateAccount = true };
+		var preferences = new UserSettings { PrivateAccount = true };
 		var recipientUser = _fixture.Build<User>()
 			.With(x => x.Id, command.RecipientUserId)
-			.With(x => x.Preferences, preferences)
+			.With(x => x.Settings, preferences)
 			.Create();
 
 		var workout = _fixture.Build<Workout>()

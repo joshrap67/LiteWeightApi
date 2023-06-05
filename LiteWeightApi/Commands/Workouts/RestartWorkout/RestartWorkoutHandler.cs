@@ -31,8 +31,8 @@ public class RestartWorkoutHandler : ICommandHandler<RestartWorkout, UserAndWork
 		var workoutInfo = user.Workouts.First(x => x.WorkoutId == command.WorkoutId);
 		RestartWorkout(routine, workoutInfo, user);
 		workoutInfo.TimesRestarted += 1;
-		workout.CurrentDay = 0;
-		workout.CurrentWeek = 0;
+		workoutInfo.CurrentDay = 0;
+		workoutInfo.CurrentWeek = 0;
 
 		await _repository.ExecuteBatchWrite(
 			workoutsToPut: new List<Workout> { workout },
@@ -61,7 +61,7 @@ public class RestartWorkoutHandler : ICommandHandler<RestartWorkout, UserAndWork
 							IncreaseAverage(workoutInfo.AverageExercisesCompleted, workoutInfo.TotalExercisesSum, 1);
 						routineExercise.Completed = false;
 
-						if (user.Preferences.UpdateDefaultWeightOnRestart)
+						if (user.Settings.UpdateDefaultWeightOnRestart)
 						{
 							// automatically update default weight with this weight if it's higher than previous
 							var exerciseId = routineExercise.ExerciseId;

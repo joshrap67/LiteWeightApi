@@ -30,16 +30,4 @@ public class WorkoutResponse
 	/// Routine of the user.
 	/// </summary>
 	public RoutineResponse Routine { get; set; }
-
-	/// <summary>
-	/// Index of the current week the user is on.
-	/// </summary>
-	/// <example>2</example>
-	public int CurrentWeek { get; set; }
-
-	/// <summary>
-	/// Index of the current day of the current week the user is on.
-	/// </summary>
-	/// <example>0</example>
-	public int CurrentDay { get; set; }
 }

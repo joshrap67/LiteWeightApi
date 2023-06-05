@@ -22,10 +22,10 @@ public class SearchByUsernameTests
 	{
 		var command = _fixture.Create<SearchByUsername>();
 
-		var preferences = new UserPreferences();
+		var preferences = new UserSettings();
 		var foundUser = _fixture.Build<User>()
 			.With(x => x.Username, command.Username)
-			.With(x => x.Preferences, preferences)
+			.With(x => x.Settings, preferences)
 			.Create();
 
 		_mockRepository
@@ -42,10 +42,10 @@ public class SearchByUsernameTests
 	{
 		var command = _fixture.Create<SearchByUsername>();
 
-		var preferences = new UserPreferences { PrivateAccount = true };
+		var preferences = new UserSettings { PrivateAccount = true };
 		var foundUser = _fixture.Build<User>()
 			.With(x => x.Username, command.Username)
-			.With(x => x.Preferences, preferences)
+			.With(x => x.Settings, preferences)
 			.With(x => x.Friends, new List<Friend>
 			{
 				_fixture.Build<Friend>().With(x => x.UserId, command.InitiatorId).Create()
@@ -79,10 +79,10 @@ public class SearchByUsernameTests
 	{
 		var command = _fixture.Create<SearchByUsername>();
 
-		var preferences = new UserPreferences { PrivateAccount = true };
+		var preferences = new UserSettings { PrivateAccount = true };
 		var foundUser = _fixture.Build<User>()
 			.With(x => x.Username, command.Username)
-			.With(x => x.Preferences, preferences)
+			.With(x => x.Settings, preferences)
 			.Create();
 
 		_mockRepository

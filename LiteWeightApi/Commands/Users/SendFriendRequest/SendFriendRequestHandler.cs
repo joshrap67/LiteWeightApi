@@ -43,7 +43,7 @@ public class SendFriendRequestHandler : ICommandHandler<SendFriendRequest, Frien
 		ValidationUtils.UserExists(recipientUser);
 		var senderUserId = senderUser.Id;
 
-		if (recipientUser.Preferences.PrivateAccount)
+		if (recipientUser.Settings.PrivateAccount)
 		{
 			throw new ResourceNotFoundException("User");
 		}

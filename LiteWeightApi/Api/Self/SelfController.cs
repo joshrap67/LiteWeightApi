@@ -9,8 +9,8 @@ using LiteWeightAPI.Commands.Self.SetAllFriendRequestsSeen;
 using LiteWeightAPI.Commands.Self.SetAllReceivedWorkoutsSeen;
 using LiteWeightAPI.Commands.Self.SetCurrentWorkout;
 using LiteWeightAPI.Commands.Self.SetFirebaseToken;
-using LiteWeightAPI.Commands.Self.SetPreferences;
 using LiteWeightAPI.Commands.Self.SetReceivedWorkoutSeen;
+using LiteWeightAPI.Commands.Self.SetSettings;
 using LiteWeightAPI.Commands.Self.SetUsername;
 using LiteWeightAPI.Commands.Self.UpdateProfilePicture;
 using LiteWeightAPI.Errors.Attributes;
@@ -133,19 +133,18 @@ public class SelfController : BaseController
 		return NoContent();
 	}
 
-	/// <summary>Set Preferences</summary>
-	/// <remarks>Sets the preferences on the authenticated user.</remarks>
-	[HttpPut("user-preferences")]
+	/// <summary>Set Settings</summary>
+	/// <remarks>Sets the settings on the authenticated user.</remarks>
+	[HttpPut("settings")]
 	[InvalidRequest]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
-	public async Task<ActionResult> SetPreferences(UserPreferencesResponse request)
+	public async Task<ActionResult> SetSettings(UserSettingsResponse request)
 	{
-		// todo rename SetSettings?
-		var command = _mapper.Map<SetPreferences>(request);
+		var command = _mapper.Map<SetSettings>(request);
 		command.UserId = command.UserId;
 
-		await _commandDispatcher.DispatchAsync<SetPreferences, bool>(command);
+		await _commandDispatcher.DispatchAsync<SetSettings, bool>(command);
 		return NoContent();
 	}
 

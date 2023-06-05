@@ -25,7 +25,7 @@ public class SearchByUsernameHandler : ICommandHandler<SearchByUsername, SearchU
 		}
 
 		// if user is private account, they should not show up in the search unless already friends (or pending friend) with the initiator
-		if (user.Preferences.PrivateAccount && user.Friends.All(x => x.UserId != command.InitiatorId))
+		if (user.Settings.PrivateAccount && user.Friends.All(x => x.UserId != command.InitiatorId))
 		{
 			return null;
 		}

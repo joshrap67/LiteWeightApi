@@ -1,6 +1,6 @@
-namespace LiteWeightAPI.Commands.Self.SetPreferences;
+namespace LiteWeightAPI.Commands.Self.SetSettings;
 
-public class SetPreferences : ICommand<bool>
+public class SetSettings : ICommand<bool>
 {
 	public string UserId { get; set; }
 

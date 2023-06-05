@@ -147,7 +147,7 @@ public class RestartWorkoutTests : BaseTest
 			.With(x => x.Id, command.UserId)
 			.With(x => x.Workouts, workouts)
 			.With(x => x.Exercises, ownedExercises)
-			.With(x => x.Preferences, new UserPreferences { UpdateDefaultWeightOnRestart = shouldUpdateDefault })
+			.With(x => x.Settings, new UserSettings { UpdateDefaultWeightOnRestart = shouldUpdateDefault })
 			.Create();
 
 		_mockRepository
@@ -162,8 +162,8 @@ public class RestartWorkoutTests : BaseTest
 		Assert.Equal(3, previousInfo.TimesRestarted);
 		Assert.Equal(112, previousInfo.TotalExercisesSum);
 		Assert.Equal(.8125, previousInfo.AverageExercisesCompleted);
-		Assert.Equal(0, workout.CurrentDay);
-		Assert.Equal(0, workout.CurrentWeek);
+		Assert.Equal(0, previousInfo.CurrentDay);
+		Assert.Equal(0, previousInfo.CurrentWeek);
 		if (shouldUpdateDefault)
 		{
 			Assert.Equal(300, user.Exercises.First(x => x.Id == "A").DefaultWeight);

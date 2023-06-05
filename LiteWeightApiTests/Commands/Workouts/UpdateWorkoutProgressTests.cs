@@ -3,7 +3,6 @@ using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Domain.Workouts;
 using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
-using LiteWeightAPI.Imports;
 
 namespace LiteWeightApiTests.Commands.Workouts;
 
@@ -22,27 +21,16 @@ public class UpdateWorkoutProgressTests : BaseTest
 	public async Task Should_Update_Progress()
 	{
 		var command = Fixture.Create<UpdateWorkoutProgress>();
-		var workouts = Enumerable.Range(0, Globals.MaxFreeWorkouts / 2)
-			.Select(_ => Fixture.Create<WorkoutInfo>())
-			.ToList();
+
+		var workoutInfo = Fixture.Build<WorkoutInfo>().With(x => x.WorkoutId, command.WorkoutId).Create();
+		var workouts = new List<WorkoutInfo> { workoutInfo };
 		var workout = Fixture.Build<Workout>()
 			.With(x => x.CreatorId, command.UserId)
 			.Create();
-		var exercisesOfWorkout = workout.Routine.Weeks
-			.SelectMany(x => x.Days)
-			.SelectMany(x => x.Exercises)
-			.Select(x => x.ExerciseId)
-			.ToList();
-		var ownedExercises = Enumerable.Range(0, 10)
-			.Select(_ => Fixture.Create<OwnedExercise>())
-			.ToList();
-		ownedExercises.AddRange(exercisesOfWorkout.Select(exerciseId =>
-			Fixture.Build<OwnedExercise>().With(x => x.Id, exerciseId).Create()));
 
 		var user = Fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
 			.With(x => x.Workouts, workouts)
-			.With(x => x.Exercises, ownedExercises)
 			.Create();
 
 		_mockRepository
@@ -54,8 +42,11 @@ public class UpdateWorkoutProgressTests : BaseTest
 			.ReturnsAsync(user);
 
 		await _handler.HandleAsync(command);
+		Assert.Equal(command.CurrentWeek, workoutInfo.CurrentWeek);
+		Assert.Equal(command.CurrentDay, workoutInfo.CurrentDay);
+		Assert.Equal(command.Routine.Weeks.SelectMany(x => x.Days).SelectMany(x => x.Exercises).First().ExerciseId,
+			workout.Routine.Weeks.SelectMany(x => x.Days).SelectMany(x => x.Exercises).First().ExerciseId);
 	}
-
 
 	[Fact]
 	public async Task Should_Throw_Exception_Missing_Permissions_Workout()

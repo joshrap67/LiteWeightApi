@@ -55,7 +55,7 @@ public class UserResponse
 	/// <summary>
 	/// Preferences of the user.
 	/// </summary>
-	public UserPreferencesResponse Preferences { get; set; }
+	public UserSettingsResponse Settings { get; set; }
 
 	/// <summary>
 	/// List of workouts the user owns.

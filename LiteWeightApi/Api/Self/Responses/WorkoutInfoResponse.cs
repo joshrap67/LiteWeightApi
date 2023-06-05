@@ -13,6 +13,18 @@ public class WorkoutInfoResponse
 	/// </summary>
 	/// <example>3-Day Split</example>
 	public string WorkoutName { get; set; }
+	
+	/// <summary>
+	/// Index of the current week the user is on.
+	/// </summary>
+	/// <example>2</example>
+	public int CurrentWeek { get; set; }
+
+	/// <summary>
+	/// Index of the current day of the current week the user is on.
+	/// </summary>
+	/// <example>0</example>
+	public int CurrentDay { get; set; }
 
 	/// <summary>
 	/// Timestamp of when the workout was last set as the current workout (UTC).

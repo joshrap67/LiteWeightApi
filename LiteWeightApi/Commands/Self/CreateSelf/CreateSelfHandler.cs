@@ -46,7 +46,7 @@ public class CreateSelfHandler : ICommandHandler<CreateSelf, UserResponse>
 			await _storageService.UploadDefaultProfilePicture(fileName);
 		}
 
-		var userPreferences = new UserPreferences
+		var userPreferences = new UserSettings
 		{
 			MetricUnits = command.MetricUnits,
 			PrivateAccount = false,
@@ -59,7 +59,7 @@ public class CreateSelfHandler : ICommandHandler<CreateSelf, UserResponse>
 			Email = command.UserEmail,
 			ProfilePicture = fileName,
 			Username = command.Username,
-			Preferences = userPreferences,
+			Settings = userPreferences,
 			Exercises = Defaults.GetDefaultExercises()
 		};
 		await _repository.CreateUser(user);

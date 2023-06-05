@@ -192,10 +192,15 @@ public class UpdateRoutineTests : BaseTest
 			.Create()
 		);
 
+		var workoutInfos = new List<WorkoutInfo>
+		{
+			Fixture.Build<WorkoutInfo>().With(x => x.WorkoutId, command.WorkoutId).Create()
+		};
 		var user = Fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
 			.With(x => x.Exercises, ownedExercises)
-			.With(x => x.Preferences, new UserPreferences { UpdateDefaultWeightOnSave = shouldUpdateDefault })
+			.With(x=>x.Workouts, workoutInfos)
+			.With(x => x.Settings, new UserSettings { UpdateDefaultWeightOnSave = shouldUpdateDefault })
 			.Create();
 
 		_mockRepository

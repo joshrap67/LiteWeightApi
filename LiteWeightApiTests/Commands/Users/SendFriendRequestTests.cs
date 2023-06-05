@@ -31,10 +31,10 @@ public class SendFriendRequestTests
 	{
 		var command = _fixture.Create<SendFriendRequest>();
 
-		var preferences = new UserPreferences { PrivateAccount = false };
+		var preferences = new UserSettings { PrivateAccount = false };
 		var recipientUser = _fixture.Build<User>()
 			.With(x => x.Id, command.RecipientId)
-			.With(x => x.Preferences, preferences)
+			.With(x => x.Settings, preferences)
 			.Create();
 
 		var senderUser = _fixture.Build<User>()
@@ -62,10 +62,10 @@ public class SendFriendRequestTests
 	{
 		var command = _fixture.Create<SendFriendRequest>();
 
-		var preferences = new UserPreferences { PrivateAccount = false };
+		var preferences = new UserSettings { PrivateAccount = false };
 		var recipientUser = _fixture.Build<User>()
 			.With(x => x.Id, command.RecipientId)
-			.With(x => x.Preferences, preferences)
+			.With(x => x.Settings, preferences)
 			.Create();
 
 		var senderUser = _fixture.Build<User>()
@@ -105,10 +105,10 @@ public class SendFriendRequestTests
 	{
 		var command = _fixture.Create<SendFriendRequest>();
 
-		var preferences = new UserPreferences { PrivateAccount = false };
+		var preferences = new UserSettings { PrivateAccount = false };
 		var recipientUser = _fixture.Build<User>()
 			.With(x => x.Id, command.RecipientId)
-			.With(x => x.Preferences, preferences)
+			.With(x => x.Settings, preferences)
 			.Create();
 
 		var friendsRequests = new List<FriendRequest>
@@ -136,13 +136,13 @@ public class SendFriendRequestTests
 	{
 		var command = _fixture.Create<SendFriendRequest>();
 
-		var preferences = new UserPreferences { PrivateAccount = false };
+		var preferences = new UserSettings { PrivateAccount = false };
 		var friendRequests = Enumerable.Range(0, Globals.MaxFriendRequests + 1)
 			.Select(_ => _fixture.Build<FriendRequest>().Create())
 			.ToList();
 		var recipientUser = _fixture.Build<User>()
 			.With(x => x.Id, command.RecipientId)
-			.With(x => x.Preferences, preferences)
+			.With(x => x.Settings, preferences)
 			.With(x => x.FriendRequests, friendRequests)
 			.Create();
 
@@ -166,10 +166,10 @@ public class SendFriendRequestTests
 	{
 		var command = _fixture.Create<SendFriendRequest>();
 
-		var preferences = new UserPreferences { PrivateAccount = false };
+		var preferences = new UserSettings { PrivateAccount = false };
 		var recipientUser = _fixture.Build<User>()
 			.With(x => x.Id, command.RecipientId)
-			.With(x => x.Preferences, preferences)
+			.With(x => x.Settings, preferences)
 			.With(x => x.Friends, new List<Friend>
 			{
 				_fixture.Build<Friend>().With(x => x.UserId, command.SenderId).Create()
@@ -200,10 +200,10 @@ public class SendFriendRequestTests
 	{
 		var command = _fixture.Create<SendFriendRequest>();
 
-		var preferences = new UserPreferences { PrivateAccount = true };
+		var preferences = new UserSettings { PrivateAccount = true };
 		var recipientUser = _fixture.Build<User>()
 			.With(x => x.Id, command.RecipientId)
-			.With(x => x.Preferences, preferences)
+			.With(x => x.Settings, preferences)
 			.Create();
 
 		_mockRepository

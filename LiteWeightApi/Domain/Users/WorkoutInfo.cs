@@ -12,6 +12,12 @@ public class WorkoutInfo
 
 	[FirestoreProperty("workoutName")]
 	public string WorkoutName { get; set; }
+	
+	[FirestoreProperty("currentDay")]
+	public int CurrentDay { get; set; }
+
+	[FirestoreProperty("currentWeek")]
+	public int CurrentWeek { get; set; }
 
 	[FirestoreProperty("lastSetAsCurrentUtc", ConverterType = typeof(InstantConverter))]
 	public Instant LastSetAsCurrentUtc { get; set; }

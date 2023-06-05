@@ -1,5 +1,6 @@
 using AutoMapper;
 using LiteWeightAPI.Domain;
+using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Domain.Workouts;
 using LiteWeightAPI.Utils;
 
@@ -27,12 +28,17 @@ public class UpdateWorkoutProgressHandler : ICommandHandler<UpdateWorkoutProgres
 		ValidationUtils.ValidRoutine(routine);
 
 		workoutToUpdate.Routine = routine;
-		workoutToUpdate.CurrentWeek = command.CurrentWeek;
-		workoutToUpdate.CurrentDay = command.CurrentDay;
 
-		WorkoutUtils.FixCurrentDayAndWeek(workoutToUpdate);
+		var workoutInfo = user.Workouts.First(x => x.WorkoutId == command.WorkoutId);
+		workoutInfo.CurrentWeek = command.CurrentWeek;
+		workoutInfo.CurrentDay = command.CurrentDay;
 
-		await _repository.PutWorkout(workoutToUpdate);
+		WorkoutUtils.FixCurrentDayAndWeek(workoutToUpdate, workoutInfo);
+
+		await _repository.ExecuteBatchWrite(
+			workoutsToPut: new List<Workout> { workoutToUpdate },
+			usersToPut: new List<User> { user }
+		);
 
 		return true;
 	}

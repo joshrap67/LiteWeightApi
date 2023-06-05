@@ -21,10 +21,4 @@ public class Workout
 
 	[FirestoreProperty("routine")]
 	public Routine Routine { get; set; }
-
-	[FirestoreProperty("currentDay")]
-	public int CurrentDay { get; set; }
-
-	[FirestoreProperty("currentWeek")]
-	public int CurrentWeek { get; set; } // todo i think this should move to workout info...
 }

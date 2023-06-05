@@ -1,6 +1,6 @@
 ﻿namespace LiteWeightAPI.Api.Self.Responses;
 
-public class UserPreferencesResponse
+public class UserSettingsResponse
 {
 	/// <summary>
 	/// If true, the user will not receive any friend requests or workouts from users who they are not friends with.

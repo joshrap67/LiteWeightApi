@@ -41,7 +41,7 @@ public class ShareWorkoutHandler : ICommandHandler<ShareWorkout, string>
 		ValidationUtils.ReferencedWorkoutExists(workoutToSend);
 		ValidationUtils.EnsureWorkoutOwnership(command.SenderUserId, workoutToSend);
 
-		if (recipientUser.Preferences.PrivateAccount &&
+		if (recipientUser.Settings.PrivateAccount &&
 		    recipientUser.Friends.All(x => x.UserId != command.SenderUserId))
 		{
 			throw new ResourceNotFoundException("User");

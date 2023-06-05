@@ -3,7 +3,7 @@
 namespace LiteWeightAPI.Domain.Users;
 
 [FirestoreData]
-public class UserPreferences
+public class UserSettings
 {
 	[FirestoreProperty("privateAccount")]
 	public bool PrivateAccount { get; set; }

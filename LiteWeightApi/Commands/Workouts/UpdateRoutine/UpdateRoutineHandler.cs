@@ -31,7 +31,7 @@ public class UpdateRoutineHandler : ICommandHandler<UpdateRoutine, UserAndWorkou
 
 		UpdateOwnedExercisesOnEdit(user, routine, workout);
 		workout.Routine = routine;
-		WorkoutUtils.FixCurrentDayAndWeek(workout);
+		WorkoutUtils.FixCurrentDayAndWeek(workout, user.Workouts.First(x => x.WorkoutId == command.WorkoutId));
 
 		await _repository.ExecuteBatchWrite(
 			workoutsToPut: new List<Workout> { workout },
@@ -47,7 +47,7 @@ public class UpdateRoutineHandler : ICommandHandler<UpdateRoutine, UserAndWorkou
 
 	private static void UpdateOwnedExercisesOnEdit(User user, Routine newRoutine, Workout workout)
 	{
-		var updateDefaultWeight = user.Preferences.UpdateDefaultWeightOnSave;
+		var updateDefaultWeight = user.Settings.UpdateDefaultWeightOnSave;
 		var currentExerciseIds = new HashSet<string>();
 		var exerciseIdToExercise = user.Exercises.ToDictionary(x => x.Id, x => x);
 		foreach (var week in newRoutine.Weeks)

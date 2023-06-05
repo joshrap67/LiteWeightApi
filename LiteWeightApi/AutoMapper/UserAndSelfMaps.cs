@@ -3,7 +3,7 @@ using LiteWeightAPI.Api.Self.Requests;
 using LiteWeightAPI.Api.Self.Responses;
 using LiteWeightAPI.Api.Users.Responses;
 using LiteWeightAPI.Commands.Self.CreateSelf;
-using LiteWeightAPI.Commands.Self.SetPreferences;
+using LiteWeightAPI.Commands.Self.SetSettings;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.ExtensionMethods;
 
@@ -17,11 +17,11 @@ public class UserAndSelfMaps : Profile
 		CreateMap<Friend, FriendResponse>();
 		CreateMap<FriendRequest, FriendRequestResponse>();
 		CreateMap<SharedWorkoutInfo, SharedWorkoutInfoResponse>();
-		CreateMap<UserPreferences, UserPreferencesResponse>();
+		CreateMap<UserSettings, UserSettingsResponse>();
 		CreateMap<User, UserResponse>();
 		CreateMap<User, SearchUserResponse>();
 		
 		CreateMap<CreateUserRequest, CreateSelf>().Ignore(x => x.UserEmail).Ignore(x => x.UserId);
-		CreateMap<UserPreferencesResponse, SetPreferences>().Ignore(x => x.UserId);
+		CreateMap<UserSettingsResponse, SetSettings>().Ignore(x => x.UserId);
 	}
 }
