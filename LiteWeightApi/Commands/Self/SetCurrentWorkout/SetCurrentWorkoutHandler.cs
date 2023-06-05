@@ -19,18 +19,18 @@ public class SetCurrentWorkoutHandler : ICommandHandler<SetCurrentWorkout, bool>
 	{
 		var user = await _repository.GetUser(command.UserId);
 
-		if (command.WorkoutId != null && user.Workouts.All(x => x.WorkoutId != command.WorkoutId))
+		if (command.CurrentWorkoutId != null && user.Workouts.All(x => x.WorkoutId != command.CurrentWorkoutId))
 		{
-			throw new WorkoutNotFoundException($"{command.WorkoutId} does not exist for the authenticated user");
+			throw new WorkoutNotFoundException($"{command.CurrentWorkoutId} does not exist for the authenticated user");
 		}
 
-		if (command.WorkoutId != null)
+		if (command.CurrentWorkoutId != null)
 		{
-			var workoutInfo = user.Workouts.First(x => x.WorkoutId == command.WorkoutId);
+			var workoutInfo = user.Workouts.First(x => x.WorkoutId == command.CurrentWorkoutId);
 			workoutInfo.LastSetAsCurrentUtc = _clock.GetCurrentInstant();
 		}
 
-		user.CurrentWorkoutId = command.WorkoutId;
+		user.CurrentWorkoutId = command.CurrentWorkoutId;
 
 		await _repository.PutUser(user);
 

@@ -8,5 +8,5 @@ public class RenameWorkoutRequest
 	/// New name of the workout. Must be unique.
 	/// </summary>
 	[Required]
-	public string NewName { get; set; }
+	public string Name { get; set; }
 }

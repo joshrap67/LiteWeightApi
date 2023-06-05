@@ -41,14 +41,13 @@ public class CreateWorkoutHandler : ICommandHandler<CreateWorkout, UserAndWorkou
 			throw new MaxLimitException("Maximum workouts exceeded");
 		}
 
-		ValidationUtils.ValidWorkoutName(command.WorkoutName, user);
-		ValidationUtils.ValidRoutine(routine);
+		ValidationUtils.ValidWorkoutName(command.Name, user);
 
 		var now = _clock.GetCurrentInstant();
 		var newWorkout = new Workout
 		{
 			Id = workoutId,
-			Name = command.WorkoutName.Trim(),
+			Name = command.Name.Trim(),
 			CreationUtc = now,
 			CreatorId = command.UserId,
 			Routine = routine
@@ -57,7 +56,7 @@ public class CreateWorkoutHandler : ICommandHandler<CreateWorkout, UserAndWorkou
 		var workoutInfo = new WorkoutInfo
 		{
 			WorkoutId = workoutId,
-			WorkoutName = command.WorkoutName
+			WorkoutName = command.Name
 		};
 		user.Workouts.Add(workoutInfo);
 		if (command.SetAsCurrentWorkout)

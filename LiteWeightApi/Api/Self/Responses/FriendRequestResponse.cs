@@ -3,19 +3,19 @@
 public class FriendRequestResponse
 {
 	/// <summary>
-	/// Unique identifier of the user.
+	/// Unique identifier of the user who sent the friend request.
 	/// </summary>
 	/// <example>dcceafca-7055-4c0d-81f8-0e9ef16c7bdc</example>
 	public string UserId { get; set; }
 
 	/// <summary>
-	/// Username of the user.
+	/// Username of the user who sent the friend request.
 	/// </summary>
 	/// <example>arthur_v</example>
 	public string Username { get; set; }
 
 	/// <summary>
-	/// File path of the user's profile picture.
+	/// File path of the sender's profile picture.
 	/// </summary>
 	/// <example>f5b17d02-0a8f-45b5-a2c9-3410fceb5cd3.jpg</example>
 	public string ProfilePicture { get; set; }

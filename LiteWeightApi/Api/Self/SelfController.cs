@@ -8,7 +8,7 @@ using LiteWeightAPI.Commands.Self.GetSelf;
 using LiteWeightAPI.Commands.Self.SetAllFriendRequestsSeen;
 using LiteWeightAPI.Commands.Self.SetAllReceivedWorkoutsSeen;
 using LiteWeightAPI.Commands.Self.SetCurrentWorkout;
-using LiteWeightAPI.Commands.Self.SetFirebaseToken;
+using LiteWeightAPI.Commands.Self.SetFirebaseMessagingToken;
 using LiteWeightAPI.Commands.Self.SetReceivedWorkoutSeen;
 using LiteWeightAPI.Commands.Self.SetSettings;
 using LiteWeightAPI.Commands.Self.SetUsername;
@@ -22,12 +22,12 @@ namespace LiteWeightAPI.Api.Self;
 [ApiController]
 public class SelfController : BaseController
 {
-	private readonly ICommandDispatcher _commandDispatcher;
+	private readonly ICommandDispatcher _dispatcher;
 	private readonly IMapper _mapper;
 
-	public SelfController(ICommandDispatcher commandDispatcher, IMapper mapper, Serilog.ILogger logger) : base(logger)
+	public SelfController(ICommandDispatcher dispatcher, IMapper mapper, Serilog.ILogger logger) : base(logger)
 	{
-		_commandDispatcher = commandDispatcher;
+		_dispatcher = dispatcher;
 		_mapper = mapper;
 	}
 
@@ -38,8 +38,10 @@ public class SelfController : BaseController
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult<UserResponse>> GetSelf()
 	{
-		var user = await _commandDispatcher.DispatchAsync<GetSelf, UserResponse>(new GetSelf
-			{ UserId = CurrentUserId });
+		var user = await _dispatcher.DispatchAsync<GetSelf, UserResponse>(new GetSelf
+		{
+			UserId = CurrentUserId
+		});
 		return user;
 	}
 
@@ -58,7 +60,7 @@ public class SelfController : BaseController
 		command.UserEmail = CurrentUserEmail;
 		command.UserId = CurrentUserId;
 
-		var user = await _commandDispatcher.DispatchAsync<CreateSelf, UserResponse>(command);
+		var user = await _dispatcher.DispatchAsync<CreateSelf, UserResponse>(command);
 		return new ObjectResult(user) { StatusCode = StatusCodes.Status201Created };
 	}
 
@@ -70,35 +72,35 @@ public class SelfController : BaseController
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	public async Task<ActionResult> UpdateProfilePicture(UpdateProfilePictureRequest request)
 	{
-		await _commandDispatcher.DispatchAsync<UpdateProfilePicture, bool>(new UpdateProfilePicture
+		await _dispatcher.DispatchAsync<UpdateProfilePicture, bool>(new UpdateProfilePicture
 		{
-			UserId = CurrentUserId, ImageData = request.ImageData
+			UserId = CurrentUserId, ImageData = request.ProfilePictureData
 		});
 		return NoContent();
 	}
 
-	/// <summary>Link Firebase Token</summary>
-	/// <remarks>Links the firebase token to the authenticated user. This enables the authenticated user's ability to receive push notifications.</remarks>
-	[HttpPut("link-firebase-token")]
+	/// <summary>Link Firebase Messaging Token</summary>
+	/// <remarks>Links the firebase messaging token to the authenticated user. This enables the authenticated user's ability to receive push notifications.</remarks>
+	[HttpPut("link-firebase-messaging-token")]
 	[InvalidRequest]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
-	public async Task<ActionResult> LinkFirebaseToken(LinkFirebaseTokenRequest request)
+	public async Task<ActionResult> LinkFirebaseMessagingToken(LinkFirebaseMessagingTokenRequest request)
 	{
-		await _commandDispatcher.DispatchAsync<SetFirebaseToken, bool>(new SetFirebaseToken
+		await _dispatcher.DispatchAsync<SetFirebaseMessagingToken, bool>(new SetFirebaseMessagingToken
 		{
-			UserId = CurrentUserId, Token = request.FirebaseToken
+			UserId = CurrentUserId, Token = request.FirebaseMessagingToken
 		});
 		return NoContent();
 	}
 
-	/// <summary>Unlink Firebase Token</summary>
-	/// <remarks>Unlinks the firebase token associated for the authenticated user. This removes the authenticated user's ability to receive push notifications.</remarks>
-	[HttpPut("unlink-firebase-token")]
+	/// <summary>Unlink Firebase Messaging Token</summary>
+	/// <remarks>Unlinks the firebase messaging token associated for the authenticated user. This removes the authenticated user's ability to receive push notifications.</remarks>
+	[HttpPut("unlink-firebase-messaging-token")]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
-	public async Task<ActionResult> UnlinkFirebaseToken()
+	public async Task<ActionResult> UnlinkFirebaseMessagingToken()
 	{
-		await _commandDispatcher.DispatchAsync<SetFirebaseToken, bool>(new SetFirebaseToken
+		await _dispatcher.DispatchAsync<SetFirebaseMessagingToken, bool>(new SetFirebaseMessagingToken
 		{
 			UserId = CurrentUserId, Token = null
 		});
@@ -113,7 +115,7 @@ public class SelfController : BaseController
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	public async Task<ActionResult> SetUsername(SetUsernameRequest request)
 	{
-		await _commandDispatcher.DispatchAsync<SetUsername, bool>(new SetUsername
+		await _dispatcher.DispatchAsync<SetUsername, bool>(new SetUsername
 		{
 			UserId = CurrentUserId, NewUsername = request.NewUsername
 		});
@@ -126,7 +128,7 @@ public class SelfController : BaseController
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	public async Task<ActionResult> SetAllFriendRequestsSeen()
 	{
-		await _commandDispatcher.DispatchAsync<SetAllFriendRequestsSeen, bool>(new SetAllFriendRequestsSeen
+		await _dispatcher.DispatchAsync<SetAllFriendRequestsSeen, bool>(new SetAllFriendRequestsSeen
 		{
 			UserId = CurrentUserId
 		});
@@ -144,7 +146,7 @@ public class SelfController : BaseController
 		var command = _mapper.Map<SetSettings>(request);
 		command.UserId = command.UserId;
 
-		await _commandDispatcher.DispatchAsync<SetSettings, bool>(command);
+		await _dispatcher.DispatchAsync<SetSettings, bool>(command);
 		return NoContent();
 	}
 
@@ -154,9 +156,9 @@ public class SelfController : BaseController
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	public async Task<ActionResult> SetCurrentWorkout(SetCurrentWorkoutRequest request)
 	{
-		await _commandDispatcher.DispatchAsync<SetCurrentWorkout, bool>(new SetCurrentWorkout
+		await _dispatcher.DispatchAsync<SetCurrentWorkout, bool>(new SetCurrentWorkout
 		{
-			UserId = CurrentUserId, WorkoutId = request.WorkoutId
+			UserId = CurrentUserId, CurrentWorkoutId = request.CurrentWorkoutId
 		});
 		return NoContent();
 	}
@@ -167,7 +169,7 @@ public class SelfController : BaseController
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	public async Task<ActionResult> SetAllReceivedWorkoutsSeen()
 	{
-		await _commandDispatcher.DispatchAsync<SetAllReceivedWorkoutsSeen, bool>(new SetAllReceivedWorkoutsSeen
+		await _dispatcher.DispatchAsync<SetAllReceivedWorkoutsSeen, bool>(new SetAllReceivedWorkoutsSeen
 		{
 			UserId = CurrentUserId
 		});
@@ -181,7 +183,7 @@ public class SelfController : BaseController
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	public async Task<ActionResult> SetReceivedWorkoutSeen(string sharedWorkoutId)
 	{
-		await _commandDispatcher.DispatchAsync<SetReceivedWorkoutSeen, bool>(new SetReceivedWorkoutSeen
+		await _dispatcher.DispatchAsync<SetReceivedWorkoutSeen, bool>(new SetReceivedWorkoutSeen
 		{
 			UserId = CurrentUserId, SharedWorkoutId = sharedWorkoutId
 		});
@@ -198,7 +200,7 @@ public class SelfController : BaseController
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult> DeleteSelf()
 	{
-		await _commandDispatcher.DispatchAsync<DeleteSelf, bool>(new DeleteSelf { UserId = CurrentUserId });
+		await _dispatcher.DispatchAsync<DeleteSelf, bool>(new DeleteSelf { UserId = CurrentUserId });
 		return NoContent();
 	}
 }

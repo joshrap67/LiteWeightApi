@@ -3,9 +3,7 @@ using LiteWeightAPI.Commands.Workouts.UpdateRoutine;
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Domain.Workouts;
-using LiteWeightAPI.Errors.Exceptions;
 using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
-using LiteWeightAPI.Imports;
 
 namespace LiteWeightApiTests.Commands.Workouts;
 
@@ -199,7 +197,7 @@ public class UpdateRoutineTests : BaseTest
 		var user = Fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
 			.With(x => x.Exercises, ownedExercises)
-			.With(x=>x.Workouts, workoutInfos)
+			.With(x => x.Workouts, workoutInfos)
 			.With(x => x.Settings, new UserSettings { UpdateDefaultWeightOnSave = shouldUpdateDefault })
 			.Create();
 
@@ -258,39 +256,6 @@ public class UpdateRoutineTests : BaseTest
 		}
 	}
 
-	[Theory]
-	[MemberData(nameof(InvalidRoutineCases))]
-	public async Task Should_Throw_Exception_Invalid_Routine(SetRoutine setRoutine)
-	{
-		var command = Fixture.Build<UpdateRoutine>()
-			.With(x => x.Routine, setRoutine)
-			.Create();
-
-		var workouts = Enumerable.Range(0, Globals.MaxWorkouts / 2)
-			.Select(_ => Fixture.Create<WorkoutInfo>())
-			.ToList();
-
-		var workout = Fixture.Build<Workout>()
-			.With(x => x.CreatorId, command.UserId)
-			.With(x => x.Id, command.WorkoutId)
-			.Create();
-
-		var user = Fixture.Build<User>()
-			.With(x => x.Id, command.UserId)
-			.With(x => x.Workouts, workouts)
-			.Create();
-
-		_mockRepository
-			.Setup(x => x.GetUser(It.Is<string>(y => y == command.UserId)))
-			.ReturnsAsync(user);
-
-		_mockRepository
-			.Setup(x => x.GetWorkout(It.Is<string>(y => y == command.WorkoutId)))
-			.ReturnsAsync(workout);
-
-		await Assert.ThrowsAsync<InvalidRoutineException>(() => _handler.HandleAsync(command));
-	}
-
 	[Fact]
 	public async Task Should_Throw_Exception_Missing_Permissions_Workout()
 	{
@@ -318,75 +283,5 @@ public class UpdateRoutineTests : BaseTest
 			.ReturnsAsync((Workout)null);
 
 		await Assert.ThrowsAsync<ResourceNotFoundException>(() => _handler.HandleAsync(command));
-	}
-
-	public static IEnumerable<object[]> InvalidRoutineCases
-	{
-		get
-		{
-			var fixture = new Fixture();
-			var maxDays = Enumerable.Range(0, Globals.MaxDaysRoutine + 1)
-				.Select(_ => fixture.Create<SetRoutineDay>())
-				.ToList();
-			var maxExercises = Enumerable.Range(0, Globals.MaxExercises + 1)
-				.Select(_ => fixture.Create<SetRoutineExercise>())
-				.ToList();
-			var maxWeeks = Enumerable.Range(0, Globals.MaxWeeksRoutine + 1)
-				.Select(_ => fixture.Create<SetRoutineWeek>())
-				.ToList();
-			yield return new object[]
-			{
-				new SetRoutine
-				{
-					Weeks = maxWeeks
-				}
-			};
-			yield return new object[]
-			{
-				new SetRoutine
-				{
-					Weeks = new List<SetRoutineWeek>
-					{
-						new()
-						{
-							Days = maxDays
-						}
-					}
-				}
-			};
-			yield return new object[]
-			{
-				new SetRoutine
-				{
-					Weeks = new List<SetRoutineWeek>
-					{
-						new()
-						{
-							Days = new List<SetRoutineDay> { new() { Exercises = maxExercises } }
-						}
-					}
-				}
-			};
-			yield return new object[]
-			{
-				new SetRoutine
-				{
-					Weeks = new List<SetRoutineWeek>
-					{
-						new()
-						{
-							Days = new List<SetRoutineDay>
-							{
-								new()
-								{
-									Exercises = new List<SetRoutineExercise>(),
-									Tag = string.Join("", fixture.CreateMany<char>(Globals.MaxDayTagLength + 1))
-								}
-							}
-						}
-					}
-				}
-			};
-		}
 	}
 }

@@ -33,9 +33,9 @@ public class WorkoutsController : BaseController
 	}
 
 	/// <summary>Create Workout</summary>
-	/// <remarks>Creates a workout and adds it to the authenticated user's list of workouts.</remarks>
+	/// <remarks>Creates a workout and adds it to the authenticated user's list of workouts. Any exercises that were added to the workout are updated.</remarks>
 	[HttpPost]
-	[InvalidRequest, InvalidRoutine, MaxLimit]
+	[InvalidRequest, MaxLimit]
 	[ProducesResponseType(StatusCodes.Status201Created)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	public async Task<ActionResult<UserAndWorkoutResponse>> CreateWorkout(CreateWorkoutRequest request)
@@ -63,7 +63,7 @@ public class WorkoutsController : BaseController
 	}
 
 	/// <summary>Copy Workout</summary>
-	/// <remarks>Copies a workout as a new workout.</remarks>
+	/// <remarks>Copies a workout as a new workout. Any exercises that are now apart of the copied workout are updated.</remarks>
 	[HttpPost("{workoutId}/copy")]
 	[InvalidRequest, AlreadyExists, MaxLimit]
 	[ProducesResponseType(StatusCodes.Status201Created)]
@@ -74,16 +74,16 @@ public class WorkoutsController : BaseController
 		var response = await _dispatcher.DispatchAsync<CopyWorkout, UserAndWorkoutResponse>(new CopyWorkout()
 		{
 			UserId = CurrentUserId,
-			NewName = request.NewName,
+			Name = request.Name,
 			WorkoutId = workoutId
 		});
 		return new ObjectResult(response) { StatusCode = StatusCodes.Status201Created };
 	}
 
 	/// <summary>Set Routine</summary>
-	/// <remarks>Sets the routine of a given workout.</remarks>
+	/// <remarks>Sets the routine of a given workout. Any exercises that are now apart of the updated routine are updated.</remarks>
 	[HttpPut("{workoutId}/routine")]
-	[InvalidRequest, InvalidRoutine]
+	[InvalidRequest]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -101,7 +101,7 @@ public class WorkoutsController : BaseController
 	/// <summary>Update Workout Progress</summary>
 	/// <remarks>Updates the specified workout's progress.</remarks>
 	[HttpPut("{workoutId}/update-progress")]
-	[InvalidRequest, InvalidRoutine]
+	[InvalidRequest]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -169,7 +169,7 @@ public class WorkoutsController : BaseController
 		{
 			UserId = CurrentUserId,
 			WorkoutId = workoutId,
-			NewName = request.NewName
+			NewName = request.Name
 		});
 		return NoContent();
 	}
@@ -209,7 +209,7 @@ public class WorkoutsController : BaseController
 		{
 			UserId = CurrentUserId,
 			WorkoutToDeleteId = workoutId,
-			CurrentWorkoutId = request.WorkoutId
+			CurrentWorkoutId = request.CurrentWorkoutId
 		});
 		return NoContent();
 	}

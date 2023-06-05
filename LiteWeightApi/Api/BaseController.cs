@@ -1,5 +1,4 @@
 ﻿using System.Text.Json.Nodes;
-using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
 using LiteWeightAPI.Imports;
 using LiteWeightAPI.Utils;
 using Microsoft.AspNetCore.Authorization;
@@ -21,29 +20,18 @@ public class BaseController : Controller
 		_logger = logger;
 	}
 
-	private const int MinimumLiteWeightAndroidVersion = 11; // update this when there is a breaking change
-
 	public override Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
 	{
-		int? versionCode = null;
-
 		try
 		{
 			var version = HttpContext.Request.Headers[RequestFields.VersionNameHeader].ToString();
 			var versionCodeString = HttpContext.Request.Headers[RequestFields.AndroidVersionCodeHeader].ToString();
-			versionCode = int.Parse(versionCodeString);
 			_logger.Information($"LiteWeight version code for request: {version}");
+			_logger.Information($"LiteWeight android version number for request: {versionCodeString}");
 		}
 		catch (Exception)
 		{
-			_logger.Error("Version code not in proper format. Continuing request...");
-		}
-
-
-		if (versionCode is < MinimumLiteWeightAndroidVersion)
-		{
-			throw new UpgradeRequiredException(
-				$"The minimum LiteWeight Android version required to use this API is {MinimumLiteWeightAndroidVersion}");
+			_logger.Information("Error getting version codes. Continuing request...");
 		}
 
 		var firebaseClaim = HttpContext.User.Claims.ToList().FirstOrDefault(x => x.Type == "firebase");

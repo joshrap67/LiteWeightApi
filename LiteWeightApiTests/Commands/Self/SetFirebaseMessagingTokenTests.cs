@@ -1,25 +1,25 @@
-using LiteWeightAPI.Commands.Self.SetFirebaseToken;
+using LiteWeightAPI.Commands.Self.SetFirebaseMessagingToken;
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Users;
 
 namespace LiteWeightApiTests.Commands.Self;
 
-public class SetFirebaseTokenTests
+public class SetFirebaseMessagingTokenTests
 {
-	private readonly SetFirebaseTokenHandler _handler;
+	private readonly SetFirebaseMessagingTokenHandler _handler;
 	private readonly Mock<IRepository> _mockRepository;
 	private readonly Fixture _fixture = new();
 
-	public SetFirebaseTokenTests()
+	public SetFirebaseMessagingTokenTests()
 	{
 		_mockRepository = new Mock<IRepository>();
-		_handler = new SetFirebaseTokenHandler(_mockRepository.Object);
+		_handler = new SetFirebaseMessagingTokenHandler(_mockRepository.Object);
 	}
 
 	[Fact]
 	public async Task Should_Set_Current_Workout_Not_Null()
 	{
-		var command = _fixture.Create<SetFirebaseToken>();
+		var command = _fixture.Create<SetFirebaseMessagingToken>();
 
 		var user = _fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
@@ -37,7 +37,7 @@ public class SetFirebaseTokenTests
 	[Fact]
 	public async Task Should_Set_Current_Workout_Null()
 	{
-		var command = _fixture.Build<SetFirebaseToken>().With(x => x.Token, (string)null).Create();
+		var command = _fixture.Build<SetFirebaseMessagingToken>().With(x => x.Token, (string)null).Create();
 		var user = _fixture.Build<User>().With(x => x.Id, command.UserId).Create();
 
 		_mockRepository

@@ -15,13 +15,12 @@ namespace LiteWeightAPI.Api.Exercises;
 [ApiController]
 public class ExercisesController : BaseController
 {
-	private readonly ICommandDispatcher _commandDispatcher;
+	private readonly ICommandDispatcher _dispatcher;
 	private readonly IMapper _mapper;
 
-	public ExercisesController(ILogger logger, ICommandDispatcher commandDispatcher, IMapper mapper)
-		: base(logger)
+	public ExercisesController(ILogger logger, ICommandDispatcher dispatcher, IMapper mapper) : base(logger)
 	{
-		_commandDispatcher = commandDispatcher;
+		_dispatcher = dispatcher;
 		_mapper = mapper;
 	}
 
@@ -36,7 +35,7 @@ public class ExercisesController : BaseController
 		var command = _mapper.Map<AddExercise>(request);
 		command.UserId = CurrentUserId;
 
-		var response = await _commandDispatcher.DispatchAsync<AddExercise, OwnedExerciseResponse>(command);
+		var response = await _dispatcher.DispatchAsync<AddExercise, OwnedExerciseResponse>(command);
 		return new ObjectResult(response) { StatusCode = StatusCodes.Status201Created };
 	}
 
@@ -55,12 +54,12 @@ public class ExercisesController : BaseController
 		command.UserId = CurrentUserId;
 		command.ExerciseId = exerciseId;
 
-		await _commandDispatcher.DispatchAsync<UpdateExercise, bool>(command);
+		await _dispatcher.DispatchAsync<UpdateExercise, bool>(command);
 		return NoContent();
 	}
 
 	/// <summary>Delete Exercise</summary>
-	/// <remarks>Removes an exercise owned by the authenticated user. Removes the deleted exercise from any workout it was a part of.</remarks>
+	/// <remarks>Deletes an exercise owned by the authenticated user. Removes the deleted exercise from any workout it was a part of.</remarks>
 	/// <param name="exerciseId">Id of the exercise to delete</param>
 	[HttpDelete("{exerciseId}")]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -68,7 +67,7 @@ public class ExercisesController : BaseController
 	public async Task<ActionResult> DeleteExercise(string exerciseId)
 	{
 		var command = new DeleteExercise { ExerciseId = exerciseId, UserId = CurrentUserId };
-		await _commandDispatcher.DispatchAsync<DeleteExercise, bool>(command);
+		await _dispatcher.DispatchAsync<DeleteExercise, bool>(command);
 		return NoContent();
 	}
 }

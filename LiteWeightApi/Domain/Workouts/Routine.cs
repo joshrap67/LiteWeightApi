@@ -6,13 +6,14 @@ namespace LiteWeightAPI.Domain.Workouts;
 [FirestoreData]
 public class Routine
 {
-	// public constructor needed for unit tests
+	// public ctor needed for firebase serialization
 	public Routine()
 	{
 	}
 
 	public Routine(SharedRoutine routine, IReadOnlyDictionary<string, string> exerciseNameToId)
 	{
+		// todo unit test
 		// constructor is used to convert from a shared routine back to a normal workout routine
 		Weeks = new List<RoutineWeek>();
 		foreach (var week in routine.Weeks)
@@ -67,6 +68,7 @@ public class Routine
 
 	public Routine Clone()
 	{
+		// todo use library for this
 		var copy = new Routine
 		{
 			Weeks = new List<RoutineWeek>()

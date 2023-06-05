@@ -9,6 +9,7 @@ public class SetRoutineRequest
 	/// Weeks of the routine
 	/// </summary>
 	[Required]
+	[MaxLength(Globals.MaxWeeksRoutine)]
 	public IList<SetRoutineWeekRequest> Weeks { get; set; } = new List<SetRoutineWeekRequest>();
 }
 
@@ -18,6 +19,7 @@ public class SetRoutineWeekRequest
 	/// Days of the routine
 	/// </summary>
 	[Required]
+	[MaxLength(Globals.MaxDaysRoutine)]
 	public IList<SetRoutineDayRequest> Days { get; set; } = new List<SetRoutineDayRequest>();
 }
 
@@ -34,6 +36,7 @@ public class SetRoutineDayRequest
 	/// List of exercises for the given day.
 	/// </summary>
 	[Required]
+	[MaxLength(Globals.MaxExercises)]
 	public IList<SetRoutineExerciseRequest> Exercises { get; set; } = new List<SetRoutineExerciseRequest>();
 }
 

@@ -11,6 +11,7 @@ public class SharedWorkoutDistinctExercise
 
 	public SharedWorkoutDistinctExercise(OwnedExercise userExercise, string exerciseName)
 	{
+		// todo unit test
 		ExerciseName = exerciseName;
 		VideoUrl = userExercise.VideoUrl;
 		Focuses = userExercise.Focuses;

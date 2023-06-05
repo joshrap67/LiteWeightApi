@@ -30,6 +30,7 @@ public class RestartWorkoutHandler : ICommandHandler<RestartWorkout, UserAndWork
 
 		var workoutInfo = user.Workouts.First(x => x.WorkoutId == command.WorkoutId);
 		RestartWorkout(routine, workoutInfo, user);
+		workout.Routine = routine;
 		workoutInfo.TimesRestarted += 1;
 		workoutInfo.CurrentDay = 0;
 		workoutInfo.CurrentWeek = 0;

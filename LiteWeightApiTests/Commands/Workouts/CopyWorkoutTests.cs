@@ -77,7 +77,7 @@ public class CopyWorkoutTests
 	{
 		var command = _fixture.Create<CopyWorkout>();
 		var workouts = Enumerable.Range(0, Globals.MaxWorkouts / 2)
-			.Select(_ => _fixture.Build<WorkoutInfo>().With(y => y.WorkoutName, command.NewName).Create())
+			.Select(_ => _fixture.Build<WorkoutInfo>().With(y => y.WorkoutName, command.Name).Create())
 			.ToList();
 		var user = _fixture.Build<User>()
 			.With(x => x.Id, command.UserId)

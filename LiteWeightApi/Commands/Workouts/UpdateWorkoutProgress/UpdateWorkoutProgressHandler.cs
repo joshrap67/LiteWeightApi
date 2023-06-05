@@ -25,7 +25,6 @@ public class UpdateWorkoutProgressHandler : ICommandHandler<UpdateWorkoutProgres
 
 		ValidationUtils.WorkoutExists(workoutToUpdate);
 		ValidationUtils.EnsureWorkoutOwnership(user.Id, workoutToUpdate);
-		ValidationUtils.ValidRoutine(routine);
 
 		workoutToUpdate.Routine = routine;
 

@@ -41,7 +41,7 @@ public class UserResponse
 	public string PremiumToken { get; set; }
 
 	/// <summary>
-	/// Workout Id that the user is currently on.
+	/// Workout Id that the user is currently on. Null signifies the user is not working on a workout.
 	/// </summary>
 	/// <example>b209f062-36fa-4089-aca0-31df4815744f</example>
 	public string CurrentWorkoutId { get; set; }

@@ -7,10 +7,13 @@ namespace LiteWeightAPI.Domain.SharedWorkouts;
 public class SharedExercise
 {
 	// public ctor needed for firebase serialization
-	public SharedExercise() { }
+	public SharedExercise()
+	{
+	}
 
 	public SharedExercise(RoutineExercise exercise, string exerciseName)
 	{
+		// todo unit test
 		ExerciseName = exerciseName;
 		Weight = exercise.Weight;
 		Sets = exercise.Sets;

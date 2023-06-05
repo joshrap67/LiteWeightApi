@@ -3,7 +3,6 @@ using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Domain.Workouts;
 using LiteWeightAPI.Errors.Exceptions;
 using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
-using LiteWeightAPI.Imports;
 
 namespace LiteWeightAPI.Utils;
 
@@ -62,43 +61,6 @@ public static class ValidationUtils
 		if (user.Workouts.Any(x => x.WorkoutName == workoutName))
 		{
 			throw new AlreadyExistsException("Workout name already exists");
-		}
-	}
-
-	public static void ValidRoutine(Routine routine)
-	{
-		if (routine.Weeks.Count > Globals.MaxWeeksRoutine)
-		{
-			throw new InvalidRoutineException("Workout exceeds maximum amount of weeks allowed");
-		}
-
-		// check days
-		var weekIndex = 0;
-		foreach (var week in routine.Weeks)
-		{
-			weekIndex++;
-			var dayCount = week.Days.Count;
-			if (dayCount > Globals.MaxDaysRoutine)
-			{
-				throw new InvalidRoutineException($"Week: {weekIndex} exceeds maximum amount of days in a week");
-			}
-
-			var dayIndex = 0;
-			foreach (var day in week.Days)
-			{
-				dayIndex++;
-				if (day.Tag != null && day.Tag.Length > Globals.MaxDayTagLength)
-				{
-					throw new InvalidRoutineException(
-						$"Day tag for Week: {weekIndex} Day: {dayIndex} exceeds maximum length");
-				}
-
-				if (day.Exercises.Count > Globals.MaxExercises)
-				{
-					throw new InvalidRoutineException(
-						$"Day for Week: {weekIndex} Day: {dayIndex} exceeds maximum exercises allowed");
-				}
-			}
 		}
 	}
 }

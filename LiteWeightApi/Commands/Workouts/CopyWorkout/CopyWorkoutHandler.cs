@@ -42,7 +42,7 @@ public class CopyWorkoutHandler : ICommandHandler<CopyWorkout, UserAndWorkoutRes
 			throw new MaxLimitException("Maximum workouts exceeded");
 		}
 
-		ValidationUtils.ValidWorkoutName(command.NewName, user);
+		ValidationUtils.ValidWorkoutName(command.Name, user);
 
 		var newWorkoutId = Guid.NewGuid().ToString();
 		var now = _clock.GetCurrentInstant();
@@ -50,7 +50,7 @@ public class CopyWorkoutHandler : ICommandHandler<CopyWorkout, UserAndWorkoutRes
 		var newWorkout = new Workout
 		{
 			Id = newWorkoutId,
-			Name = command.NewName,
+			Name = command.Name,
 			Routine = newRoutine,
 			CreatorId = command.UserId,
 			CreationUtc = now

@@ -26,19 +26,19 @@ public class SharedWorkoutInfoResponse
 	public bool Seen { get; set; }
 
 	/// <summary>
-	/// Id of the user who sent the shared workout.
+	/// Id of the user who shared the workout.
 	/// </summary>
 	/// <example>37386768-da24-47ba-b081-6493df36686f</example>
 	public string SenderId { get; set; }
 
 	/// <summary>
-	/// Username of who sent the shared workout.
+	/// Username of who shared the workout.
 	/// </summary>
 	/// <example>jessica78</example>
 	public string SenderUsername { get; set; }
 
 	/// <summary>
-	/// File path of the user's profile profile picture.
+	/// File path of the sender's profile picture.
 	/// </summary>
 	/// <example>61fcf9b4-15f1-4413-9534-683b085875b9.jpg</example>
 	public string SenderProfilePicture { get; set; }

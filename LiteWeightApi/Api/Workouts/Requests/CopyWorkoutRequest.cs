@@ -9,5 +9,5 @@ public class CopyWorkoutRequest
 	/// </summary>
 	/// <example>After-Work Workout</example>
 	[Required]
-	public string NewName { get; set; }
+	public string Name { get; set; }
 }

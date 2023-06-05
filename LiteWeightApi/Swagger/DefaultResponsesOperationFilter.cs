@@ -39,20 +39,6 @@ public class DefaultResponsesOperationFilter : IOperationFilter
 				}
 			};
 
-		operation.Responses[StatusCodes.Status426UpgradeRequired.ToString()] =
-			new OpenApiResponse
-			{
-				Description = "Current LiteWeight version needs to be updated",
-				Content = new Dictionary<string, OpenApiMediaType>
-				{
-					[contentType] = new()
-					{
-						Schema = context.SchemaGenerator.GenerateSchema(typeof(UpgradeRequiredResponse),
-							context.SchemaRepository)
-					}
-				}
-			};
-
 		operation.Responses[StatusCodes.Status500InternalServerError.ToString()] =
 			new OpenApiResponse
 			{

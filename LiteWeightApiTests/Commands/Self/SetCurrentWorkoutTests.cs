@@ -25,7 +25,7 @@ public class SetCurrentWorkoutTests
 	{
 		var command = _fixture.Create<SetCurrentWorkout>();
 
-		var workoutInfo = _fixture.Build<WorkoutInfo>().With(x => x.WorkoutId, command.WorkoutId).Create();
+		var workoutInfo = _fixture.Build<WorkoutInfo>().With(x => x.WorkoutId, command.CurrentWorkoutId).Create();
 		var user = _fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
 			.With(x => x.Workouts, new List<WorkoutInfo> { workoutInfo })
@@ -39,14 +39,14 @@ public class SetCurrentWorkoutTests
 
 		await _handler.HandleAsync(command);
 
-		Assert.Equal(command.WorkoutId, user.CurrentWorkoutId);
+		Assert.Equal(command.CurrentWorkoutId, user.CurrentWorkoutId);
 		Assert.Equal(instant, workoutInfo.LastSetAsCurrentUtc);
 	}
 
 	[Fact]
 	public async Task Should_Set_Current_Workout_Null()
 	{
-		var command = _fixture.Build<SetCurrentWorkout>().With(x => x.WorkoutId, (string)null).Create();
+		var command = _fixture.Build<SetCurrentWorkout>().With(x => x.CurrentWorkoutId, (string)null).Create();
 		var user = _fixture.Build<User>().With(x => x.Id, command.UserId).Create();
 
 		_mockRepository

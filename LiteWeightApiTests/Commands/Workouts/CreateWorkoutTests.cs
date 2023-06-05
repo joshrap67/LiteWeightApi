@@ -1,6 +1,5 @@
 using AutoMapper;
 using LiteWeightAPI.Api.Exercises;
-using LiteWeightAPI.Commands.Workouts;
 using LiteWeightAPI.Commands.Workouts.CreateWorkout;
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Users;
@@ -72,36 +71,12 @@ public class CreateWorkoutTests
 		}
 	}
 
-	[Theory]
-	[MemberData(nameof(InvalidRoutineCases))]
-	public async Task Should_Throw_Exception_Invalid_Routine(SetRoutine setRoutine)
-	{
-		var command = _fixture.Build<CreateWorkout>()
-			.With(x => x.Routine, setRoutine)
-			.Create();
-
-		var workouts = Enumerable.Range(0, Globals.MaxWorkouts / 2)
-			.Select(_ => _fixture.Create<WorkoutInfo>())
-			.ToList();
-
-		var user = _fixture.Build<User>()
-			.With(x => x.Id, command.UserId)
-			.With(x => x.Workouts, workouts)
-			.Create();
-
-		_mockRepository
-			.Setup(x => x.GetUser(It.Is<string>(y => y == command.UserId)))
-			.ReturnsAsync(user);
-
-		await Assert.ThrowsAsync<InvalidRoutineException>(() => _handler.HandleAsync(command));
-	}
-
 	[Fact]
 	public async Task Should_Throw_Exception_Workout_Name_Duplicate()
 	{
 		var command = _fixture.Create<CreateWorkout>();
 		var workouts = Enumerable.Range(0, Globals.MaxWorkouts / 2)
-			.Select(_ => _fixture.Build<WorkoutInfo>().With(y => y.WorkoutName, command.WorkoutName).Create())
+			.Select(_ => _fixture.Build<WorkoutInfo>().With(y => y.WorkoutName, command.Name).Create())
 			.ToList();
 		var user = _fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
@@ -152,75 +127,5 @@ public class CreateWorkoutTests
 			.ReturnsAsync(user);
 
 		await Assert.ThrowsAsync<MaxLimitException>(() => _handler.HandleAsync(command));
-	}
-
-	public static IEnumerable<object[]> InvalidRoutineCases
-	{
-		get
-		{
-			var fixture = new Fixture();
-			var maxDays = Enumerable.Range(0, Globals.MaxDaysRoutine + 1)
-				.Select(_ => fixture.Create<SetRoutineDay>())
-				.ToList();
-			var maxExercises = Enumerable.Range(0, Globals.MaxExercises + 1)
-				.Select(_ => fixture.Create<SetRoutineExercise>())
-				.ToList();
-			var maxWeeks = Enumerable.Range(0, Globals.MaxWeeksRoutine + 1)
-				.Select(_ => fixture.Create<SetRoutineWeek>())
-				.ToList();
-			yield return new object[]
-			{
-				new SetRoutine
-				{
-					Weeks = maxWeeks
-				}
-			};
-			yield return new object[]
-			{
-				new SetRoutine
-				{
-					Weeks = new List<SetRoutineWeek>
-					{
-						new()
-						{
-							Days = maxDays
-						}
-					}
-				}
-			};
-			yield return new object[]
-			{
-				new SetRoutine
-				{
-					Weeks = new List<SetRoutineWeek>
-					{
-						new()
-						{
-							Days = new List<SetRoutineDay> { new() { Exercises = maxExercises } }
-						}
-					}
-				}
-			};
-			yield return new object[]
-			{
-				new SetRoutine
-				{
-					Weeks = new List<SetRoutineWeek>
-					{
-						new()
-						{
-							Days = new List<SetRoutineDay>
-							{
-								new()
-								{
-									Exercises = new List<SetRoutineExercise>(),
-									Tag = string.Join("", fixture.CreateMany<char>(Globals.MaxDayTagLength + 1))
-								}
-							}
-						}
-					}
-				}
-			};
-		}
 	}
 }

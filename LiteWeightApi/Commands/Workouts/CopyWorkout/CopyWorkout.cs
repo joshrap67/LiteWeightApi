@@ -6,5 +6,5 @@ public class CopyWorkout : ICommand<UserAndWorkoutResponse>
 {
 	public string UserId { get; set; }
 	public string WorkoutId { get; set; }
-	public string NewName { get; set; }
+	public string Name { get; set; }
 }

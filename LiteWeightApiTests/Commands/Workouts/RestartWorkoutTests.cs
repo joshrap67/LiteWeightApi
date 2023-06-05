@@ -164,6 +164,7 @@ public class RestartWorkoutTests : BaseTest
 		Assert.Equal(.8125, previousInfo.AverageExercisesCompleted);
 		Assert.Equal(0, previousInfo.CurrentDay);
 		Assert.Equal(0, previousInfo.CurrentWeek);
+		Assert.True(workout.Routine.Weeks.SelectMany(x=>x.Days).SelectMany(x=>x.Exercises).All(x=>!x.Completed));
 		if (shouldUpdateDefault)
 		{
 			Assert.Equal(300, user.Exercises.First(x => x.Id == "A").DefaultWeight);

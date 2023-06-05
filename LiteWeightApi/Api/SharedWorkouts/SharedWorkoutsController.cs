@@ -13,11 +13,11 @@ namespace LiteWeightAPI.Api.SharedWorkouts;
 [ApiController]
 public class SharedWorkoutsController : BaseController
 {
-	private readonly ICommandDispatcher _commandDispatcher;
+	private readonly ICommandDispatcher _dispatcher;
 
-	public SharedWorkoutsController(Serilog.ILogger logger, ICommandDispatcher commandDispatcher) : base(logger)
+	public SharedWorkoutsController(Serilog.ILogger logger, ICommandDispatcher dispatcher) : base(logger)
 	{
-		_commandDispatcher = commandDispatcher;
+		_dispatcher = dispatcher;
 	}
 
 	/// <summary>Get Shared Workout</summary>
@@ -27,7 +27,7 @@ public class SharedWorkoutsController : BaseController
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult<SharedWorkoutResponse>> GetSharedWorkout(string sharedWorkoutId)
 	{
-		var sharedWorkout = await _commandDispatcher.DispatchAsync<GetSharedWorkout, SharedWorkoutResponse>(
+		var sharedWorkout = await _dispatcher.DispatchAsync<GetSharedWorkout, SharedWorkoutResponse>(
 			new GetSharedWorkout
 			{
 				UserId = CurrentUserId,
@@ -51,12 +51,12 @@ public class SharedWorkoutsController : BaseController
 	public async Task<ActionResult<AcceptSharedWorkoutResponse>> AcceptSharedWorkout(string sharedWorkoutId,
 		AcceptSharedWorkoutRequest request)
 	{
-		var response = await _commandDispatcher.DispatchAsync<AcceptSharedWorkout, AcceptSharedWorkoutResponse>(
+		var response = await _dispatcher.DispatchAsync<AcceptSharedWorkout, AcceptSharedWorkoutResponse>(
 			new AcceptSharedWorkout
 			{
 				UserId = CurrentUserId,
 				SharedWorkoutId = sharedWorkoutId,
-				NewName = request.NewName
+				NewName = request.WorkoutName
 			});
 		return new ObjectResult(response) { StatusCode = StatusCodes.Status201Created };
 	}
@@ -69,7 +69,7 @@ public class SharedWorkoutsController : BaseController
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult> DeclineSharedWorkout(string sharedWorkoutId)
 	{
-		await _commandDispatcher.DispatchAsync<DeclineSharedWorkout, bool>(new DeclineSharedWorkout
+		await _dispatcher.DispatchAsync<DeclineSharedWorkout, bool>(new DeclineSharedWorkout
 		{
 			UserId = CurrentUserId, SharedWorkoutId = sharedWorkoutId
 		});

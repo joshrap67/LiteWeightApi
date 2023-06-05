@@ -39,11 +39,6 @@ public static class AppBuilderExtensions
 						await context.Response.WriteAsync(JsonUtils.Serialize(new ResourceNotFoundResponse
 							{ Message = rnfe.FormattedMessage }));
 						break;
-					case UpgradeRequiredException ure:
-						context.Response.StatusCode = StatusCodes.Status426UpgradeRequired;
-						await context.Response.WriteAsync(JsonUtils.Serialize(new ResourceNotFoundResponse
-							{ Message = ure.Message }));
-						break;
 					default:
 						context.Response.StatusCode = StatusCodes.Status500InternalServerError;
 						await context.Response.WriteAsync(JsonUtils.Serialize(new ServerErrorResponse

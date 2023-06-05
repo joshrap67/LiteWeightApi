@@ -8,10 +8,13 @@ namespace LiteWeightAPI.Domain.SharedWorkouts;
 public class SharedRoutine
 {
 	// public ctor needed for firebase serialization
-	public SharedRoutine() { }
+	public SharedRoutine()
+	{
+	}
 
 	public SharedRoutine(Routine routine, IEnumerable<OwnedExercise> ownedExercises)
 	{
+		// todo unit test
 		var exerciseIdToExercise = ownedExercises.ToDictionary(x => x.Id, x => x);
 		Weeks = new List<SharedWeek>();
 		foreach (var week in routine.Weeks)

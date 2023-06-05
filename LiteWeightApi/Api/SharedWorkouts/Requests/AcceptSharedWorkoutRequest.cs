@@ -6,5 +6,5 @@ public class AcceptSharedWorkoutRequest
 	/// Optional name to set for the workout once accepted. Must be unique.
 	/// </summary>
 	/// <example>Olympic Routine</example>
-	public string NewName { get; set; }
+	public string WorkoutName { get; set; }
 }

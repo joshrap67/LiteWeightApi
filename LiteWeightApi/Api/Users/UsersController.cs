@@ -24,11 +24,11 @@ namespace LiteWeightAPI.Api.Users;
 [ApiController]
 public class UsersController : BaseController
 {
-	private readonly ICommandDispatcher _commandDispatcher;
+	private readonly ICommandDispatcher _dispatcher;
 
-	public UsersController(ILogger logger, ICommandDispatcher commandDispatcher) : base(logger)
+	public UsersController(ILogger logger, ICommandDispatcher dispatcher) : base(logger)
 	{
-		_commandDispatcher = commandDispatcher;
+		_dispatcher = dispatcher;
 	}
 
 	/// <summary>Search by Username</summary>
@@ -40,7 +40,7 @@ public class UsersController : BaseController
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	public async Task<ActionResult<SearchUserResponse>> SearchByUsername([FromQuery] [Required] string username)
 	{
-		var result = await _commandDispatcher.DispatchAsync<SearchByUsername, SearchUserResponse>(new SearchByUsername
+		var result = await _dispatcher.DispatchAsync<SearchByUsername, SearchUserResponse>(new SearchByUsername
 		{
 			Username = username,
 			InitiatorId = CurrentUserId
@@ -70,7 +70,7 @@ public class UsersController : BaseController
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult<FriendResponse>> SendFriendRequest(string userId)
 	{
-		var response = await _commandDispatcher.DispatchAsync<SendFriendRequest, FriendResponse>(new SendFriendRequest
+		var response = await _dispatcher.DispatchAsync<SendFriendRequest, FriendResponse>(new SendFriendRequest
 		{
 			SenderId = CurrentUserId,
 			RecipientId = userId
@@ -90,7 +90,7 @@ public class UsersController : BaseController
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult<ShareWorkoutResponse>> ShareWorkout(ShareWorkoutRequest request, string userId)
 	{
-		var createdWorkoutId = await _commandDispatcher.DispatchAsync<ShareWorkout, string>(new ShareWorkout
+		var createdWorkoutId = await _dispatcher.DispatchAsync<ShareWorkout, string>(new ShareWorkout
 		{
 			WorkoutId = request.WorkoutId,
 			RecipientUserId = userId,
@@ -111,7 +111,7 @@ public class UsersController : BaseController
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult> AcceptFriendRequest(string userId)
 	{
-		await _commandDispatcher.DispatchAsync<AcceptFriendRequest, bool>(new AcceptFriendRequest
+		await _dispatcher.DispatchAsync<AcceptFriendRequest, bool>(new AcceptFriendRequest
 		{
 			InitiatorUserId = CurrentUserId,
 			AcceptedUserId = userId
@@ -128,7 +128,7 @@ public class UsersController : BaseController
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult> RemoveFriend(string userId)
 	{
-		await _commandDispatcher.DispatchAsync<RemoveFriend, bool>(new RemoveFriend
+		await _dispatcher.DispatchAsync<RemoveFriend, bool>(new RemoveFriend
 		{
 			InitiatorUserId = CurrentUserId,
 			RemovedUserId = userId
@@ -145,7 +145,7 @@ public class UsersController : BaseController
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult> CancelFriendRequest(string userId)
 	{
-		await _commandDispatcher.DispatchAsync<CancelFriendRequest, bool>(new CancelFriendRequest
+		await _dispatcher.DispatchAsync<CancelFriendRequest, bool>(new CancelFriendRequest
 		{
 			InitiatorUserId = CurrentUserId,
 			UserIdToCancel = userId
@@ -162,7 +162,7 @@ public class UsersController : BaseController
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult> DeclineFriendRequest(string userId)
 	{
-		await _commandDispatcher.DispatchAsync<DeclineFriendRequest, bool>(new DeclineFriendRequest
+		await _dispatcher.DispatchAsync<DeclineFriendRequest, bool>(new DeclineFriendRequest
 		{
 			InitiatorUserId = CurrentUserId,
 			UserIdToDecline = userId
@@ -181,7 +181,7 @@ public class UsersController : BaseController
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult<ComplaintResponse>> Report(string userId, ReportUserRequest request)
 	{
-		var response = await _commandDispatcher.DispatchAsync<ReportUser, ComplaintResponse>(new ReportUser
+		var response = await _dispatcher.DispatchAsync<ReportUser, ComplaintResponse>(new ReportUser
 		{
 			InitiatorUserId = CurrentUserId,
 			ReportedUserId = userId,

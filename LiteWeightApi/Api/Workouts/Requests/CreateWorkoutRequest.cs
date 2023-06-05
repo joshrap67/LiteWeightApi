@@ -11,7 +11,7 @@ public class CreateWorkoutRequest
 	/// <example>High Intensity Workout</example>
 	[Required]
 	[MaxLength(Globals.MaxWorkoutNameLength)]
-	public string WorkoutName { get; set; }
+	public string Name { get; set; }
 
 	/// <summary>
 	/// Routine of the workout.
