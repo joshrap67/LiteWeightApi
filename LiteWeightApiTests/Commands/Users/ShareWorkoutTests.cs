@@ -11,12 +11,11 @@ using NodaTime;
 
 namespace LiteWeightApiTests.Commands.Users;
 
-public class ShareWorkoutTests
+public class ShareWorkoutTests : BaseTest
 {
 	private readonly ShareWorkoutHandler _handler;
 	private readonly Mock<IRepository> _mockRepository;
 	private readonly Mock<IPushNotificationService> _mockPushNotificationService;
-	private readonly Fixture _fixture = new();
 
 	public ShareWorkoutTests()
 	{
@@ -31,9 +30,9 @@ public class ShareWorkoutTests
 	[Fact]
 	public async Task Should_Share_Workout_Private_Recipient()
 	{
-		var command = _fixture.Create<ShareWorkout>();
+		var command = Fixture.Create<ShareWorkout>();
 
-		var workout = _fixture.Build<Workout>()
+		var workout = Fixture.Build<Workout>()
 			.With(x => x.CreatorId, command.SenderUserId)
 			.Create();
 		var exerciseIds = workout.Routine.Weeks
@@ -41,22 +40,22 @@ public class ShareWorkoutTests
 			.SelectMany(x => x.Exercises)
 			.Select(x => x.ExerciseId)
 			.Distinct();
-		var ownedExercises = exerciseIds.Select(exerciseId => _fixture.Build<OwnedExercise>()
+		var ownedExercises = exerciseIds.Select(exerciseId => Fixture.Build<OwnedExercise>()
 				.With(x => x.Id, exerciseId)
 				.Create())
 			.ToList();
 
 		var preferences = new UserSettings { PrivateAccount = true };
-		var recipientUser = _fixture.Build<User>()
+		var recipientUser = Fixture.Build<User>()
 			.With(x => x.Id, command.RecipientUserId)
 			.With(x => x.Settings, preferences)
 			.With(x => x.Friends, new List<Friend>()
 			{
-				_fixture.Build<Friend>().With(x => x.UserId, command.SenderUserId).Create()
+				Fixture.Build<Friend>().With(x => x.UserId, command.SenderUserId).Create()
 			})
 			.Create();
 
-		var senderUser = _fixture.Build<User>()
+		var senderUser = Fixture.Build<User>()
 			.With(x => x.Id, command.SenderUserId)
 			.With(x => x.Exercises, ownedExercises)
 			.With(x => x.PremiumToken, (string)null)
@@ -84,9 +83,9 @@ public class ShareWorkoutTests
 	[Fact]
 	public async Task Should_Share_Workout_Non_Private_Recipient()
 	{
-		var command = _fixture.Create<ShareWorkout>();
+		var command = Fixture.Create<ShareWorkout>();
 
-		var workout = _fixture.Build<Workout>()
+		var workout = Fixture.Build<Workout>()
 			.With(x => x.CreatorId, command.SenderUserId)
 			.Create();
 		var exerciseIds = workout.Routine.Weeks
@@ -95,16 +94,16 @@ public class ShareWorkoutTests
 			.Select(x => x.ExerciseId)
 			.Distinct();
 		var ownedExercises = exerciseIds
-			.Select(exerciseId => _fixture.Build<OwnedExercise>().With(x => x.Id, exerciseId).Create())
+			.Select(exerciseId => Fixture.Build<OwnedExercise>().With(x => x.Id, exerciseId).Create())
 			.ToList();
 
 		var preferences = new UserSettings { PrivateAccount = false };
-		var recipientUser = _fixture.Build<User>()
+		var recipientUser = Fixture.Build<User>()
 			.With(x => x.Id, command.RecipientUserId)
 			.With(x => x.Settings, preferences)
 			.Create();
 
-		var senderUser = _fixture.Build<User>()
+		var senderUser = Fixture.Build<User>()
 			.With(x => x.Id, command.SenderUserId)
 			.With(x => x.Exercises, ownedExercises)
 			.With(x => x.PremiumToken, (string)null)
@@ -132,21 +131,21 @@ public class ShareWorkoutTests
 	[Fact]
 	public async Task Should_Throw_Exception_Max_Free_Workouts_Sent()
 	{
-		var command = _fixture.Create<ShareWorkout>();
+		var command = Fixture.Create<ShareWorkout>();
 
 		var preferences = new UserSettings { PrivateAccount = false };
-		var recipientUser = _fixture.Build<User>()
+		var recipientUser = Fixture.Build<User>()
 			.With(x => x.Id, command.RecipientUserId)
 			.With(x => x.Settings, preferences)
 			.Create();
 
-		var senderUser = _fixture.Build<User>()
+		var senderUser = Fixture.Build<User>()
 			.With(x => x.Id, command.SenderUserId)
 			.With(x => x.PremiumToken, (string)null)
 			.With(x => x.WorkoutsSent, Globals.MaxFreeWorkoutsSent)
 			.Create();
 
-		var workout = _fixture.Build<Workout>()
+		var workout = Fixture.Build<Workout>()
 			.With(x => x.CreatorId, command.SenderUserId)
 			.Create();
 
@@ -168,19 +167,19 @@ public class ShareWorkoutTests
 	[Fact]
 	public async Task Should_Throw_Exception_Max_Limit_Received_Workouts()
 	{
-		var command = _fixture.Create<ShareWorkout>();
+		var command = Fixture.Create<ShareWorkout>();
 
 		var preferences = new UserSettings { PrivateAccount = false };
 		var receivedWorkouts = Enumerable.Range(0, Globals.MaxReceivedWorkouts + 1)
-			.Select(_ => _fixture.Build<SharedWorkoutInfo>().Create())
+			.Select(_ => Fixture.Build<SharedWorkoutInfo>().Create())
 			.ToList();
-		var recipientUser = _fixture.Build<User>()
+		var recipientUser = Fixture.Build<User>()
 			.With(x => x.Id, command.RecipientUserId)
 			.With(x => x.Settings, preferences)
 			.With(x => x.ReceivedWorkouts, receivedWorkouts)
 			.Create();
 
-		var workout = _fixture.Build<Workout>()
+		var workout = Fixture.Build<Workout>()
 			.With(x => x.CreatorId, command.SenderUserId)
 			.Create();
 
@@ -198,15 +197,15 @@ public class ShareWorkoutTests
 	[Fact]
 	public async Task Should_Throw_Exception_Private_User()
 	{
-		var command = _fixture.Create<ShareWorkout>();
+		var command = Fixture.Create<ShareWorkout>();
 
 		var preferences = new UserSettings { PrivateAccount = true };
-		var recipientUser = _fixture.Build<User>()
+		var recipientUser = Fixture.Build<User>()
 			.With(x => x.Id, command.RecipientUserId)
 			.With(x => x.Settings, preferences)
 			.Create();
 
-		var workout = _fixture.Build<Workout>()
+		var workout = Fixture.Build<Workout>()
 			.With(x => x.CreatorId, command.SenderUserId)
 			.Create();
 
@@ -224,8 +223,8 @@ public class ShareWorkoutTests
 	[Fact]
 	public async Task Should_Throw_Exception_Missing_Permissions_Workout()
 	{
-		var command = _fixture.Create<ShareWorkout>();
-		var user = _fixture.Create<User>();
+		var command = Fixture.Create<ShareWorkout>();
+		var user = Fixture.Create<User>();
 
 		_mockRepository
 			.Setup(x => x.GetUser(It.Is<string>(y => y == command.RecipientUserId)))
@@ -233,7 +232,7 @@ public class ShareWorkoutTests
 
 		_mockRepository
 			.Setup(x => x.GetWorkout(It.Is<string>(y => y == command.WorkoutId)))
-			.ReturnsAsync(_fixture.Create<Workout>());
+			.ReturnsAsync(Fixture.Create<Workout>());
 
 		await Assert.ThrowsAsync<ForbiddenException>(() => _handler.HandleAsync(command));
 	}
@@ -241,11 +240,11 @@ public class ShareWorkoutTests
 	[Fact]
 	public async Task Should_Throw_Exception_Referenced_Workout_Not_Found()
 	{
-		var command = _fixture.Create<ShareWorkout>();
+		var command = Fixture.Create<ShareWorkout>();
 
 		_mockRepository
 			.Setup(x => x.GetUser(It.Is<string>(y => y == command.RecipientUserId)))
-			.ReturnsAsync(_fixture.Create<User>());
+			.ReturnsAsync(Fixture.Create<User>());
 
 		_mockRepository
 			.Setup(x => x.GetWorkout(It.Is<string>(y => y == command.WorkoutId)))
@@ -257,7 +256,7 @@ public class ShareWorkoutTests
 	[Fact]
 	public async Task Should_Throw_Exception_User_Does_Not_Exist()
 	{
-		var command = _fixture.Create<ShareWorkout>();
+		var command = Fixture.Create<ShareWorkout>();
 
 		_mockRepository
 			.Setup(x => x.GetUser(It.Is<string>(y => y == command.RecipientUserId)))
@@ -269,7 +268,7 @@ public class ShareWorkoutTests
 	[Fact]
 	public async Task Should_Throw_Exception_Recipient_Sender_Equal()
 	{
-		var command = _fixture.Build<ShareWorkout>()
+		var command = Fixture.Build<ShareWorkout>()
 			.With(x => x.RecipientUserId, "Golden God")
 			.With(x => x.SenderUserId, "Golden God")
 			.Create();

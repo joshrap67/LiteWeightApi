@@ -1,5 +1,3 @@
-using AutoMapper;
-using LiteWeightAPI.Api.Exercises;
 using LiteWeightAPI.Commands.Exercises.AddExercise;
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Users;
@@ -8,32 +6,28 @@ using LiteWeightAPI.Imports;
 
 namespace LiteWeightApiTests.Commands.Exercises;
 
-public class AddExerciseTests
+public class AddExerciseTests : BaseTest
 {
 	private readonly AddExerciseHandler _handler;
 	private readonly Mock<IRepository> _mockRepository;
-	private readonly Fixture _fixture = new();
 
 	public AddExerciseTests()
 	{
-		var configuration = new MapperConfiguration(cfg => { cfg.AddMaps(typeof(ExercisesController)); });
-		var mapper = new Mapper(configuration);
-
 		_mockRepository = new Mock<IRepository>();
-		_handler = new AddExerciseHandler(_mockRepository.Object, mapper);
+		_handler = new AddExerciseHandler(_mockRepository.Object, Mapper);
 	}
 
 	[Fact]
 	public async Task Should_Create_Exercise()
 	{
-		var command = _fixture.Create<AddExercise>();
+		var command = Fixture.Create<AddExercise>();
 		var exercises = Enumerable.Range(0, Globals.MaxExercises - 1)
-			.Select(_ => _fixture.Build<OwnedExercise>().Create())
+			.Select(_ => Fixture.Build<OwnedExercise>().Create())
 			.ToList();
 
-		var user = _fixture.Build<User>()
+		var user = Fixture.Build<User>()
 			.With(x => x.Exercises, exercises)
-			.With(x => x.PremiumToken, _fixture.Create<string>())
+			.With(x => x.PremiumToken, Fixture.Create<string>())
 			.Create();
 
 		_mockRepository
@@ -55,12 +49,12 @@ public class AddExerciseTests
 	[Fact]
 	public async Task Should_Throw_Exception_Name_Already_Exists()
 	{
-		var command = _fixture.Create<AddExercise>();
+		var command = Fixture.Create<AddExercise>();
 		command.Name = "Name";
 
 		_mockRepository
 			.Setup(x => x.GetUser(It.Is<string>(y => y == command.UserId)))
-			.ReturnsAsync(_fixture.Build<User>()
+			.ReturnsAsync(Fixture.Build<User>()
 				.With(x => x.Exercises, new List<OwnedExercise>
 				{
 					new() { Name = "Name" }
@@ -74,14 +68,14 @@ public class AddExerciseTests
 	[Fact]
 	public async Task Should_Throw_Exception_Max_Limit_Free()
 	{
-		var command = _fixture.Create<AddExercise>();
+		var command = Fixture.Create<AddExercise>();
 		var exercises = Enumerable.Range(0, Globals.MaxFreeExercises + 1)
-			.Select(_ => _fixture.Build<OwnedExercise>().Create())
+			.Select(_ => Fixture.Build<OwnedExercise>().Create())
 			.ToList();
 
 		_mockRepository
 			.Setup(x => x.GetUser(It.Is<string>(y => y == command.UserId)))
-			.ReturnsAsync(_fixture.Build<User>()
+			.ReturnsAsync(Fixture.Build<User>()
 				.With(x => x.Exercises, exercises)
 				.With(x => x.PremiumToken, (string)null)
 				.Create());
@@ -92,16 +86,16 @@ public class AddExerciseTests
 	[Fact]
 	public async Task Should_Throw_Exception_Max_Limit()
 	{
-		var command = _fixture.Create<AddExercise>();
+		var command = Fixture.Create<AddExercise>();
 		var exercises = Enumerable.Range(0, Globals.MaxExercises + 1)
-			.Select(_ => _fixture.Build<OwnedExercise>().Create())
+			.Select(_ => Fixture.Build<OwnedExercise>().Create())
 			.ToList();
 
 		_mockRepository
 			.Setup(x => x.GetUser(It.Is<string>(y => y == command.UserId)))
-			.ReturnsAsync(_fixture.Build<User>()
+			.ReturnsAsync(Fixture.Build<User>()
 				.With(x => x.Exercises, exercises)
-				.With(x => x.PremiumToken, _fixture.Create<string>())
+				.With(x => x.PremiumToken, Fixture.Create<string>())
 				.Create());
 
 		await Assert.ThrowsAsync<MaxLimitException>(() => _handler.HandleAsync(command));

@@ -7,11 +7,10 @@ using LiteWeightApiTests.TestHelpers;
 
 namespace LiteWeightApiTests.Commands.SharedWorkouts;
 
-public class DeclineSharedWorkoutTests
+public class DeclineSharedWorkoutTests : BaseTest
 {
 	private readonly DeclineSharedWorkoutHandler _handler;
 	private readonly Mock<IRepository> _mockRepository;
-	private readonly Fixture _fixture = new();
 
 	public DeclineSharedWorkoutTests()
 	{
@@ -22,13 +21,13 @@ public class DeclineSharedWorkoutTests
 	[Fact]
 	public async Task Should_Decline_Workout()
 	{
-		var command = _fixture.Create<DeclineSharedWorkout>();
+		var command = Fixture.Create<DeclineSharedWorkout>();
 		var sharedWorkout = SharedWorkoutHelper.GetSharedWorkout(command.UserId);
-		var user = _fixture.Build<User>()
+		var user = Fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
 			.With(x => x.ReceivedWorkouts, new List<SharedWorkoutInfo>
 			{
-				_fixture.Build<SharedWorkoutInfo>().With(x => x.SharedWorkoutId, command.SharedWorkoutId).Create()
+				Fixture.Build<SharedWorkoutInfo>().With(x => x.SharedWorkoutId, command.SharedWorkoutId).Create()
 			})
 			.Create();
 
@@ -47,7 +46,7 @@ public class DeclineSharedWorkoutTests
 	[Fact]
 	public async Task Should_Throw_Exception_Workout_Does_Not_Exist()
 	{
-		var command = _fixture.Create<DeclineSharedWorkout>();
+		var command = Fixture.Create<DeclineSharedWorkout>();
 
 		_mockRepository
 			.Setup(x => x.GetSharedWorkout(It.Is<string>(y => y == command.SharedWorkoutId)))
@@ -59,8 +58,8 @@ public class DeclineSharedWorkoutTests
 	[Fact]
 	public async Task Should_Throw_Exception_Missing_Permissions_Workout()
 	{
-		var command = _fixture.Create<DeclineSharedWorkout>();
-		var user = _fixture.Create<User>();
+		var command = Fixture.Create<DeclineSharedWorkout>();
+		var user = Fixture.Create<User>();
 
 		var sharedWorkout = SharedWorkoutHelper.GetSharedWorkout();
 

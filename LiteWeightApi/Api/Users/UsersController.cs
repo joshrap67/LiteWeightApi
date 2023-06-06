@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using LiteWeightAPI.Api.Complaints.Responses;
 using LiteWeightAPI.Api.Self.Responses;
 using LiteWeightAPI.Api.Users.Requests;
 using LiteWeightAPI.Api.Users.Responses;
@@ -96,8 +97,8 @@ public class UsersController : BaseController
 			RecipientUserId = userId,
 			SenderUserId = CurrentUserId
 		});
-		return new ObjectResult(new ShareWorkoutResponse { SharedWorkoutId = createdWorkoutId })
-			{ StatusCode = StatusCodes.Status201Created };
+		var response = new ShareWorkoutResponse { SharedWorkoutId = createdWorkoutId };
+		return new CreatedResult(new Uri($"/shared-workouts/{createdWorkoutId}", UriKind.Relative), response);
 	}
 
 	/// <summary>Accept Friend Request</summary>
@@ -187,6 +188,6 @@ public class UsersController : BaseController
 			ReportedUserId = userId,
 			Description = request.Description
 		});
-		return new ObjectResult(response) { StatusCode = StatusCodes.Status201Created };
+		return new CreatedResult(new Uri($"/complaints/{response.Id}", UriKind.Relative), response);
 	}
 }

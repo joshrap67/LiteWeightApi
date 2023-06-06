@@ -6,11 +6,10 @@ using LiteWeightAPI.Imports;
 
 namespace LiteWeightApiTests.Commands.Workouts;
 
-public class ResetStatisticsTests
+public class ResetStatisticsTests : BaseTest
 {
 	private readonly ResetStatisticsHandler _handler;
 	private readonly Mock<IRepository> _mockRepository;
-	private readonly Fixture _fixture = new();
 
 	public ResetStatisticsTests()
 	{
@@ -21,13 +20,13 @@ public class ResetStatisticsTests
 	[Fact]
 	public async Task Should_Reset_Statistics()
 	{
-		var command = _fixture.Create<ResetStatistics>();
+		var command = Fixture.Create<ResetStatistics>();
 		var workouts = Enumerable.Range(0, Globals.MaxFreeWorkouts / 2)
-			.Select(_ => _fixture.Create<WorkoutInfo>())
+			.Select(_ => Fixture.Create<WorkoutInfo>())
 			.ToList();
-		workouts.Add(_fixture.Build<WorkoutInfo>().With(x => x.WorkoutId, command.WorkoutId).Create());
+		workouts.Add(Fixture.Build<WorkoutInfo>().With(x => x.WorkoutId, command.WorkoutId).Create());
 
-		var user = _fixture.Build<User>()
+		var user = Fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
 			.With(x => x.Workouts, workouts)
 			.Create();
@@ -46,11 +45,11 @@ public class ResetStatisticsTests
 	[Fact]
 	public async Task Should_Throw_Exception_Workout_Not_Found()
 	{
-		var command = _fixture.Create<ResetStatistics>();
+		var command = Fixture.Create<ResetStatistics>();
 
 		_mockRepository
 			.Setup(x => x.GetUser(It.Is<string>(y => y == command.UserId)))
-			.ReturnsAsync(_fixture.Create<User>());
+			.ReturnsAsync(Fixture.Create<User>());
 
 		await Assert.ThrowsAsync<ResourceNotFoundException>(() => _handler.HandleAsync(command));
 	}

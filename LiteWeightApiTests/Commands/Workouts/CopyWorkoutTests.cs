@@ -1,5 +1,3 @@
-using AutoMapper;
-using LiteWeightAPI.Api.Exercises;
 using LiteWeightAPI.Commands.Workouts.CopyWorkout;
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Users;
@@ -11,30 +9,26 @@ using NodaTime;
 
 namespace LiteWeightApiTests.Commands.Workouts;
 
-public class CopyWorkoutTests
+public class CopyWorkoutTests : BaseTest
 {
 	private readonly CopyWorkoutHandler _handler;
 	private readonly Mock<IRepository> _mockRepository;
-	private readonly Fixture _fixture = new();
 
 	public CopyWorkoutTests()
 	{
-		var configuration = new MapperConfiguration(cfg => { cfg.AddMaps(typeof(ExercisesController)); });
-		var mapper = new Mapper(configuration);
-
 		_mockRepository = new Mock<IRepository>();
 		var clock = new Mock<IClock>();
-		_handler = new CopyWorkoutHandler(_mockRepository.Object, clock.Object, mapper);
+		_handler = new CopyWorkoutHandler(_mockRepository.Object, clock.Object, Mapper);
 	}
 
 	[Fact]
 	public async Task Should_Copy()
 	{
-		var command = _fixture.Create<CopyWorkout>();
+		var command = Fixture.Create<CopyWorkout>();
 		var workouts = Enumerable.Range(0, Globals.MaxFreeWorkouts / 2)
-			.Select(_ => _fixture.Create<WorkoutInfo>())
+			.Select(_ => Fixture.Create<WorkoutInfo>())
 			.ToList();
-		var workout = _fixture.Build<Workout>()
+		var workout = Fixture.Build<Workout>()
 			.With(x => x.CreatorId, command.UserId)
 			.Create();
 		var exercisesOfWorkout = workout.Routine.Weeks
@@ -43,12 +37,12 @@ public class CopyWorkoutTests
 			.Select(x => x.ExerciseId)
 			.ToList();
 		var ownedExercises = Enumerable.Range(0, 10)
-			.Select(_ => _fixture.Create<OwnedExercise>())
+			.Select(_ => Fixture.Create<OwnedExercise>())
 			.ToList();
 		ownedExercises.AddRange(exercisesOfWorkout.Select(exerciseId =>
-			_fixture.Build<OwnedExercise>().With(x => x.Id, exerciseId).Create()));
+			Fixture.Build<OwnedExercise>().With(x => x.Id, exerciseId).Create()));
 
-		var user = _fixture.Build<User>()
+		var user = Fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
 			.With(x => x.Workouts, workouts)
 			.With(x => x.Exercises, ownedExercises)
@@ -75,16 +69,16 @@ public class CopyWorkoutTests
 	[Fact]
 	public async Task Should_Throw_Exception_Workout_Name_Duplicate()
 	{
-		var command = _fixture.Create<CopyWorkout>();
+		var command = Fixture.Create<CopyWorkout>();
 		var workouts = Enumerable.Range(0, Globals.MaxWorkouts / 2)
-			.Select(_ => _fixture.Build<WorkoutInfo>().With(y => y.WorkoutName, command.Name).Create())
+			.Select(_ => Fixture.Build<WorkoutInfo>().With(y => y.WorkoutName, command.Name).Create())
 			.ToList();
-		var user = _fixture.Build<User>()
+		var user = Fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
 			.With(x => x.Workouts, workouts)
 			.Create();
 
-		var workout = _fixture.Build<Workout>()
+		var workout = Fixture.Build<Workout>()
 			.With(x => x.CreatorId, user.Id)
 			.Create();
 
@@ -102,15 +96,15 @@ public class CopyWorkoutTests
 	[Fact]
 	public async Task Should_Throw_Exception_Max_Workouts()
 	{
-		var command = _fixture.Create<CopyWorkout>();
+		var command = Fixture.Create<CopyWorkout>();
 		var workouts = Enumerable.Range(0, Globals.MaxWorkouts + 1)
-			.Select(_ => _fixture.Build<WorkoutInfo>().Create())
+			.Select(_ => Fixture.Build<WorkoutInfo>().Create())
 			.ToList();
-		var user = _fixture.Build<User>()
+		var user = Fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
 			.With(x => x.Workouts, workouts)
 			.Create();
-		var workout = _fixture.Build<Workout>()
+		var workout = Fixture.Build<Workout>()
 			.With(x => x.CreatorId, user.Id)
 			.Create();
 
@@ -128,16 +122,16 @@ public class CopyWorkoutTests
 	[Fact]
 	public async Task Should_Throw_Exception_Max_Free_Workouts()
 	{
-		var command = _fixture.Create<CopyWorkout>();
+		var command = Fixture.Create<CopyWorkout>();
 		var workouts = Enumerable.Range(0, Globals.MaxFreeWorkouts + 1)
-			.Select(_ => _fixture.Build<WorkoutInfo>().Create())
+			.Select(_ => Fixture.Build<WorkoutInfo>().Create())
 			.ToList();
-		var user = _fixture.Build<User>()
+		var user = Fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
 			.With(x => x.Workouts, workouts)
 			.With(x => x.PremiumToken, (string)null)
 			.Create();
-		var workout = _fixture.Build<Workout>()
+		var workout = Fixture.Build<Workout>()
 			.With(x => x.CreatorId, user.Id)
 			.Create();
 
@@ -155,12 +149,12 @@ public class CopyWorkoutTests
 	[Fact]
 	public async Task Should_Throw_Exception_Missing_Permissions_Workout()
 	{
-		var command = _fixture.Create<CopyWorkout>();
-		var user = _fixture.Create<User>();
+		var command = Fixture.Create<CopyWorkout>();
+		var user = Fixture.Create<User>();
 
 		_mockRepository
 			.Setup(x => x.GetWorkout(It.Is<string>(y => y == command.WorkoutId)))
-			.ReturnsAsync(_fixture.Create<Workout>());
+			.ReturnsAsync(Fixture.Create<Workout>());
 
 		_mockRepository
 			.Setup(x => x.GetUser(It.Is<string>(y => y == command.UserId)))
@@ -172,7 +166,7 @@ public class CopyWorkoutTests
 	[Fact]
 	public async Task Should_Throw_Exception_Workout_Not_Found()
 	{
-		var command = _fixture.Create<CopyWorkout>();
+		var command = Fixture.Create<CopyWorkout>();
 
 		_mockRepository
 			.Setup(x => x.GetWorkout(It.Is<string>(y => y == command.WorkoutId)))

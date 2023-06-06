@@ -1,5 +1,5 @@
 using AutoMapper;
-using LiteWeightAPI.Api.Users.Responses;
+using LiteWeightAPI.Api.Complaints.Responses;
 using LiteWeightAPI.Domain.Complaints;
 
 namespace LiteWeightAPI.AutoMapper;

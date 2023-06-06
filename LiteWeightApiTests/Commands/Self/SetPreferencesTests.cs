@@ -4,11 +4,10 @@ using LiteWeightAPI.Domain.Users;
 
 namespace LiteWeightApiTests.Commands.Self;
 
-public class SetPreferencesTests
+public class SetPreferencesTests : BaseTest
 {
 	private readonly SetSettingsHandler _handler;
 	private readonly Mock<IRepository> _mockRepository;
-	private readonly Fixture _fixture = new();
 
 	public SetPreferencesTests()
 	{
@@ -19,9 +18,9 @@ public class SetPreferencesTests
 	[Fact]
 	public async Task Should_Set_Preferences()
 	{
-		var command = _fixture.Create<SetSettings>();
+		var command = Fixture.Create<SetSettings>();
 
-		var user = _fixture.Build<User>()
+		var user = Fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
 			.Create();
 

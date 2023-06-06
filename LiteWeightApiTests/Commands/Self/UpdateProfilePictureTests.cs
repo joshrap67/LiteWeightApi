@@ -5,11 +5,10 @@ using LiteWeightAPI.Services;
 
 namespace LiteWeightApiTests.Commands.Self;
 
-public class UpdateProfilePictureTests
+public class UpdateProfilePictureTests : BaseTest
 {
 	private readonly UpdateProfilePictureHandler _handler;
 	private readonly Mock<IRepository> _mockRepository;
-	private readonly Fixture _fixture = new();
 
 	public UpdateProfilePictureTests()
 	{
@@ -21,9 +20,9 @@ public class UpdateProfilePictureTests
 	[Fact]
 	public async Task Should_Set_Profile_Picture()
 	{
-		var command = _fixture.Create<UpdateProfilePicture>();
+		var command = Fixture.Create<UpdateProfilePicture>();
 
-		var user = _fixture.Build<User>()
+		var user = Fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
 			.Create();
 

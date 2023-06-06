@@ -44,7 +44,7 @@ public class WorkoutsController : BaseController
 		command.UserId = CurrentUserId;
 
 		var response = await _dispatcher.DispatchAsync<CreateWorkout, UserAndWorkoutResponse>(command);
-		return new ObjectResult(response) { StatusCode = StatusCodes.Status201Created };
+		return new CreatedResult(new Uri($"/workouts/{response.Workout.Id}", UriKind.Relative), response);
 	}
 
 	/// <summary>Get Workout</summary>
@@ -77,7 +77,7 @@ public class WorkoutsController : BaseController
 			Name = request.Name,
 			WorkoutId = workoutId
 		});
-		return new ObjectResult(response) { StatusCode = StatusCodes.Status201Created };
+		return new CreatedResult(new Uri($"/workouts/{response.Workout.Id}", UriKind.Relative), response);
 	}
 
 	/// <summary>Set Routine</summary>

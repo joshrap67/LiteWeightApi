@@ -36,7 +36,7 @@ public class ExercisesController : BaseController
 		command.UserId = CurrentUserId;
 
 		var response = await _dispatcher.DispatchAsync<AddExercise, OwnedExerciseResponse>(command);
-		return new ObjectResult(response) { StatusCode = StatusCodes.Status201Created };
+		return new CreatedResult(new Uri($"/exercises/{response.Id}", UriKind.Relative), response);
 	}
 
 	/// <summary>Update Exercise</summary>

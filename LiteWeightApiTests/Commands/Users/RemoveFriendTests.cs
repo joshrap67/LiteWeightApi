@@ -6,11 +6,10 @@ using LiteWeightAPI.Services;
 
 namespace LiteWeightApiTests.Commands.Users;
 
-public class RemoveFriendTests
+public class RemoveFriendTests : BaseTest
 {
 	private readonly RemoveFriendHandler _handler;
 	private readonly Mock<IRepository> _mockRepository;
-	private readonly Fixture _fixture = new();
 
 	public RemoveFriendTests()
 	{
@@ -22,24 +21,24 @@ public class RemoveFriendTests
 	[Fact]
 	public async Task Should_Remove_Friend()
 	{
-		var command = _fixture.Create<RemoveFriend>();
+		var command = Fixture.Create<RemoveFriend>();
 
 		var initiatorFriends = new List<Friend>
 		{
-			_fixture.Create<Friend>(),
-			_fixture.Build<Friend>().With(x => x.UserId, command.RemovedUserId).Create(),
+			Fixture.Create<Friend>(),
+			Fixture.Build<Friend>().With(x => x.UserId, command.RemovedUserId).Create(),
 		};
-		var initiator = _fixture.Build<User>()
+		var initiator = Fixture.Build<User>()
 			.With(x => x.Id, command.InitiatorUserId)
 			.With(x => x.Friends, initiatorFriends)
 			.Create();
 
 		var removedFriendFriends = new List<Friend>
 		{
-			_fixture.Create<Friend>(),
-			_fixture.Build<Friend>().With(x => x.UserId, command.InitiatorUserId).Create()
+			Fixture.Create<Friend>(),
+			Fixture.Build<Friend>().With(x => x.UserId, command.InitiatorUserId).Create()
 		};
-		var removedFriend = _fixture.Build<User>()
+		var removedFriend = Fixture.Build<User>()
 			.With(x => x.Id, command.RemovedUserId)
 			.With(x => x.Friends, removedFriendFriends)
 			.Create();
@@ -60,12 +59,12 @@ public class RemoveFriendTests
 	[Fact]
 	public async Task Should_Not_Fail_Friend_Not_Found()
 	{
-		var command = _fixture.Create<RemoveFriend>();
+		var command = Fixture.Create<RemoveFriend>();
 
-		var initiator = _fixture.Build<User>()
+		var initiator = Fixture.Build<User>()
 			.With(x => x.Id, command.InitiatorUserId)
 			.Create();
-		var canceledUser = _fixture.Build<User>().With(x => x.Id, command.RemovedUserId).Create();
+		var canceledUser = Fixture.Build<User>().With(x => x.Id, command.RemovedUserId).Create();
 
 		_mockRepository
 			.Setup(x => x.GetUser(It.Is<string>(y => y == command.RemovedUserId)))
@@ -81,7 +80,7 @@ public class RemoveFriendTests
 	[Fact]
 	public async Task Should_Exception_User_Does_Not_Exist()
 	{
-		var command = _fixture.Create<RemoveFriend>();
+		var command = Fixture.Create<RemoveFriend>();
 
 		_mockRepository
 			.Setup(x => x.GetUser(It.Is<string>(y => y == command.RemovedUserId)))

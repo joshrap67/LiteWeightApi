@@ -4,11 +4,10 @@ using LiteWeightAPI.Domain.Users;
 
 namespace LiteWeightApiTests.Commands.Self;
 
-public class SetAllReceivedWorkoutsSeenTests
+public class SetAllReceivedWorkoutsSeenTests : BaseTest
 {
 	private readonly SetAllReceivedWorkoutsSeenHandler _handler;
 	private readonly Mock<IRepository> _mockRepository;
-	private readonly Fixture _fixture = new();
 
 	public SetAllReceivedWorkoutsSeenTests()
 	{
@@ -19,15 +18,15 @@ public class SetAllReceivedWorkoutsSeenTests
 	[Fact]
 	public async Task Should_Set_Workouts_Seen()
 	{
-		var command = _fixture.Create<SetAllReceivedWorkoutsSeen>();
-		var user = _fixture.Build<User>()
+		var command = Fixture.Create<SetAllReceivedWorkoutsSeen>();
+		var user = Fixture.Build<User>()
 			.With(x => x.ReceivedWorkouts,
 				new List<SharedWorkoutInfo>
 				{
-					_fixture.Build<SharedWorkoutInfo>().With(x => x.Seen, false).Create(),
-					_fixture.Build<SharedWorkoutInfo>().With(x => x.Seen, false).Create(),
-					_fixture.Build<SharedWorkoutInfo>().With(x => x.Seen, false).Create(),
-					_fixture.Build<SharedWorkoutInfo>().With(x => x.Seen, true).Create()
+					Fixture.Build<SharedWorkoutInfo>().With(x => x.Seen, false).Create(),
+					Fixture.Build<SharedWorkoutInfo>().With(x => x.Seen, false).Create(),
+					Fixture.Build<SharedWorkoutInfo>().With(x => x.Seen, false).Create(),
+					Fixture.Build<SharedWorkoutInfo>().With(x => x.Seen, true).Create()
 				})
 			.Create();
 
@@ -42,8 +41,8 @@ public class SetAllReceivedWorkoutsSeenTests
 	[Fact]
 	public async Task Should_Set_Workouts_Seen_Empty_List()
 	{
-		var command = _fixture.Create<SetAllReceivedWorkoutsSeen>();
-		var user = _fixture.Build<User>()
+		var command = Fixture.Create<SetAllReceivedWorkoutsSeen>();
+		var user = Fixture.Build<User>()
 			.With(x => x.ReceivedWorkouts, new List<SharedWorkoutInfo>())
 			.Create();
 

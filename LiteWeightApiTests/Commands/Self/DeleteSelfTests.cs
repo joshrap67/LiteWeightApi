@@ -6,11 +6,10 @@ using LiteWeightAPI.Services;
 
 namespace LiteWeightApiTests.Commands.Self;
 
-public class DeleteSelfTests
+public class DeleteSelfTests : BaseTest
 {
 	private readonly DeleteSelfHandler _handler;
 	private readonly Mock<IRepository> _mockRepository;
-	private readonly Fixture _fixture = new();
 
 	public DeleteSelfTests()
 	{
@@ -23,44 +22,44 @@ public class DeleteSelfTests
 	[Fact]
 	public async Task Should_Delete_Self()
 	{
-		var command = _fixture.Create<DeleteSelf>();
-		var friendOfUserId = _fixture.Create<string>();
-		var userWhoSentFriendRequestId = _fixture.Create<string>();
-		var userWhoReceivedFriendRequestId = _fixture.Create<string>();
+		var command = Fixture.Create<DeleteSelf>();
+		var friendOfUserId = Fixture.Create<string>();
+		var userWhoSentFriendRequestId = Fixture.Create<string>();
+		var userWhoReceivedFriendRequestId = Fixture.Create<string>();
 
-		var user = _fixture.Build<User>()
+		var user = Fixture.Build<User>()
 			.With(x => x.Friends, new List<Friend>
 			{
-				_fixture.Build<Friend>()
+				Fixture.Build<Friend>()
 					.With(x => x.Confirmed, true)
 					.With(x => x.UserId, friendOfUserId).Create(),
-				_fixture.Build<Friend>()
+				Fixture.Build<Friend>()
 					.With(x => x.Confirmed, false)
 					.With(x => x.UserId, userWhoReceivedFriendRequestId).Create()
 			})
 			.With(x => x.FriendRequests,
 				new List<FriendRequest>
 				{
-					_fixture.Build<FriendRequest>()
+					Fixture.Build<FriendRequest>()
 						.With(x => x.UserId, userWhoSentFriendRequestId).Create()
 				})
 			.With(x=>x.Id, command.UserId)
 			.Create();
 		var userId = user.Id;
 
-		var friendOfUser = _fixture.Build<User>().With(x => x.Friends, new List<Friend>
+		var friendOfUser = Fixture.Build<User>().With(x => x.Friends, new List<Friend>
 		{
-			_fixture.Build<Friend>().With(y => y.UserId, userId).Create()
+			Fixture.Build<Friend>().With(y => y.UserId, userId).Create()
 		}).Create();
 
-		var userWhoSentFriendRequest = _fixture.Build<User>().With(x => x.Friends, new List<Friend>
+		var userWhoSentFriendRequest = Fixture.Build<User>().With(x => x.Friends, new List<Friend>
 		{
-			_fixture.Build<Friend>().With(y => y.UserId, userId).Create()
+			Fixture.Build<Friend>().With(y => y.UserId, userId).Create()
 		}).Create();
 
-		var userWhoReceivedFriendRequest = _fixture.Build<User>().With(x => x.FriendRequests, new List<FriendRequest>
+		var userWhoReceivedFriendRequest = Fixture.Build<User>().With(x => x.FriendRequests, new List<FriendRequest>
 		{
-			_fixture.Build<FriendRequest>().With(y => y.UserId, userId).Create()
+			Fixture.Build<FriendRequest>().With(y => y.UserId, userId).Create()
 		}).Create();
 
 
@@ -90,7 +89,7 @@ public class DeleteSelfTests
 	[Fact]
 	public async Task Should_Throw_Exception_User_Does_Not_Exist()
 	{
-		var command = _fixture.Create<DeleteSelf>();
+		var command = Fixture.Create<DeleteSelf>();
 
 		_mockRepository
 			.Setup(x => x.GetUser(It.Is<string>(y => y == command.UserId)))

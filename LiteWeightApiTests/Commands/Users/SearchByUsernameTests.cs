@@ -5,11 +5,10 @@ using LiteWeightApiTests.TestHelpers;
 
 namespace LiteWeightApiTests.Commands.Users;
 
-public class SearchByUsernameTests
+public class SearchByUsernameTests : BaseTest
 {
 	private readonly SearchByUsernameHandler _handler;
 	private readonly Mock<IRepository> _mockRepository;
-	private readonly Fixture _fixture = new();
 
 	public SearchByUsernameTests()
 	{
@@ -20,10 +19,10 @@ public class SearchByUsernameTests
 	[Fact]
 	public async Task Should_Find_User_Not_Private_Account()
 	{
-		var command = _fixture.Create<SearchByUsername>();
+		var command = Fixture.Create<SearchByUsername>();
 
 		var preferences = new UserSettings();
-		var foundUser = _fixture.Build<User>()
+		var foundUser = Fixture.Build<User>()
 			.With(x => x.Username, command.Username)
 			.With(x => x.Settings, preferences)
 			.Create();
@@ -40,15 +39,15 @@ public class SearchByUsernameTests
 	[Fact]
 	public async Task Should_Find_User_Private_Account()
 	{
-		var command = _fixture.Create<SearchByUsername>();
+		var command = Fixture.Create<SearchByUsername>();
 
 		var preferences = new UserSettings { PrivateAccount = true };
-		var foundUser = _fixture.Build<User>()
+		var foundUser = Fixture.Build<User>()
 			.With(x => x.Username, command.Username)
 			.With(x => x.Settings, preferences)
 			.With(x => x.Friends, new List<Friend>
 			{
-				_fixture.Build<Friend>().With(x => x.UserId, command.InitiatorId).Create()
+				Fixture.Build<Friend>().With(x => x.UserId, command.InitiatorId).Create()
 			})
 			.Create();
 
@@ -64,7 +63,7 @@ public class SearchByUsernameTests
 	[Fact]
 	public async Task Should_Return_Null_User_Not_Found()
 	{
-		var command = _fixture.Create<SearchByUsername>();
+		var command = Fixture.Create<SearchByUsername>();
 
 		_mockRepository
 			.Setup(x => x.GetUserByUsername(It.Is<string>(y => y == command.Username)))
@@ -77,10 +76,10 @@ public class SearchByUsernameTests
 	[Fact]
 	public async Task Should_Return_Null_Private_User()
 	{
-		var command = _fixture.Create<SearchByUsername>();
+		var command = Fixture.Create<SearchByUsername>();
 
 		var preferences = new UserSettings { PrivateAccount = true };
-		var foundUser = _fixture.Build<User>()
+		var foundUser = Fixture.Build<User>()
 			.With(x => x.Username, command.Username)
 			.With(x => x.Settings, preferences)
 			.Create();

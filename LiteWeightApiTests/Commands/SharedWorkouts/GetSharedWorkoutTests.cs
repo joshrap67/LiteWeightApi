@@ -1,5 +1,3 @@
-using AutoMapper;
-using LiteWeightAPI.Api.Exercises;
 using LiteWeightAPI.Commands.SharedWorkouts.GetSharedWorkout;
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.SharedWorkouts;
@@ -9,25 +7,21 @@ using LiteWeightApiTests.TestHelpers;
 
 namespace LiteWeightApiTests.Commands.SharedWorkouts;
 
-public class GetSharedWorkoutTests
+public class GetSharedWorkoutTests : BaseTest
 {
 	private readonly GetSharedWorkoutHandler _handler;
 	private readonly Mock<IRepository> _mockRepository;
-	private readonly Fixture _fixture = new();
 
 	public GetSharedWorkoutTests()
 	{
-		var configuration = new MapperConfiguration(cfg => { cfg.AddMaps(typeof(ExercisesController)); });
-		var mapper = new Mapper(configuration);
-
 		_mockRepository = new Mock<IRepository>();
-		_handler = new GetSharedWorkoutHandler(_mockRepository.Object, mapper);
+		_handler = new GetSharedWorkoutHandler(_mockRepository.Object, Mapper);
 	}
 
 	[Fact]
 	public async Task Should_Get_Workout()
 	{
-		var command = _fixture.Create<GetSharedWorkout>();
+		var command = Fixture.Create<GetSharedWorkout>();
 		var sharedWorkout = SharedWorkoutHelper.GetSharedWorkout(command.UserId, command.SharedWorkoutId);
 
 		_mockRepository
@@ -36,7 +30,7 @@ public class GetSharedWorkoutTests
 
 		_mockRepository
 			.Setup(x => x.GetUser(It.Is<string>(y => y == command.UserId)))
-			.ReturnsAsync(_fixture.Create<User>());
+			.ReturnsAsync(Fixture.Create<User>());
 
 		var response = await _handler.HandleAsync(command);
 		Assert.Equal(command.SharedWorkoutId, response.Id);
@@ -45,7 +39,7 @@ public class GetSharedWorkoutTests
 	[Fact]
 	public async Task Should_Throw_Exception_Workout_Does_Not_Exist()
 	{
-		var command = _fixture.Create<GetSharedWorkout>();
+		var command = Fixture.Create<GetSharedWorkout>();
 
 		_mockRepository
 			.Setup(x => x.GetSharedWorkout(It.Is<string>(y => y == command.SharedWorkoutId)))
@@ -57,8 +51,8 @@ public class GetSharedWorkoutTests
 	[Fact]
 	public async Task Should_Throw_Exception_Missing_Permissions_Workout()
 	{
-		var command = _fixture.Create<GetSharedWorkout>();
-		var user = _fixture.Create<User>();
+		var command = Fixture.Create<GetSharedWorkout>();
+		var user = Fixture.Create<User>();
 
 		var sharedWorkout = SharedWorkoutHelper.GetSharedWorkout();
 

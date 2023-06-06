@@ -6,11 +6,10 @@ using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
 
 namespace LiteWeightApiTests.Commands.Exercises;
 
-public class DeleteExerciseTests
+public class DeleteExerciseTests : BaseTest
 {
 	private readonly DeleteExerciseHandler _handler;
 	private readonly Mock<IRepository> _mockRepository;
-	private readonly Fixture _fixture = new();
 
 	public DeleteExerciseTests()
 	{
@@ -21,13 +20,13 @@ public class DeleteExerciseTests
 	[Fact]
 	public async Task Should_Delete_Exercise()
 	{
-		var command = _fixture.Create<DeleteExercise>();
-		var exercise = _fixture.Build<OwnedExercise>()
+		var command = Fixture.Create<DeleteExercise>();
+		var exercise = Fixture.Build<OwnedExercise>()
 			.With(x => x.Id, command.ExerciseId)
 			.Create();
 		var exercises = new List<OwnedExercise> { exercise };
 
-		var routine = _fixture.Build<Routine>()
+		var routine = Fixture.Build<Routine>()
 			.With(x => x.Weeks, new List<RoutineWeek>
 			{
 				new()
@@ -38,18 +37,18 @@ public class DeleteExerciseTests
 						{
 							Exercises = new List<RoutineExercise>
 							{
-								_fixture.Build<RoutineExercise>().With(x => x.ExerciseId, exercise.Id).Create()
+								Fixture.Build<RoutineExercise>().With(x => x.ExerciseId, exercise.Id).Create()
 							}
 						}
 					}
 				}
 			}).Create();
 
-		var workout = _fixture.Build<Workout>()
+		var workout = Fixture.Build<Workout>()
 			.With(x => x.Routine, routine)
 			.Create();
 
-		var user = _fixture.Build<User>()
+		var user = Fixture.Build<User>()
 			.With(x => x.Exercises, exercises)
 			.Create();
 
@@ -71,12 +70,12 @@ public class DeleteExerciseTests
 	[Fact]
 	public async Task Should_Throw_Exception_Exercise_Not_Found()
 	{
-		var command = _fixture.Create<DeleteExercise>();
-		command.ExerciseId = _fixture.Create<string>();
+		var command = Fixture.Create<DeleteExercise>();
+		command.ExerciseId = Fixture.Create<string>();
 
 		_mockRepository
 			.Setup(x => x.GetUser(It.Is<string>(y => y == command.UserId)))
-			.ReturnsAsync(_fixture.Create<User>());
+			.ReturnsAsync(Fixture.Create<User>());
 
 		await Assert.ThrowsAsync<ResourceNotFoundException>(() => _handler.HandleAsync(command));
 	}

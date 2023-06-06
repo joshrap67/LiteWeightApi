@@ -7,11 +7,10 @@ using LiteWeightAPI.Imports;
 
 namespace LiteWeightApiTests.Commands.Workouts;
 
-public class DeleteWorkoutTests
+public class DeleteWorkoutTests : BaseTest
 {
 	private readonly DeleteWorkoutHandler _handler;
 	private readonly Mock<IRepository> _mockRepository;
-	private readonly Fixture _fixture = new();
 
 	public DeleteWorkoutTests()
 	{
@@ -22,11 +21,11 @@ public class DeleteWorkoutTests
 	[Fact]
 	public async Task Should_Delete()
 	{
-		var command = _fixture.Create<DeleteWorkout>();
+		var command = Fixture.Create<DeleteWorkout>();
 		var workouts = Enumerable.Range(0, Globals.MaxFreeWorkouts / 2)
-			.Select(_ => _fixture.Create<WorkoutInfo>())
+			.Select(_ => Fixture.Create<WorkoutInfo>())
 			.ToList();
-		var workout = _fixture.Build<Workout>()
+		var workout = Fixture.Build<Workout>()
 			.With(x => x.CreatorId, command.UserId)
 			.Create();
 		var exercisesOfWorkout = workout.Routine.Weeks
@@ -35,22 +34,22 @@ public class DeleteWorkoutTests
 			.Select(x => x.ExerciseId)
 			.ToList();
 		var ownedExercises = Enumerable.Range(0, 10)
-			.Select(_ => _fixture.Create<OwnedExercise>())
+			.Select(_ => Fixture.Create<OwnedExercise>())
 			.ToList();
 		ownedExercises.AddRange(exercisesOfWorkout.Select(exerciseId =>
-			_fixture.Build<OwnedExercise>()
+			Fixture.Build<OwnedExercise>()
 				.With(x => x.Id, exerciseId)
 				.With(x => x.Workouts,
 					new List<OwnedExerciseWorkout>
 					{
-						_fixture.Build<OwnedExerciseWorkout>()
+						Fixture.Build<OwnedExerciseWorkout>()
 							.With(x => x.WorkoutId, command.WorkoutId)
 							.Create()
 					})
 				.Create()
 		));
 
-		var user = _fixture.Build<User>()
+		var user = Fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
 			.With(x => x.Workouts, workouts)
 			.With(x => x.Exercises, ownedExercises)
@@ -73,12 +72,12 @@ public class DeleteWorkoutTests
 	[Fact]
 	public async Task Should_Throw_Exception_Missing_Permissions_Workout()
 	{
-		var command = _fixture.Create<DeleteWorkout>();
-		var user = _fixture.Create<User>();
+		var command = Fixture.Create<DeleteWorkout>();
+		var user = Fixture.Create<User>();
 
 		_mockRepository
 			.Setup(x => x.GetWorkout(It.Is<string>(y => y == command.WorkoutId)))
-			.ReturnsAsync(_fixture.Create<Workout>());
+			.ReturnsAsync(Fixture.Create<Workout>());
 
 		_mockRepository
 			.Setup(x => x.GetUser(It.Is<string>(y => y == command.UserId)))
@@ -90,7 +89,7 @@ public class DeleteWorkoutTests
 	[Fact]
 	public async Task Should_Throw_Exception_Workout_Not_Found()
 	{
-		var command = _fixture.Create<DeleteWorkout>();
+		var command = Fixture.Create<DeleteWorkout>();
 
 		_mockRepository
 			.Setup(x => x.GetWorkout(It.Is<string>(y => y == command.WorkoutId)))

@@ -6,12 +6,11 @@ using NodaTime;
 
 namespace LiteWeightApiTests.Commands.Self;
 
-public class SetCurrentWorkoutTests
+public class SetCurrentWorkoutTests : BaseTest
 {
 	private readonly SetCurrentWorkoutHandler _handler;
 	private readonly Mock<IRepository> _mockRepository;
 	private readonly Mock<IClock> _mockClock;
-	private readonly Fixture _fixture = new();
 
 	public SetCurrentWorkoutTests()
 	{
@@ -23,14 +22,14 @@ public class SetCurrentWorkoutTests
 	[Fact]
 	public async Task Should_Set_Current_Workout_Not_Null()
 	{
-		var command = _fixture.Create<SetCurrentWorkout>();
+		var command = Fixture.Create<SetCurrentWorkout>();
 
-		var workoutInfo = _fixture.Build<WorkoutInfo>().With(x => x.WorkoutId, command.CurrentWorkoutId).Create();
-		var user = _fixture.Build<User>()
+		var workoutInfo = Fixture.Build<WorkoutInfo>().With(x => x.WorkoutId, command.CurrentWorkoutId).Create();
+		var user = Fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
 			.With(x => x.Workouts, new List<WorkoutInfo> { workoutInfo })
 			.Create();
-		var instant = _fixture.Create<Instant>();
+		var instant = Fixture.Create<Instant>();
 		_mockClock.Setup(x => x.GetCurrentInstant()).Returns(instant);
 
 		_mockRepository
@@ -46,8 +45,8 @@ public class SetCurrentWorkoutTests
 	[Fact]
 	public async Task Should_Set_Current_Workout_Null()
 	{
-		var command = _fixture.Build<SetCurrentWorkout>().With(x => x.CurrentWorkoutId, (string)null).Create();
-		var user = _fixture.Build<User>().With(x => x.Id, command.UserId).Create();
+		var command = Fixture.Build<SetCurrentWorkout>().With(x => x.CurrentWorkoutId, (string)null).Create();
+		var user = Fixture.Build<User>().With(x => x.Id, command.UserId).Create();
 
 		_mockRepository
 			.Setup(x => x.GetUser(It.Is<string>(y => y == command.UserId)))
@@ -61,11 +60,11 @@ public class SetCurrentWorkoutTests
 	[Fact]
 	public async Task Should_Throw_Exception_Workout_Does_Not_Exist()
 	{
-		var command = _fixture.Create<SetCurrentWorkout>();
+		var command = Fixture.Create<SetCurrentWorkout>();
 
 		_mockRepository
 			.Setup(x => x.GetUser(It.Is<string>(y => y == command.UserId)))
-			.ReturnsAsync(_fixture.Create<User>());
+			.ReturnsAsync(Fixture.Create<User>());
 
 		await Assert.ThrowsAsync<WorkoutNotFoundException>(() => _handler.HandleAsync(command));
 	}

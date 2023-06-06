@@ -58,7 +58,7 @@ public class SharedWorkoutsController : BaseController
 				SharedWorkoutId = sharedWorkoutId,
 				NewName = request.WorkoutName
 			});
-		return new ObjectResult(response) { StatusCode = StatusCodes.Status201Created };
+		return new CreatedResult(new Uri($"/workouts/{response.NewWorkoutInfo.WorkoutId}", UriKind.Relative), response);
 	}
 
 	/// <summary>Decline Shared Workout</summary>

@@ -4,11 +4,10 @@ using LiteWeightAPI.Domain.Users;
 
 namespace LiteWeightApiTests.Commands.Self;
 
-public class SetReceivedWorkoutSeenTests
+public class SetReceivedWorkoutSeenTests : BaseTest
 {
 	private readonly SetReceivedWorkoutSeenHandler _handler;
 	private readonly Mock<IRepository> _mockRepository;
-	private readonly Fixture _fixture = new();
 
 	public SetReceivedWorkoutSeenTests()
 	{
@@ -21,12 +20,12 @@ public class SetReceivedWorkoutSeenTests
 	[InlineData(true)]
 	public async Task Should_Set_Workout_Seen(bool isAlreadySeen)
 	{
-		var command = _fixture.Create<SetReceivedWorkoutSeen>();
+		var command = Fixture.Create<SetReceivedWorkoutSeen>();
 
-		var user = _fixture.Build<User>()
+		var user = Fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
 			.Create();
-		var sharedWorkoutInfo = _fixture.Build<SharedWorkoutInfo>()
+		var sharedWorkoutInfo = Fixture.Build<SharedWorkoutInfo>()
 			.With(x => x.SharedWorkoutId, command.SharedWorkoutId)
 			.With(x => x.Seen, isAlreadySeen)
 			.Create();
@@ -43,9 +42,9 @@ public class SetReceivedWorkoutSeenTests
 	[Fact]
 	public async Task Should_Not_Fail_Workout_Not_Found()
 	{
-		var command = _fixture.Create<SetReceivedWorkoutSeen>();
+		var command = Fixture.Create<SetReceivedWorkoutSeen>();
 
-		var user = _fixture.Build<User>()
+		var user = Fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
 			.Create();
 

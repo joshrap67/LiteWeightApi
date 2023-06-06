@@ -9,12 +9,11 @@ using NodaTime;
 
 namespace LiteWeightApiTests.Commands.Workouts;
 
-public class DeleteWorkoutAndSetCurrentTests
+public class DeleteWorkoutAndSetCurrentTests : BaseTest
 {
 	private readonly DeleteWorkoutAndSetCurrentHandler _handler;
 	private readonly Mock<IRepository> _mockRepository;
 	private readonly Mock<IClock> _mockClock;
-	private readonly Fixture _fixture = new();
 
 	public DeleteWorkoutAndSetCurrentTests()
 	{
@@ -28,18 +27,18 @@ public class DeleteWorkoutAndSetCurrentTests
 	[InlineData("abc")]
 	public async Task Should_Delete_And_Set_Current(string currentWorkoutId)
 	{
-		var command = _fixture.Build<DeleteWorkoutAndSetCurrent>()
+		var command = Fixture.Build<DeleteWorkoutAndSetCurrent>()
 			.With(x => x.CurrentWorkoutId, currentWorkoutId)
 			.Create();
 		var workouts = Enumerable.Range(0, Globals.MaxFreeWorkouts / 2)
 			.Select(_ =>
 			{
 				return currentWorkoutId != null
-					? _fixture.Build<WorkoutInfo>().With(x => x.WorkoutId, currentWorkoutId).Create()
-					: _fixture.Create<WorkoutInfo>();
+					? Fixture.Build<WorkoutInfo>().With(x => x.WorkoutId, currentWorkoutId).Create()
+					: Fixture.Create<WorkoutInfo>();
 			})
 			.ToList();
-		var workout = _fixture.Build<Workout>()
+		var workout = Fixture.Build<Workout>()
 			.With(x => x.CreatorId, command.UserId)
 			.Create();
 		var exercisesOfWorkout = workout.Routine.Weeks
@@ -48,28 +47,28 @@ public class DeleteWorkoutAndSetCurrentTests
 			.Select(x => x.ExerciseId)
 			.ToList();
 		var ownedExercises = Enumerable.Range(0, 10)
-			.Select(_ => _fixture.Create<OwnedExercise>())
+			.Select(_ => Fixture.Create<OwnedExercise>())
 			.ToList();
 		ownedExercises.AddRange(exercisesOfWorkout.Select(exerciseId =>
-			_fixture.Build<OwnedExercise>()
+			Fixture.Build<OwnedExercise>()
 				.With(x => x.Id, exerciseId)
 				.With(x => x.Workouts,
 					new List<OwnedExerciseWorkout>
 					{
-						_fixture.Build<OwnedExerciseWorkout>()
+						Fixture.Build<OwnedExerciseWorkout>()
 							.With(x => x.WorkoutId, command.WorkoutToDeleteId)
 							.Create()
 					})
 				.Create()
 		));
 
-		var user = _fixture.Build<User>()
+		var user = Fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
 			.With(x => x.Workouts, workouts)
 			.With(x => x.Exercises, ownedExercises)
 			.Create();
 
-		var instant = _fixture.Create<Instant>();
+		var instant = Fixture.Create<Instant>();
 		_mockClock.Setup(x => x.GetCurrentInstant()).Returns(instant);
 
 		_mockRepository
@@ -95,15 +94,15 @@ public class DeleteWorkoutAndSetCurrentTests
 	[Fact]
 	public async Task Should_Throw_Exception_Missing_Referenced_Workout_Not_Found()
 	{
-		var command = _fixture.Create<DeleteWorkoutAndSetCurrent>();
+		var command = Fixture.Create<DeleteWorkoutAndSetCurrent>();
 		var workouts = Enumerable.Range(0, Globals.MaxFreeWorkouts / 2)
-			.Select(_ => _fixture.Create<WorkoutInfo>())
+			.Select(_ => Fixture.Create<WorkoutInfo>())
 			.ToList();
-		var workout = _fixture.Build<Workout>()
+		var workout = Fixture.Build<Workout>()
 			.With(x => x.CreatorId, command.UserId)
 			.Create();
 
-		var user = _fixture.Build<User>()
+		var user = Fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
 			.With(x => x.Workouts, workouts)
 			.Create();
@@ -122,12 +121,12 @@ public class DeleteWorkoutAndSetCurrentTests
 	[Fact]
 	public async Task Should_Throw_Exception_Missing_Permissions_Workout()
 	{
-		var command = _fixture.Create<DeleteWorkoutAndSetCurrent>();
-		var user = _fixture.Create<User>();
+		var command = Fixture.Create<DeleteWorkoutAndSetCurrent>();
+		var user = Fixture.Create<User>();
 
 		_mockRepository
 			.Setup(x => x.GetWorkout(It.Is<string>(y => y == command.WorkoutToDeleteId)))
-			.ReturnsAsync(_fixture.Create<Workout>());
+			.ReturnsAsync(Fixture.Create<Workout>());
 
 		_mockRepository
 			.Setup(x => x.GetUser(It.Is<string>(y => y == command.UserId)))
@@ -139,7 +138,7 @@ public class DeleteWorkoutAndSetCurrentTests
 	[Fact]
 	public async Task Should_Throw_Exception_Workout_Not_Found()
 	{
-		var command = _fixture.Create<DeleteWorkoutAndSetCurrent>();
+		var command = Fixture.Create<DeleteWorkoutAndSetCurrent>();
 
 		_mockRepository
 			.Setup(x => x.GetWorkout(It.Is<string>(y => y == command.WorkoutToDeleteId)))

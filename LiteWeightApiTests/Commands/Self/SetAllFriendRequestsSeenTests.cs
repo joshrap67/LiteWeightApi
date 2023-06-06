@@ -4,11 +4,10 @@ using LiteWeightAPI.Domain.Users;
 
 namespace LiteWeightApiTests.Commands.Self;
 
-public class SetAllFriendRequestsSeenTests
+public class SetAllFriendRequestsSeenTests : BaseTest
 {
 	private readonly SetAllFriendRequestsSeenHandler _handler;
 	private readonly Mock<IRepository> _mockRepository;
-	private readonly Fixture _fixture = new();
 
 	public SetAllFriendRequestsSeenTests()
 	{
@@ -19,15 +18,15 @@ public class SetAllFriendRequestsSeenTests
 	[Fact]
 	public async Task Should_Set_Requests_Seen()
 	{
-		var command = _fixture.Create<SetAllFriendRequestsSeen>();
-		var user = _fixture.Build<User>()
+		var command = Fixture.Create<SetAllFriendRequestsSeen>();
+		var user = Fixture.Build<User>()
 			.With(x => x.FriendRequests,
 				new List<FriendRequest>
 				{
-					_fixture.Build<FriendRequest>().With(x => x.Seen, false).Create(),
-					_fixture.Build<FriendRequest>().With(x => x.Seen, false).Create(),
-					_fixture.Build<FriendRequest>().With(x => x.Seen, false).Create(),
-					_fixture.Build<FriendRequest>().With(x => x.Seen, true).Create()
+					Fixture.Build<FriendRequest>().With(x => x.Seen, false).Create(),
+					Fixture.Build<FriendRequest>().With(x => x.Seen, false).Create(),
+					Fixture.Build<FriendRequest>().With(x => x.Seen, false).Create(),
+					Fixture.Build<FriendRequest>().With(x => x.Seen, true).Create()
 				})
 			.Create();
 
@@ -42,8 +41,8 @@ public class SetAllFriendRequestsSeenTests
 	[Fact]
 	public async Task Should_Set_Requests_Seen_Empty_List()
 	{
-		var command = _fixture.Create<SetAllFriendRequestsSeen>();
-		var user = _fixture.Build<User>()
+		var command = Fixture.Create<SetAllFriendRequestsSeen>();
+		var user = Fixture.Build<User>()
 			.With(x => x.FriendRequests, new List<FriendRequest>())
 			.Create();
 

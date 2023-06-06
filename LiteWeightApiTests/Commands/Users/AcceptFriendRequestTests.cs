@@ -8,11 +8,10 @@ using LiteWeightAPI.Services;
 
 namespace LiteWeightApiTests.Commands.Users;
 
-public class AcceptFriendRequestTests
+public class AcceptFriendRequestTests : BaseTest
 {
 	private readonly AcceptFriendRequestHandler _handler;
 	private readonly Mock<IRepository> _mockRepository;
-	private readonly Fixture _fixture = new();
 
 	public AcceptFriendRequestTests()
 	{
@@ -24,26 +23,26 @@ public class AcceptFriendRequestTests
 	[Fact]
 	public async Task Should_Accept_Friend_Request()
 	{
-		var command = _fixture.Create<AcceptFriendRequest>();
+		var command = Fixture.Create<AcceptFriendRequest>();
 		var friends = Enumerable.Range(0, Globals.MaxNumberFriends / 2)
-			.Select(_ => _fixture.Build<Friend>().Create())
+			.Select(_ => Fixture.Build<Friend>().Create())
 			.ToList();
 		var friendRequests = new List<FriendRequest>
 		{
-			_fixture.Create<FriendRequest>(),
-			_fixture.Build<FriendRequest>().With(x => x.UserId, command.AcceptedUserId).Create()
+			Fixture.Create<FriendRequest>(),
+			Fixture.Build<FriendRequest>().With(x => x.UserId, command.AcceptedUserId).Create()
 		};
 
-		var initiator = _fixture.Build<User>()
+		var initiator = Fixture.Build<User>()
 			.With(x => x.Id, command.InitiatorUserId)
 			.With(x => x.Friends, friends)
 			.With(x => x.FriendRequests, friendRequests)
 			.Create();
-		var acceptedUser = _fixture.Build<User>()
+		var acceptedUser = Fixture.Build<User>()
 			.With(x => x.Id, command.AcceptedUserId)
 			.With(x => x.Friends, new List<Friend>
 			{
-				_fixture.Build<Friend>()
+				Fixture.Build<Friend>()
 					.With(x => x.UserId, command.InitiatorUserId)
 					.With(x => x.Confirmed, false)
 					.Create()
@@ -67,16 +66,16 @@ public class AcceptFriendRequestTests
 	[Fact]
 	public async Task Should_Not_Fail_Friend_Request_Not_Found()
 	{
-		var command = _fixture.Create<AcceptFriendRequest>();
+		var command = Fixture.Create<AcceptFriendRequest>();
 		var friends = Enumerable.Range(0, Globals.MaxNumberFriends / 2)
-			.Select(_ => _fixture.Build<Friend>().Create())
+			.Select(_ => Fixture.Build<Friend>().Create())
 			.ToList();
 
-		var initiator = _fixture.Build<User>()
+		var initiator = Fixture.Build<User>()
 			.With(x => x.Id, command.InitiatorUserId)
 			.With(x => x.Friends, friends)
 			.Create();
-		var acceptedUser = _fixture.Build<User>().With(x => x.Id, command.AcceptedUserId).Create();
+		var acceptedUser = Fixture.Build<User>().With(x => x.Id, command.AcceptedUserId).Create();
 
 		_mockRepository
 			.Setup(x => x.GetUser(It.Is<string>(y => y == command.AcceptedUserId)))
@@ -92,7 +91,7 @@ public class AcceptFriendRequestTests
 	[Fact]
 	public async Task Should_Exception_User_Does_Not_Exist()
 	{
-		var command = _fixture.Create<AcceptFriendRequest>();
+		var command = Fixture.Create<AcceptFriendRequest>();
 
 		_mockRepository
 			.Setup(x => x.GetUser(It.Is<string>(y => y == command.AcceptedUserId)))
@@ -104,16 +103,16 @@ public class AcceptFriendRequestTests
 	[Fact]
 	public async Task Should_Exception_Initiator_Max_Friends()
 	{
-		var command = _fixture.Create<AcceptFriendRequest>();
+		var command = Fixture.Create<AcceptFriendRequest>();
 		var friends = Enumerable.Range(0, Globals.MaxNumberFriends + 1)
-			.Select(_ => _fixture.Build<Friend>().Create())
+			.Select(_ => Fixture.Build<Friend>().Create())
 			.ToList();
 
-		var initiator = _fixture.Build<User>()
+		var initiator = Fixture.Build<User>()
 			.With(x => x.Id, command.InitiatorUserId)
 			.With(x => x.Friends, friends)
 			.Create();
-		var acceptedUser = _fixture.Build<User>().With(x => x.Id, command.AcceptedUserId).Create();
+		var acceptedUser = Fixture.Build<User>().With(x => x.Id, command.AcceptedUserId).Create();
 
 		_mockRepository
 			.Setup(x => x.GetUser(It.Is<string>(y => y == command.AcceptedUserId)))

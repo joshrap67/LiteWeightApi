@@ -1,5 +1,3 @@
-using AutoMapper;
-using LiteWeightAPI.Api.Exercises;
 using LiteWeightAPI.Commands.SharedWorkouts.AcceptSharedWorkout;
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.SharedWorkouts;
@@ -12,40 +10,36 @@ using NodaTime;
 
 namespace LiteWeightApiTests.Commands.SharedWorkouts;
 
-public class AcceptSharedWorkoutTests
+public class AcceptSharedWorkoutTests : BaseTest
 {
 	private readonly AcceptSharedWorkoutHandler _handler;
 	private readonly Mock<IRepository> _mockRepository;
-	private readonly Fixture _fixture = new();
 
 	public AcceptSharedWorkoutTests()
 	{
-		var configuration = new MapperConfiguration(cfg => { cfg.AddMaps(typeof(ExercisesController)); });
-		var mapper = new Mapper(configuration);
-
 		_mockRepository = new Mock<IRepository>();
 		var clock = new Mock<IClock>();
-		_handler = new AcceptSharedWorkoutHandler(_mockRepository.Object, clock.Object, mapper);
+		_handler = new AcceptSharedWorkoutHandler(_mockRepository.Object, clock.Object, Mapper);
 	}
 
 	[Fact]
 	public async Task Should_Accept_Workout()
 	{
 		// todo separate unit tests for constructors of shared workout
-		var command = _fixture.Create<AcceptSharedWorkout>();
+		var command = Fixture.Create<AcceptSharedWorkout>();
 
 		var sharedWorkout = SharedWorkoutHelper.GetSharedWorkout(command.UserId);
 
 		var workouts = Enumerable.Range(0, Globals.MaxWorkouts / 2)
-			.Select(_ => _fixture.Create<WorkoutInfo>())
+			.Select(_ => Fixture.Create<WorkoutInfo>())
 			.ToList();
 
 		var originalExerciseCount = (Globals.MaxExercises - sharedWorkout.DistinctExercises.Count) / 2;
 		var ownedExercises = Enumerable.Range(0, originalExerciseCount)
-			.Select(_ => _fixture.Create<OwnedExercise>())
+			.Select(_ => Fixture.Create<OwnedExercise>())
 			.ToList();
 
-		var user = _fixture.Build<User>()
+		var user = Fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
 			.With(x => x.Workouts, workouts)
 			.With(x => x.Exercises, ownedExercises)
@@ -70,20 +64,20 @@ public class AcceptSharedWorkoutTests
 	[Fact]
 	public async Task Should_Accept_Workout_Name_Not_Specified()
 	{
-		var command = _fixture.Build<AcceptSharedWorkout>().With(x => x.NewName, (string)null).Create();
+		var command = Fixture.Build<AcceptSharedWorkout>().With(x => x.NewName, (string)null).Create();
 
 		var sharedWorkout = SharedWorkoutHelper.GetSharedWorkout(command.UserId);
 
 		var workouts = Enumerable.Range(0, Globals.MaxWorkouts / 2)
-			.Select(_ => _fixture.Create<WorkoutInfo>())
+			.Select(_ => Fixture.Create<WorkoutInfo>())
 			.ToList();
 
 		var originalExerciseCount = (Globals.MaxExercises - sharedWorkout.DistinctExercises.Count) / 2;
 		var ownedExercises = Enumerable.Range(0, originalExerciseCount)
-			.Select(_ => _fixture.Create<OwnedExercise>())
+			.Select(_ => Fixture.Create<OwnedExercise>())
 			.ToList();
 
-		var user = _fixture.Build<User>()
+		var user = Fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
 			.With(x => x.Workouts, workouts)
 			.With(x => x.Exercises, ownedExercises)
@@ -108,7 +102,7 @@ public class AcceptSharedWorkoutTests
 	[Fact]
 	public async Task Should_Throw_Exception_Workout_Does_Not_Exist()
 	{
-		var command = _fixture.Create<AcceptSharedWorkout>();
+		var command = Fixture.Create<AcceptSharedWorkout>();
 
 		_mockRepository
 			.Setup(x => x.GetSharedWorkout(It.Is<string>(y => y == command.SharedWorkoutId)))
@@ -120,8 +114,8 @@ public class AcceptSharedWorkoutTests
 	[Fact]
 	public async Task Should_Throw_Exception_Missing_Permissions_Workout()
 	{
-		var command = _fixture.Create<AcceptSharedWorkout>();
-		var user = _fixture.Create<User>();
+		var command = Fixture.Create<AcceptSharedWorkout>();
+		var user = Fixture.Create<User>();
 
 		var sharedWorkout = SharedWorkoutHelper.GetSharedWorkout();
 
@@ -139,11 +133,11 @@ public class AcceptSharedWorkoutTests
 	[Fact]
 	public async Task Should_Throw_Exception_Max_Free_Workouts_Exceeded()
 	{
-		var command = _fixture.Create<AcceptSharedWorkout>();
+		var command = Fixture.Create<AcceptSharedWorkout>();
 		var workouts = Enumerable.Range(0, Globals.MaxFreeWorkouts)
-			.Select(_ => _fixture.Create<WorkoutInfo>())
+			.Select(_ => Fixture.Create<WorkoutInfo>())
 			.ToList();
-		var user = _fixture.Build<User>()
+		var user = Fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
 			.With(x => x.Workouts, workouts)
 			.With(x => x.PremiumToken, (string)null)
@@ -165,11 +159,11 @@ public class AcceptSharedWorkoutTests
 	[Fact]
 	public async Task Should_Throw_Exception_Max_Workouts_Exceeded()
 	{
-		var command = _fixture.Create<AcceptSharedWorkout>();
+		var command = Fixture.Create<AcceptSharedWorkout>();
 		var workouts = Enumerable.Range(0, Globals.MaxWorkouts)
-			.Select(_ => _fixture.Create<WorkoutInfo>())
+			.Select(_ => Fixture.Create<WorkoutInfo>())
 			.ToList();
-		var user = _fixture.Build<User>()
+		var user = Fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
 			.With(x => x.Workouts, workouts)
 			.Create();
@@ -190,11 +184,11 @@ public class AcceptSharedWorkoutTests
 	[Fact]
 	public async Task Should_Throw_Exception_Workout_Name_Duplicate_From_Command()
 	{
-		var command = _fixture.Create<AcceptSharedWorkout>();
+		var command = Fixture.Create<AcceptSharedWorkout>();
 		var workouts = Enumerable.Range(0, Globals.MaxWorkouts / 2)
-			.Select(_ => _fixture.Build<WorkoutInfo>().With(y => y.WorkoutName, command.NewName).Create())
+			.Select(_ => Fixture.Build<WorkoutInfo>().With(y => y.WorkoutName, command.NewName).Create())
 			.ToList();
-		var user = _fixture.Build<User>()
+		var user = Fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
 			.With(x => x.Workouts, workouts)
 			.Create();
@@ -215,12 +209,12 @@ public class AcceptSharedWorkoutTests
 	[Fact]
 	public async Task Should_Throw_Exception_Workout_Name_Duplicate()
 	{
-		var command = _fixture.Build<AcceptSharedWorkout>().With(x => x.NewName, (string)null).Create();
-		var workoutName = _fixture.Create<string>();
+		var command = Fixture.Build<AcceptSharedWorkout>().With(x => x.NewName, (string)null).Create();
+		var workoutName = Fixture.Create<string>();
 		var workouts = Enumerable.Range(0, Globals.MaxWorkouts / 2)
-			.Select(_ => _fixture.Build<WorkoutInfo>().With(y => y.WorkoutName, workoutName).Create())
+			.Select(_ => Fixture.Build<WorkoutInfo>().With(y => y.WorkoutName, workoutName).Create())
 			.ToList();
-		var user = _fixture.Build<User>()
+		var user = Fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
 			.With(x => x.Workouts, workouts)
 			.Create();
@@ -242,20 +236,20 @@ public class AcceptSharedWorkoutTests
 	[Fact]
 	public async Task Should_Throw_Exception_Max_Free_Exercises_Exceeded()
 	{
-		var command = _fixture.Build<AcceptSharedWorkout>().With(x => x.NewName, (string)null).Create();
+		var command = Fixture.Build<AcceptSharedWorkout>().With(x => x.NewName, (string)null).Create();
 
 		var sharedWorkout = SharedWorkoutHelper.GetSharedWorkout(command.UserId);
 
 		var workouts = Enumerable.Range(0, Globals.MaxFreeWorkouts / 2)
-			.Select(_ => _fixture.Create<WorkoutInfo>())
+			.Select(_ => Fixture.Create<WorkoutInfo>())
 			.ToList();
 
 		var exercisesToCreate = (Globals.MaxFreeExercises - sharedWorkout.DistinctExercises.Count) + 1;
 		var ownedExercises = Enumerable.Range(0, exercisesToCreate)
-			.Select(_ => _fixture.Create<OwnedExercise>())
+			.Select(_ => Fixture.Create<OwnedExercise>())
 			.ToList();
 
-		var user = _fixture.Build<User>()
+		var user = Fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
 			.With(x => x.Workouts, workouts)
 			.With(x => x.PremiumToken, (string)null)
@@ -276,20 +270,20 @@ public class AcceptSharedWorkoutTests
 	[Fact]
 	public async Task Should_Throw_Exception_Max_Exercises_Exceeded()
 	{
-		var command = _fixture.Build<AcceptSharedWorkout>().With(x => x.NewName, (string)null).Create();
+		var command = Fixture.Build<AcceptSharedWorkout>().With(x => x.NewName, (string)null).Create();
 
 		var sharedWorkout = SharedWorkoutHelper.GetSharedWorkout(command.UserId);
 
 		var workouts = Enumerable.Range(0, Globals.MaxFreeWorkouts / 2)
-			.Select(_ => _fixture.Create<WorkoutInfo>())
+			.Select(_ => Fixture.Create<WorkoutInfo>())
 			.ToList();
 
 		var exercisesToCreate = (Globals.MaxExercises - sharedWorkout.DistinctExercises.Count) + 1;
 		var ownedExercises = Enumerable.Range(0, exercisesToCreate)
-			.Select(_ => _fixture.Create<OwnedExercise>())
+			.Select(_ => Fixture.Create<OwnedExercise>())
 			.ToList();
 
-		var user = _fixture.Build<User>()
+		var user = Fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
 			.With(x => x.Workouts, workouts)
 			.With(x => x.Exercises, ownedExercises)

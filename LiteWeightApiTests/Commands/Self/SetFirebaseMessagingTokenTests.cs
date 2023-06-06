@@ -4,11 +4,10 @@ using LiteWeightAPI.Domain.Users;
 
 namespace LiteWeightApiTests.Commands.Self;
 
-public class SetFirebaseMessagingTokenTests
+public class SetFirebaseMessagingTokenTests : BaseTest
 {
 	private readonly SetFirebaseMessagingTokenHandler _handler;
 	private readonly Mock<IRepository> _mockRepository;
-	private readonly Fixture _fixture = new();
 
 	public SetFirebaseMessagingTokenTests()
 	{
@@ -19,9 +18,9 @@ public class SetFirebaseMessagingTokenTests
 	[Fact]
 	public async Task Should_Set_Current_Workout_Not_Null()
 	{
-		var command = _fixture.Create<SetFirebaseMessagingToken>();
+		var command = Fixture.Create<SetFirebaseMessagingToken>();
 
-		var user = _fixture.Build<User>()
+		var user = Fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
 			.Create();
 
@@ -37,8 +36,8 @@ public class SetFirebaseMessagingTokenTests
 	[Fact]
 	public async Task Should_Set_Current_Workout_Null()
 	{
-		var command = _fixture.Build<SetFirebaseMessagingToken>().With(x => x.Token, (string)null).Create();
-		var user = _fixture.Build<User>().With(x => x.Id, command.UserId).Create();
+		var command = Fixture.Build<SetFirebaseMessagingToken>().With(x => x.Token, (string)null).Create();
+		var user = Fixture.Build<User>().With(x => x.Id, command.UserId).Create();
 
 		_mockRepository
 			.Setup(x => x.GetUser(It.Is<string>(y => y == command.UserId)))

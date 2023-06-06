@@ -1,5 +1,3 @@
-using AutoMapper;
-using LiteWeightAPI.Api.Exercises;
 using LiteWeightAPI.Commands.Workouts.CreateWorkout;
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Users;
@@ -9,20 +7,16 @@ using NodaTime;
 
 namespace LiteWeightApiTests.Commands.Workouts;
 
-public class CreateWorkoutTests
+public class CreateWorkoutTests : BaseTest
 {
 	private readonly CreateWorkoutHandler _handler;
 	private readonly Mock<IRepository> _mockRepository;
-	private readonly Fixture _fixture = new();
 
 	public CreateWorkoutTests()
 	{
-		var configuration = new MapperConfiguration(cfg => { cfg.AddMaps(typeof(ExercisesController)); });
-		var mapper = new Mapper(configuration);
-
 		_mockRepository = new Mock<IRepository>();
 		var clock = new Mock<IClock>();
-		_handler = new CreateWorkoutHandler(_mockRepository.Object, clock.Object, mapper);
+		_handler = new CreateWorkoutHandler(_mockRepository.Object, clock.Object, Mapper);
 	}
 
 	[Theory]
@@ -30,11 +24,11 @@ public class CreateWorkoutTests
 	[InlineData(false)]
 	public async Task Should_Create(bool setAsCurrentWorkout)
 	{
-		var command = _fixture.Build<CreateWorkout>()
+		var command = Fixture.Build<CreateWorkout>()
 			.With(x => x.SetAsCurrentWorkout, setAsCurrentWorkout)
 			.Create();
 		var workouts = Enumerable.Range(0, Globals.MaxFreeWorkouts / 2)
-			.Select(_ => _fixture.Create<WorkoutInfo>())
+			.Select(_ => Fixture.Create<WorkoutInfo>())
 			.ToList();
 		var exercisesOfWorkout = command.Routine.Weeks
 			.SelectMany(x => x.Days)
@@ -42,12 +36,12 @@ public class CreateWorkoutTests
 			.Select(x => x.ExerciseId)
 			.ToList();
 		var ownedExercises = Enumerable.Range(0, 10)
-			.Select(_ => _fixture.Create<OwnedExercise>())
+			.Select(_ => Fixture.Create<OwnedExercise>())
 			.ToList();
 		ownedExercises.AddRange(exercisesOfWorkout.Select(exerciseId =>
-			_fixture.Build<OwnedExercise>().With(x => x.Id, exerciseId).Create()));
+			Fixture.Build<OwnedExercise>().With(x => x.Id, exerciseId).Create()));
 
-		var user = _fixture.Build<User>()
+		var user = Fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
 			.With(x => x.Workouts, workouts)
 			.With(x => x.Exercises, ownedExercises)
@@ -74,11 +68,11 @@ public class CreateWorkoutTests
 	[Fact]
 	public async Task Should_Throw_Exception_Workout_Name_Duplicate()
 	{
-		var command = _fixture.Create<CreateWorkout>();
+		var command = Fixture.Create<CreateWorkout>();
 		var workouts = Enumerable.Range(0, Globals.MaxWorkouts / 2)
-			.Select(_ => _fixture.Build<WorkoutInfo>().With(y => y.WorkoutName, command.Name).Create())
+			.Select(_ => Fixture.Build<WorkoutInfo>().With(y => y.WorkoutName, command.Name).Create())
 			.ToList();
-		var user = _fixture.Build<User>()
+		var user = Fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
 			.With(x => x.Workouts, workouts)
 			.Create();
@@ -93,11 +87,11 @@ public class CreateWorkoutTests
 	[Fact]
 	public async Task Should_Throw_Exception_Max_Workouts()
 	{
-		var command = _fixture.Create<CreateWorkout>();
+		var command = Fixture.Create<CreateWorkout>();
 		var workouts = Enumerable.Range(0, Globals.MaxWorkouts + 1)
-			.Select(_ => _fixture.Build<WorkoutInfo>().Create())
+			.Select(_ => Fixture.Build<WorkoutInfo>().Create())
 			.ToList();
-		var user = _fixture.Build<User>()
+		var user = Fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
 			.With(x => x.Workouts, workouts)
 			.Create();
@@ -112,11 +106,11 @@ public class CreateWorkoutTests
 	[Fact]
 	public async Task Should_Throw_Exception_Max_Free_Workouts()
 	{
-		var command = _fixture.Create<CreateWorkout>();
+		var command = Fixture.Create<CreateWorkout>();
 		var workouts = Enumerable.Range(0, Globals.MaxFreeWorkouts + 1)
-			.Select(_ => _fixture.Build<WorkoutInfo>().Create())
+			.Select(_ => Fixture.Build<WorkoutInfo>().Create())
 			.ToList();
-		var user = _fixture.Build<User>()
+		var user = Fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
 			.With(x => x.Workouts, workouts)
 			.With(x => x.PremiumToken, (string)null)

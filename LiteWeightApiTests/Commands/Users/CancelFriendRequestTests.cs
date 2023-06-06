@@ -6,11 +6,10 @@ using LiteWeightAPI.Services;
 
 namespace LiteWeightApiTests.Commands.Users;
 
-public class CancelFriendRequestTests
+public class CancelFriendRequestTests : BaseTest
 {
 	private readonly CancelFriendRequestHandler _handler;
 	private readonly Mock<IRepository> _mockRepository;
-	private readonly Fixture _fixture = new();
 
 	public CancelFriendRequestTests()
 	{
@@ -22,24 +21,24 @@ public class CancelFriendRequestTests
 	[Fact]
 	public async Task Should_Cancel_Friend_Request()
 	{
-		var command = _fixture.Create<CancelFriendRequest>();
+		var command = Fixture.Create<CancelFriendRequest>();
 
 		var friends = new List<Friend>
 		{
-			_fixture.Create<Friend>(),
-			_fixture.Build<Friend>().With(x => x.UserId, command.UserIdToCancel).Create(),
+			Fixture.Create<Friend>(),
+			Fixture.Build<Friend>().With(x => x.UserId, command.UserIdToCancel).Create(),
 		};
-		var initiator = _fixture.Build<User>()
+		var initiator = Fixture.Build<User>()
 			.With(x => x.Id, command.InitiatorUserId)
 			.With(x => x.Friends, friends)
 			.Create();
 
 		var friendRequests = new List<FriendRequest>
 		{
-			_fixture.Create<FriendRequest>(),
-			_fixture.Build<FriendRequest>().With(x => x.UserId, command.InitiatorUserId).Create()
+			Fixture.Create<FriendRequest>(),
+			Fixture.Build<FriendRequest>().With(x => x.UserId, command.InitiatorUserId).Create()
 		};
-		var canceledUser = _fixture.Build<User>()
+		var canceledUser = Fixture.Build<User>()
 			.With(x => x.Id, command.UserIdToCancel)
 			.With(x => x.FriendRequests, friendRequests)
 			.Create();
@@ -60,12 +59,12 @@ public class CancelFriendRequestTests
 	[Fact]
 	public async Task Should_Not_Fail_Friend_Not_Found()
 	{
-		var command = _fixture.Create<CancelFriendRequest>();
+		var command = Fixture.Create<CancelFriendRequest>();
 
-		var initiator = _fixture.Build<User>()
+		var initiator = Fixture.Build<User>()
 			.With(x => x.Id, command.InitiatorUserId)
 			.Create();
-		var canceledUser = _fixture.Build<User>().With(x => x.Id, command.UserIdToCancel).Create();
+		var canceledUser = Fixture.Build<User>().With(x => x.Id, command.UserIdToCancel).Create();
 
 		_mockRepository
 			.Setup(x => x.GetUser(It.Is<string>(y => y == command.UserIdToCancel)))
@@ -81,7 +80,7 @@ public class CancelFriendRequestTests
 	[Fact]
 	public async Task Should_Exception_User_Does_Not_Exist()
 	{
-		var command = _fixture.Create<CancelFriendRequest>();
+		var command = Fixture.Create<CancelFriendRequest>();
 
 		_mockRepository
 			.Setup(x => x.GetUser(It.Is<string>(y => y == command.UserIdToCancel)))

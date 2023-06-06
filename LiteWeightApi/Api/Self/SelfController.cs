@@ -11,7 +11,6 @@ using LiteWeightAPI.Commands.Self.SetCurrentWorkout;
 using LiteWeightAPI.Commands.Self.SetFirebaseMessagingToken;
 using LiteWeightAPI.Commands.Self.SetReceivedWorkoutSeen;
 using LiteWeightAPI.Commands.Self.SetSettings;
-using LiteWeightAPI.Commands.Self.SetUsername;
 using LiteWeightAPI.Commands.Self.UpdateProfilePicture;
 using LiteWeightAPI.Errors.Attributes;
 using Microsoft.AspNetCore.Mvc;
@@ -61,7 +60,7 @@ public class SelfController : BaseController
 		command.UserId = CurrentUserId;
 
 		var user = await _dispatcher.DispatchAsync<CreateSelf, UserResponse>(command);
-		return new ObjectResult(user) { StatusCode = StatusCodes.Status201Created };
+		return new CreatedResult(new Uri("/self", UriKind.Relative), user);
 	}
 
 	/// <summary>Update Profile Picture</summary>
@@ -103,21 +102,6 @@ public class SelfController : BaseController
 		await _dispatcher.DispatchAsync<SetFirebaseMessagingToken, bool>(new SetFirebaseMessagingToken
 		{
 			UserId = CurrentUserId, Token = null
-		});
-		return NoContent();
-	}
-
-	/// <summary>Set Username</summary>
-	/// <remarks>Updates the user of the authenticated user. Also updates any friends of the user or friend requests by the user to have this new username.</remarks>
-	[HttpPut("username")]
-	[InvalidRequest, AlreadyExists]
-	[ProducesResponseType(StatusCodes.Status204NoContent)]
-	[ProducesResponseType(StatusCodes.Status400BadRequest)]
-	public async Task<ActionResult> SetUsername(SetUsernameRequest request)
-	{
-		await _dispatcher.DispatchAsync<SetUsername, bool>(new SetUsername
-		{
-			UserId = CurrentUserId, NewUsername = request.NewUsername
 		});
 		return NoContent();
 	}

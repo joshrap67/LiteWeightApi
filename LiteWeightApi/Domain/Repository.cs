@@ -1,4 +1,5 @@
 ﻿using Google.Cloud.Firestore;
+using LiteWeightAPI.Api.Complaints.Responses;
 using LiteWeightAPI.Domain.Complaints;
 using LiteWeightAPI.Domain.SharedWorkouts;
 using LiteWeightAPI.Domain.Users;
@@ -23,6 +24,7 @@ public interface IRepository
 	Task DeleteWorkout(string workoutId);
 	Task<SharedWorkout> GetSharedWorkout(string sharedWorkoutId);
 	Task DeleteSharedWorkout(string workoutId);
+	Task<Complaint> GetComplaint(string complaintId);
 
 	Task ExecuteBatchWrite(IList<Workout> workoutsToPut = null, IList<User> usersToPut = null,
 		IList<SharedWorkout> sharedWorkoutsToPut = null, IList<Workout> workoutsToDelete = null,
@@ -43,6 +45,17 @@ public class Repository : IRepository
 	private FirestoreDb GetDb()
 	{
 		return FirestoreDb.Create(_firebaseOptions.ProjectId);
+	}
+
+	public async Task<Complaint> GetComplaint(string complaintId)
+	{
+		var db = GetDb();
+		var docRef = db.Collection(_fireStoreOptions.ComplaintsCollection).Document(complaintId);
+		var snapshot = await docRef.GetSnapshotAsync();
+
+		if (!snapshot.Exists) return null;
+		var complaint = snapshot.ConvertTo<Complaint>();
+		return complaint;
 	}
 
 	public async Task ExecuteBatchWrite(IList<Workout> workoutsToPut = null, IList<User> usersToPut = null,

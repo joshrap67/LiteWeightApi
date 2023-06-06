@@ -6,11 +6,10 @@ using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
 
 namespace LiteWeightApiTests.Commands.Exercises;
 
-public class UpdateExerciseTests
+public class UpdateExerciseTests : BaseTest
 {
 	private readonly UpdateExerciseHandler _handler;
 	private readonly Mock<IRepository> _mockRepository;
-	private readonly Fixture _fixture = new();
 
 	public UpdateExerciseTests()
 	{
@@ -21,16 +20,16 @@ public class UpdateExerciseTests
 	[Fact]
 	public async Task Should_Update_Exercise_New_Name()
 	{
-		var command = _fixture.Create<UpdateExercise>();
-		var exercise = _fixture.Build<OwnedExercise>()
+		var command = Fixture.Create<UpdateExercise>();
+		var exercise = Fixture.Build<OwnedExercise>()
 			.With(x => x.Id, command.ExerciseId)
 			.Create();
 		var exercises = new List<OwnedExercise>
 		{
 			exercise,
-			_fixture.Create<OwnedExercise>()
+			Fixture.Create<OwnedExercise>()
 		};
-		var user = _fixture.Build<User>()
+		var user = Fixture.Build<User>()
 			.With(x => x.Exercises, exercises)
 			.Create();
 
@@ -49,21 +48,21 @@ public class UpdateExerciseTests
 		Assert.Equivalent(command.Focuses, exercise.Focuses);
 		Assert.Contains(user.Exercises, x => x.Id == exercise.Id);
 	}
-	
+
 	[Fact]
 	public async Task Should_Update_Exercise_Same_Name()
 	{
-		var command = _fixture.Create<UpdateExercise>();
-		var exercise = _fixture.Build<OwnedExercise>()
+		var command = Fixture.Create<UpdateExercise>();
+		var exercise = Fixture.Build<OwnedExercise>()
 			.With(x => x.Id, command.ExerciseId)
 			.With(x => x.Name, command.Name)
 			.Create();
 		var exercises = new List<OwnedExercise>
 		{
 			exercise,
-			_fixture.Create<OwnedExercise>()
+			Fixture.Create<OwnedExercise>()
 		};
-		var user = _fixture.Build<User>()
+		var user = Fixture.Build<User>()
 			.With(x => x.Exercises, exercises)
 			.Create();
 
@@ -86,12 +85,12 @@ public class UpdateExerciseTests
 	[Fact]
 	public async Task Should_Throw_Exception_Exercise_Not_Found()
 	{
-		var command = _fixture.Create<UpdateExercise>();
-		command.ExerciseId = _fixture.Create<string>();
+		var command = Fixture.Create<UpdateExercise>();
+		command.ExerciseId = Fixture.Create<string>();
 
 		_mockRepository
 			.Setup(x => x.GetUser(It.Is<string>(y => y == command.UserId)))
-			.ReturnsAsync(_fixture.Create<User>());
+			.ReturnsAsync(Fixture.Create<User>());
 
 		await Assert.ThrowsAsync<ResourceNotFoundException>(() => _handler.HandleAsync(command));
 	}
@@ -99,18 +98,18 @@ public class UpdateExerciseTests
 	[Fact]
 	public async Task Should_Throw_Exception_Exercise_Name_Already_Exists()
 	{
-		var command = _fixture.Create<UpdateExercise>();
-		var name = _fixture.Create<string>();
+		var command = Fixture.Create<UpdateExercise>();
+		var name = Fixture.Create<string>();
 		command.Name = name;
-		var exercise = _fixture.Build<OwnedExercise>()
+		var exercise = Fixture.Build<OwnedExercise>()
 			.With(x => x.Id, command.ExerciseId)
 			.Create();
 		var exercises = new List<OwnedExercise>
 		{
 			exercise,
-			_fixture.Build<OwnedExercise>().With(x => x.Name, name).Create()
+			Fixture.Build<OwnedExercise>().With(x => x.Name, name).Create()
 		};
-		var user = _fixture.Build<User>()
+		var user = Fixture.Build<User>()
 			.With(x => x.Exercises, exercises)
 			.Create();
 

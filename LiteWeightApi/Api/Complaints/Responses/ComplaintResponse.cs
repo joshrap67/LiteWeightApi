@@ -1,4 +1,4 @@
-namespace LiteWeightAPI.Api.Users.Responses;
+namespace LiteWeightAPI.Api.Complaints.Responses;
 
 public class ComplaintResponse
 {

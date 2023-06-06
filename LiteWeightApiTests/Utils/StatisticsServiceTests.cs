@@ -8,7 +8,7 @@ namespace LiteWeightApiTests.Utils;
 public class StatisticsServiceTests
 {
 	private readonly StatisticsService _service;
-	private readonly Fixture _fixture = new();
+	private readonly Fixture Fixture = new();
 
 	public StatisticsServiceTests()
 	{
@@ -29,19 +29,19 @@ public class StatisticsServiceTests
 						{
 							Exercises = new List<RoutineExercise>
 							{
-								_fixture.Build<RoutineExercise>().With(x => x.ExerciseId, "A").Create(),
-								_fixture.Build<RoutineExercise>().With(x => x.ExerciseId, "B").Create(),
-								_fixture.Build<RoutineExercise>().With(x => x.ExerciseId, "C").Create(),
+								Fixture.Build<RoutineExercise>().With(x => x.ExerciseId, "A").Create(),
+								Fixture.Build<RoutineExercise>().With(x => x.ExerciseId, "B").Create(),
+								Fixture.Build<RoutineExercise>().With(x => x.ExerciseId, "C").Create(),
 							}
 						},
 						new RoutineDay
 						{
 							Exercises = new List<RoutineExercise>
 							{
-								_fixture.Build<RoutineExercise>().With(x => x.ExerciseId, "A").Create(),
-								_fixture.Build<RoutineExercise>().With(x => x.ExerciseId, "B").Create(),
-								_fixture.Build<RoutineExercise>().With(x => x.ExerciseId, "B").Create(),
-								_fixture.Build<RoutineExercise>().With(x => x.ExerciseId, "D").Create(),
+								Fixture.Build<RoutineExercise>().With(x => x.ExerciseId, "A").Create(),
+								Fixture.Build<RoutineExercise>().With(x => x.ExerciseId, "B").Create(),
+								Fixture.Build<RoutineExercise>().With(x => x.ExerciseId, "B").Create(),
+								Fixture.Build<RoutineExercise>().With(x => x.ExerciseId, "D").Create(),
 							}
 						},
 					}
@@ -54,16 +54,16 @@ public class StatisticsServiceTests
 						{
 							Exercises = new List<RoutineExercise>
 							{
-								_fixture.Build<RoutineExercise>().With(x => x.ExerciseId, "A").Create(),
-								_fixture.Build<RoutineExercise>().With(x => x.ExerciseId, "D").Create(),
+								Fixture.Build<RoutineExercise>().With(x => x.ExerciseId, "A").Create(),
+								Fixture.Build<RoutineExercise>().With(x => x.ExerciseId, "D").Create(),
 							}
 						},
 						new RoutineDay
 						{
 							Exercises = new List<RoutineExercise>
 							{
-								_fixture.Build<RoutineExercise>().With(x => x.ExerciseId, "B").Create(),
-								_fixture.Build<RoutineExercise>().With(x => x.ExerciseId, "E").Create(),
+								Fixture.Build<RoutineExercise>().With(x => x.ExerciseId, "B").Create(),
+								Fixture.Build<RoutineExercise>().With(x => x.ExerciseId, "E").Create(),
 							}
 						},
 					}

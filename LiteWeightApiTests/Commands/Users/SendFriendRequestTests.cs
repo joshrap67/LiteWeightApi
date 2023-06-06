@@ -10,12 +10,11 @@ using NodaTime;
 
 namespace LiteWeightApiTests.Commands.Users;
 
-public class SendFriendRequestTests
+public class SendFriendRequestTests : BaseTest
 {
 	private readonly SendFriendRequestHandler _handler;
 	private readonly Mock<IRepository> _mockRepository;
 	private readonly Mock<IPushNotificationService> _mockPushNotificationService;
-	private readonly Fixture _fixture = new();
 
 	public SendFriendRequestTests()
 	{
@@ -29,15 +28,15 @@ public class SendFriendRequestTests
 	[Fact]
 	public async Task Should_Send_Friend_Request()
 	{
-		var command = _fixture.Create<SendFriendRequest>();
+		var command = Fixture.Create<SendFriendRequest>();
 
 		var preferences = new UserSettings { PrivateAccount = false };
-		var recipientUser = _fixture.Build<User>()
+		var recipientUser = Fixture.Build<User>()
 			.With(x => x.Id, command.RecipientId)
 			.With(x => x.Settings, preferences)
 			.Create();
 
-		var senderUser = _fixture.Build<User>()
+		var senderUser = Fixture.Build<User>()
 			.With(x => x.Id, command.SenderId)
 			.Create();
 
@@ -60,19 +59,19 @@ public class SendFriendRequestTests
 	[Fact]
 	public async Task Should_Fail_Gracefully_Already_Sent()
 	{
-		var command = _fixture.Create<SendFriendRequest>();
+		var command = Fixture.Create<SendFriendRequest>();
 
 		var preferences = new UserSettings { PrivateAccount = false };
-		var recipientUser = _fixture.Build<User>()
+		var recipientUser = Fixture.Build<User>()
 			.With(x => x.Id, command.RecipientId)
 			.With(x => x.Settings, preferences)
 			.Create();
 
-		var senderUser = _fixture.Build<User>()
+		var senderUser = Fixture.Build<User>()
 			.With(x => x.Id, command.SenderId)
 			.With(x => x.Friends, new List<Friend>
 			{
-				_fixture.Build<Friend>().With(x => x.UserId, command.RecipientId).Create()
+				Fixture.Build<Friend>().With(x => x.UserId, command.RecipientId).Create()
 			})
 			.Create();
 
@@ -93,7 +92,7 @@ public class SendFriendRequestTests
 	[Fact]
 	public async Task Should_Throw_Exception_Sending_Request_To_Self()
 	{
-		var command = _fixture.Build<SendFriendRequest>()
+		var command = Fixture.Build<SendFriendRequest>()
 			.With(x => x.SenderId, "Mantis Toboggan")
 			.With(x => x.RecipientId, "Mantis Toboggan")
 			.Create();
@@ -103,19 +102,19 @@ public class SendFriendRequestTests
 	[Fact]
 	public async Task Should_Throw_Exception_Friend_Request_Already_Received()
 	{
-		var command = _fixture.Create<SendFriendRequest>();
+		var command = Fixture.Create<SendFriendRequest>();
 
 		var preferences = new UserSettings { PrivateAccount = false };
-		var recipientUser = _fixture.Build<User>()
+		var recipientUser = Fixture.Build<User>()
 			.With(x => x.Id, command.RecipientId)
 			.With(x => x.Settings, preferences)
 			.Create();
 
 		var friendsRequests = new List<FriendRequest>
 		{
-			_fixture.Build<FriendRequest>().With(x => x.UserId, command.RecipientId).Create()
+			Fixture.Build<FriendRequest>().With(x => x.UserId, command.RecipientId).Create()
 		};
-		var senderUser = _fixture.Build<User>()
+		var senderUser = Fixture.Build<User>()
 			.With(x => x.Id, command.SenderId)
 			.With(x => x.FriendRequests, friendsRequests)
 			.Create();
@@ -134,19 +133,19 @@ public class SendFriendRequestTests
 	[Fact]
 	public async Task Should_Throw_Exception_Max_Limit_Friend_Requests()
 	{
-		var command = _fixture.Create<SendFriendRequest>();
+		var command = Fixture.Create<SendFriendRequest>();
 
 		var preferences = new UserSettings { PrivateAccount = false };
 		var friendRequests = Enumerable.Range(0, Globals.MaxFriendRequests + 1)
-			.Select(_ => _fixture.Build<FriendRequest>().Create())
+			.Select(_ => Fixture.Build<FriendRequest>().Create())
 			.ToList();
-		var recipientUser = _fixture.Build<User>()
+		var recipientUser = Fixture.Build<User>()
 			.With(x => x.Id, command.RecipientId)
 			.With(x => x.Settings, preferences)
 			.With(x => x.FriendRequests, friendRequests)
 			.Create();
 
-		var senderUser = _fixture.Build<User>()
+		var senderUser = Fixture.Build<User>()
 			.With(x => x.Id, command.SenderId)
 			.Create();
 
@@ -164,22 +163,22 @@ public class SendFriendRequestTests
 	[Fact]
 	public async Task Should_Throw_Exception_Max_Limit_Friends()
 	{
-		var command = _fixture.Create<SendFriendRequest>();
+		var command = Fixture.Create<SendFriendRequest>();
 
 		var preferences = new UserSettings { PrivateAccount = false };
-		var recipientUser = _fixture.Build<User>()
+		var recipientUser = Fixture.Build<User>()
 			.With(x => x.Id, command.RecipientId)
 			.With(x => x.Settings, preferences)
 			.With(x => x.Friends, new List<Friend>
 			{
-				_fixture.Build<Friend>().With(x => x.UserId, command.SenderId).Create()
+				Fixture.Build<Friend>().With(x => x.UserId, command.SenderId).Create()
 			})
 			.Create();
 
 		var friends = Enumerable.Range(0, Globals.MaxNumberFriends + 1)
-			.Select(_ => _fixture.Build<Friend>().Create())
+			.Select(_ => Fixture.Build<Friend>().Create())
 			.ToList();
-		var senderUser = _fixture.Build<User>()
+		var senderUser = Fixture.Build<User>()
 			.With(x => x.Id, command.SenderId)
 			.With(x => x.Friends, friends)
 			.Create();
@@ -198,10 +197,10 @@ public class SendFriendRequestTests
 	[Fact]
 	public async Task Should_Throw_Exception_Private_User()
 	{
-		var command = _fixture.Create<SendFriendRequest>();
+		var command = Fixture.Create<SendFriendRequest>();
 
 		var preferences = new UserSettings { PrivateAccount = true };
-		var recipientUser = _fixture.Build<User>()
+		var recipientUser = Fixture.Build<User>()
 			.With(x => x.Id, command.RecipientId)
 			.With(x => x.Settings, preferences)
 			.Create();
@@ -212,7 +211,7 @@ public class SendFriendRequestTests
 
 		_mockRepository
 			.Setup(x => x.GetUser(It.Is<string>(y => y == command.SenderId)))
-			.ReturnsAsync(_fixture.Create<User>());
+			.ReturnsAsync(Fixture.Create<User>());
 
 		await Assert.ThrowsAsync<ResourceNotFoundException>(() => _handler.HandleAsync(command));
 	}
@@ -220,7 +219,7 @@ public class SendFriendRequestTests
 	[Fact]
 	public async Task Should_Throw_Exception_User_Does_Not_Exist()
 	{
-		var command = _fixture.Create<SendFriendRequest>();
+		var command = Fixture.Create<SendFriendRequest>();
 
 		_mockRepository
 			.Setup(x => x.GetUser(It.Is<string>(y => y == command.RecipientId)))
