@@ -16,7 +16,8 @@ public class DeleteSelfTests : BaseTest
 		_mockRepository = new Mock<IRepository>();
 		var storageService = new Mock<IStorageService>().Object;
 		var firebaseAuthService = new Mock<IFirebaseAuthService>().Object;
-		_handler = new DeleteSelfHandler(_mockRepository.Object, storageService, firebaseAuthService);
+		var pushNotificationService = new Mock<IPushNotificationService>().Object;
+		_handler = new DeleteSelfHandler(_mockRepository.Object, storageService, firebaseAuthService, pushNotificationService);
 	}
 
 	[Fact]

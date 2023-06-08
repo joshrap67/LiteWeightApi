@@ -7,7 +7,9 @@ namespace LiteWeightAPI.Domain.SharedWorkouts;
 public class SharedWorkoutDistinctExercise
 {
 	// public ctor needed for firebase serialization
-	public SharedWorkoutDistinctExercise() { }
+	public SharedWorkoutDistinctExercise()
+	{
+	}
 
 	public SharedWorkoutDistinctExercise(OwnedExercise userExercise, string exerciseName)
 	{

@@ -9,27 +9,22 @@ public class DeleteSelfHandler : ICommandHandler<DeleteSelf, bool>
 	private readonly IRepository _repository;
 	private readonly IStorageService _storageService;
 	private readonly IFirebaseAuthService _firebaseAuthService;
+	private readonly IPushNotificationService _pushNotificationService;
 
 	public DeleteSelfHandler(IRepository repository, IStorageService storageService,
-		IFirebaseAuthService firebaseAuthService)
+		IFirebaseAuthService firebaseAuthService, IPushNotificationService pushNotificationService)
 	{
 		_repository = repository;
 		_storageService = storageService;
 		_firebaseAuthService = firebaseAuthService;
+		_pushNotificationService = pushNotificationService;
 	}
 
 	public async Task<bool> HandleAsync(DeleteSelf command)
 	{
-		var user = await _repository.GetUser(command.UserId);
-		if (user == null)
-		{
-			// todo now that there is no validator class just pass in message? Or make an optional param on get method to throw?
-			throw new ResourceNotFoundException("Self");
-		}
-
+		var user = await _repository.GetUser(command.UserId) ?? throw new ResourceNotFoundException("Self");
 		await _storageService.DeleteProfilePicture(user.ProfilePicture);
 		var workoutsToDelete = user.Workouts.Select(x => x.WorkoutId).ToList();
-		var sharedWorkoutsToDelete = user.ReceivedWorkouts.Select(x => x.SharedWorkoutId).ToList();
 
 		var usersWhoSentFriendRequests = user.FriendRequests.Select(x => x.UserId).ToList();
 		var usersWhoAreFriends = user.Friends
@@ -38,45 +33,42 @@ public class DeleteSelfHandler : ICommandHandler<DeleteSelf, bool>
 			.ToList();
 		var usersWhoReceivedFriendRequests = user.Friends
 			.Where(x => !x.Confirmed)
-			.Select(x => x.UserId).ToList();
+			.Select(x => x.UserId)
+			.ToList();
 
-		// can't really rely on transactions here
+		// can't really rely on transactions here since the worst case scenario is the user could have thousands of users as friends (firebase has upper limit for batch writes)
 		foreach (var workoutId in workoutsToDelete)
 		{
 			await _repository.DeleteWorkout(workoutId);
 		}
 
-		foreach (var workoutId in sharedWorkoutsToDelete)
-		{
-			await _repository.DeleteSharedWorkout(workoutId);
-		}
-
 		foreach (var otherUserId in usersWhoSentFriendRequests)
 		{
-			var otherUser = await _repository.GetUser(otherUserId);
-			otherUser.Friends.RemoveAll(x => x.UserId == command.UserId);
-			await _repository.PutUser(otherUser);
+			var userToDecline = await _repository.GetUser(otherUserId);
+			userToDecline.Friends.RemoveAll(x => x.UserId == command.UserId);
+			await _pushNotificationService.SendFriendRequestDeclinedNotification(userToDecline, user);
+			await _repository.PutUser(userToDecline);
 		}
 
 		foreach (var otherUserId in usersWhoAreFriends)
 		{
-			var otherUser = await _repository.GetUser(otherUserId);
-			otherUser.Friends.RemoveAll(x => x.UserId == command.UserId);
-			await _repository.PutUser(otherUser);
+			var userToRemove = await _repository.GetUser(otherUserId);
+			userToRemove.Friends.RemoveAll(x => x.UserId == command.UserId);
+			await _pushNotificationService.SendRemovedAsFriendNotification(userToRemove, user);
+			await _repository.PutUser(userToRemove);
 		}
 
 		foreach (var otherUserId in usersWhoReceivedFriendRequests)
 		{
-			var otherUser = await _repository.GetUser(otherUserId);
-			otherUser.FriendRequests.RemoveAll(x => x.UserId == command.UserId);
-			await _repository.PutUser(otherUser);
+			var userToCancel = await _repository.GetUser(otherUserId);
+			userToCancel.FriendRequests.RemoveAll(x => x.UserId == command.UserId);
+			await _pushNotificationService.SendFriendRequestCanceledNotification(userToCancel, user);
+			await _repository.PutUser(userToCancel);
 		}
 
-		// todo send push notifications for friend removed/canceled? Might be a bit overkill
 		await _repository.DeleteUser(command.UserId);
 		await _firebaseAuthService.DeleteUser(command.UserId);
 
-		// rabbitmq to retry?
 		return true;
 	}
 }

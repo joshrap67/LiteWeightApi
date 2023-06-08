@@ -25,7 +25,6 @@ public class AcceptSharedWorkoutTests : BaseTest
 	[Fact]
 	public async Task Should_Accept_Workout()
 	{
-		// todo separate unit tests for constructors of shared workout
 		var command = Fixture.Create<AcceptSharedWorkout>();
 
 		var sharedWorkout = SharedWorkoutHelper.GetSharedWorkout(command.UserId);

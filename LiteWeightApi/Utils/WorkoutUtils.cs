@@ -1,4 +1,4 @@
-﻿using LiteWeightAPI.Domain.Users;
+using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Domain.Workouts;
 
 namespace LiteWeightAPI.Utils;
@@ -38,25 +38,38 @@ public static class WorkoutUtils
 		}
 	}
 
+	// todo unit test
 	public static void FixCurrentDayAndWeek(Workout editedWorkout, WorkoutInfo workoutInfo)
 	{
-		// todo get rid of this. frontend can do this automatically?
 		// make sure that the current week according to the request is actually valid
 		var currentDay = workoutInfo.CurrentDay;
 		var currentWeek = workoutInfo.CurrentWeek;
-		if (currentWeek < 0 && currentWeek >= editedWorkout.Routine.Weeks.Count)
+		if (currentWeek < 0 || currentWeek >= editedWorkout.Routine.Weeks.Count)
 		{
-			// request incorrectly set the current week, so just set both to 0
-			workoutInfo.CurrentWeek = 0;
-			workoutInfo.CurrentDay = 0;
-			return;
-		}
+			// request incorrectly set the current week probably from deleting it
+			var newWeekIndex = editedWorkout.Routine.Weeks.Count - 1;
+			if (newWeekIndex < 0)
+			{
+				newWeekIndex = 0;
+			}
 
-		if (currentDay < 0 && currentDay >= editedWorkout.Routine.Weeks[currentWeek].Days.Count)
+			var newDayIndex = editedWorkout.Routine.Weeks[newWeekIndex].Days.Count - 1;
+			if (newDayIndex < 0)
+			{
+				newDayIndex = 0;
+			}
+			workoutInfo.CurrentWeek = newWeekIndex;
+			workoutInfo.CurrentDay = newDayIndex;
+			return;
+		} 
+		else if (currentDay < 0 || currentDay >= editedWorkout.Routine.Weeks[currentWeek].Days.Count)
 		{
-			// request incorrectly set the current day, so just set it to 0
-			workoutInfo.CurrentWeek = 0;
-			workoutInfo.CurrentDay = 0;
+			var newDayIndex = editedWorkout.Routine.Weeks[currentWeek].Days.Count - 1;
+			if (newDayIndex < 0)
+			{
+				newDayIndex = 0;
+			}
+			workoutInfo.CurrentDay = newDayIndex;
 		}
 	}
 }

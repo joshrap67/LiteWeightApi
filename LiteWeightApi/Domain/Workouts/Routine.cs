@@ -13,7 +13,6 @@ public class Routine
 
 	public Routine(SharedRoutine routine, IReadOnlyDictionary<string, string> exerciseNameToId)
 	{
-		// todo unit test
 		// constructor is used to convert from a shared routine back to a normal workout routine
 		Weeks = new List<RoutineWeek>();
 		foreach (var week in routine.Weeks)

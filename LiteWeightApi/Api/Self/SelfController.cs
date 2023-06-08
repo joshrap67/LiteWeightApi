@@ -13,6 +13,7 @@ using LiteWeightAPI.Commands.Self.SetReceivedWorkoutSeen;
 using LiteWeightAPI.Commands.Self.SetSettings;
 using LiteWeightAPI.Commands.Self.UpdateProfilePicture;
 using LiteWeightAPI.Errors.Attributes;
+using LiteWeightAPI.Imports;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LiteWeightAPI.Api.Self;
@@ -78,30 +79,17 @@ public class SelfController : BaseController
 		return NoContent();
 	}
 
-	/// <summary>Link Firebase Messaging Token</summary>
-	/// <remarks>Links the firebase messaging token to the authenticated user. This enables the authenticated user's ability to receive push notifications.</remarks>
-	[HttpPut("link-firebase-messaging-token")]
+	/// <summary>Set Firebase Messaging Token</summary>
+	/// <remarks>Sets the firebase messaging token to the authenticated user. This enables the authenticated user's ability to receive push notifications, or removes it if the token is null.</remarks>
+	[HttpPut("set-firebase-messaging-token")]
 	[InvalidRequest]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
-	public async Task<ActionResult> LinkFirebaseMessagingToken(LinkFirebaseMessagingTokenRequest request)
+	public async Task<ActionResult> SetFirebaseMessagingToken(SetFirebaseMessagingTokenRequest request)
 	{
 		await _dispatcher.DispatchAsync<SetFirebaseMessagingToken, bool>(new SetFirebaseMessagingToken
 		{
 			UserId = CurrentUserId, Token = request.FirebaseMessagingToken
-		});
-		return NoContent();
-	}
-
-	/// <summary>Unlink Firebase Messaging Token</summary>
-	/// <remarks>Unlinks the firebase messaging token associated for the authenticated user. This removes the authenticated user's ability to receive push notifications.</remarks>
-	[HttpPut("unlink-firebase-messaging-token")]
-	[ProducesResponseType(StatusCodes.Status204NoContent)]
-	public async Task<ActionResult> UnlinkFirebaseMessagingToken()
-	{
-		await _dispatcher.DispatchAsync<SetFirebaseMessagingToken, bool>(new SetFirebaseMessagingToken
-		{
-			UserId = CurrentUserId, Token = null
 		});
 		return NoContent();
 	}
@@ -177,9 +165,10 @@ public class SelfController : BaseController
 	/// <summary>Delete Self</summary>
 	/// <remarks>
 	/// Deletes a user and all data associated with it.<br/><br/>
-	/// Data deleted: user, workouts belonging to user, shared workouts sent to user, images belonging to user. The user is also removed as a friend from any other users, and any friend requests they sent are canceled.
+	/// Data deleted: user, workouts belonging to user, images belonging to user. The user is also removed as a friend from any other users, and any friend requests they sent are canceled.
 	/// </remarks>
 	[HttpDelete]
+	[PushNotification]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult> DeleteSelf()
