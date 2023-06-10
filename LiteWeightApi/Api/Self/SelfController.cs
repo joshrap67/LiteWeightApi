@@ -116,7 +116,7 @@ public class SelfController : BaseController
 	public async Task<ActionResult> SetSettings(UserSettingsResponse request)
 	{
 		var command = _mapper.Map<SetSettings>(request);
-		command.UserId = command.UserId;
+		command.UserId = CurrentUserId;
 
 		await _dispatcher.DispatchAsync<SetSettings, bool>(command);
 		return NoContent();
