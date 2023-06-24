@@ -58,7 +58,7 @@ public class CreateSelfHandler : ICommandHandler<CreateSelf, UserResponse>
 			Id = command.UserId,
 			Email = command.UserEmail,
 			ProfilePicture = fileName,
-			Username = command.Username,
+			Username = command.Username.ToLowerInvariant(), // really dumb. But firestore doesn't allow for case insensitive searching
 			Settings = userPreferences,
 			Exercises = Defaults.GetDefaultExercises()
 		};

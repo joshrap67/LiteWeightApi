@@ -1,4 +1,4 @@
-﻿using Google.Cloud.Firestore;
+using Google.Cloud.Firestore;
 using LiteWeightAPI.Api.Complaints.Responses;
 using LiteWeightAPI.Domain.Complaints;
 using LiteWeightAPI.Domain.SharedWorkouts;
@@ -119,7 +119,7 @@ public class Repository : IRepository
 	{
 		var db = GetDb();
 		var usersRef = db.Collection(_fireStoreOptions.UsersCollection);
-		var query = usersRef.WhereEqualTo("username", username);
+		var query = usersRef.WhereEqualTo("username", username.ToLowerInvariant());
 		var querySnapshot = await query.GetSnapshotAsync();
 
 		var user = querySnapshot.Documents.ToList().FirstOrDefault();

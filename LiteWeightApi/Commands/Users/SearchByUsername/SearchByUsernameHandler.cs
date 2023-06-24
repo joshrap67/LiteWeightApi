@@ -18,7 +18,6 @@ public class SearchByUsernameHandler : ICommandHandler<SearchByUsername, SearchU
 	public async Task<SearchUserResponse> HandleAsync(SearchByUsername command)
 	{
 		var user = await _repository.GetUserByUsername(command.Username);
-		// todo make the search case insensitive
 		if (user == null)
 		{
 			return null;
