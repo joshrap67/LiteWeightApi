@@ -54,7 +54,7 @@ public class SelfController : BaseController
 	[AlreadyExists, InvalidRequest]
 	[ProducesResponseType(StatusCodes.Status201Created)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
-	public async Task<ActionResult<UserResponse>> CreateSelf(CreateUserRequest request)
+	public async Task<ActionResult<UserResponse>> CreateSelf(CreateSelfRequest request)
 	{
 		var command = _mapper.Map<CreateSelf>(request);
 		command.UserEmail = CurrentUserEmail;

@@ -58,10 +58,10 @@ public static class WorkoutUtils
 			{
 				newDayIndex = 0;
 			}
+
 			workoutInfo.CurrentWeek = newWeekIndex;
 			workoutInfo.CurrentDay = newDayIndex;
-			return;
-		} 
+		}
 		else if (currentDay < 0 || currentDay >= editedWorkout.Routine.Weeks[currentWeek].Days.Count)
 		{
 			var newDayIndex = editedWorkout.Routine.Weeks[currentWeek].Days.Count - 1;
@@ -69,6 +69,7 @@ public static class WorkoutUtils
 			{
 				newDayIndex = 0;
 			}
+
 			workoutInfo.CurrentDay = newDayIndex;
 		}
 	}

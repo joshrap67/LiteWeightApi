@@ -29,9 +29,4 @@
         <PackageReference Include="NetCore.AutoRegisterDi" Version="2.1.0" />
     </ItemGroup>
 
-    <ItemGroup>
-        <None Remove="Swagger\InfoDescription.md" />
-        <EmbeddedResource Include="Swagger\InfoDescription.md" />
-    </ItemGroup>
-
 </Project>

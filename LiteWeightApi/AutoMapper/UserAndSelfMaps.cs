@@ -21,7 +21,7 @@ public class UserAndSelfMaps : Profile
 		CreateMap<User, UserResponse>();
 		CreateMap<User, SearchUserResponse>();
 		
-		CreateMap<CreateUserRequest, CreateSelf>().Ignore(x => x.UserEmail).Ignore(x => x.UserId);
+		CreateMap<CreateSelfRequest, CreateSelf>().Ignore(x => x.UserEmail).Ignore(x => x.UserId);
 		CreateMap<UserSettingsResponse, SetSettings>().Ignore(x => x.UserId);
 	}
 }

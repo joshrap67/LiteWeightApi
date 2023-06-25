@@ -3,10 +3,10 @@ using LiteWeightAPI.Imports;
 
 namespace LiteWeightAPI.Api.Self.Requests;
 
-public class CreateUserRequest
+public class CreateSelfRequest
 {
 	/// <summary>
-	/// Username of the new user - must be unique.
+	/// Username of the new user - must be unique. Note that the username will be converted to lowercase.
 	/// </summary>
 	/// <example>randy_bo_bandy</example>
 	[Required]
