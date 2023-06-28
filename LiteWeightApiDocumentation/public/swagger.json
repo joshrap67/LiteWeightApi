@@ -16,6 +16,7 @@
           {
             "name": "complaintId",
             "in": "path",
+            "description": "Id of the shared complaint to get",
             "required": true,
             "style": "simple",
             "schema": {
@@ -382,7 +383,7 @@
           "Self"
         ],
         "summary": "Create Self",
-        "description": "Creates a user in the database using the email/firebase id in the authenticated token.\r\n<br /><br />Note that a single verified, authenticated user can only have one user in the database - this is determined by the firebase UUID in the authenticated token.<br/><br/><div style=\"background-color: #2f3031;padding: 12px 0px 12px 12px;border-left: 5px solid #F90258;\">Potential 400 Errors: <b>AlreadyExists, InvalidRequest</b></div>",
+        "description": "Creates a user in the database using the email/firebase id in the authenticated token.\r\n<br /><br />Note that a single verified, authenticated user can only exist once in the database - this is determined by the firebase UUID in the authenticated token.<br/><br/><div style=\"background-color: #2f3031;padding: 12px 0px 12px 12px;border-left: 5px solid #F90258;\">Potential 400 Errors: <b>AlreadyExists, InvalidRequest</b></div>",
         "requestBody": {
           "content": {
             "application/json": {
@@ -587,7 +588,7 @@
           "Self"
         ],
         "summary": "Set Firebase Messaging Token",
-        "description": "Sets the firebase messaging token to the authenticated user. This enables the authenticated user's ability to receive push notifications, or removes it if the token is null.<br/><br/><div style=\"background-color: #2f3031;padding: 12px 0px 12px 12px;border-left: 5px solid #F90258;\">Potential 400 Errors: <b>InvalidRequest</b></div>",
+        "description": "Sets the firebase messaging token to the authenticated user. This enables the authenticated user's ability to receive push notifications, or removes it if the token is null.",
         "requestBody": {
           "content": {
             "application/json": {
@@ -610,16 +611,6 @@
         "responses": {
           "204": {
             "description": "No Content"
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BadRequestResponse"
-                }
-              }
-            }
           },
           "401": {
             "description": "Authentication Error",
@@ -777,7 +768,7 @@
           "Self"
         ],
         "summary": "Set Current Workout",
-        "description": "Sets the current workout of the authenticated user to the specified workout, if it exists.",
+        "description": "Sets the current workout of the authenticated user to the specified workout, if it exists.<br/><br/><div style=\"background-color: #2f3031;padding: 12px 0px 12px 12px;border-left: 5px solid #F90258;\">Potential 400 Errors: <b>WorkoutNotFound</b></div>",
         "requestBody": {
           "content": {
             "application/json": {
@@ -800,6 +791,16 @@
         "responses": {
           "204": {
             "description": "No Content"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestResponse"
+                }
+              }
+            }
           },
           "401": {
             "description": "Authentication Error",
@@ -940,11 +941,12 @@
           "SharedWorkouts"
         ],
         "summary": "Get Shared Workout",
-        "description": "Returns a shared workout, assuming it was sent to the authenticated user.",
+        "description": "Gets a shared workout. Conditional that it was sent to the authenticated user.",
         "parameters": [
           {
             "name": "sharedWorkoutId",
             "in": "path",
+            "description": "Id of the shared workout to get",
             "required": true,
             "style": "simple",
             "schema": {
@@ -1115,7 +1117,7 @@
           "SharedWorkouts"
         ],
         "summary": "Decline Shared Workout",
-        "description": "Declines a workout and deletes it from the database, assuming the recipient matches the authenticated user.",
+        "description": "Declines a workout and deletes it from the database. Conditional that the recipient matches the authenticated user.",
         "parameters": [
           {
             "name": "sharedWorkoutId",
@@ -1254,7 +1256,7 @@
           "Users"
         ],
         "summary": "Send Friend Request",
-        "description": "Sends a friend request to the specified user, assuming the recipient and authenticated user have not reached the maximum allowed friends.<br/><br/><div style=\"background-color: #2f3031;padding: 12px 0px 12px 12px;border-left: 5px solid #F90258;\">Potential 400 Errors: <b>MaxLimit, MiscError</b></div><br/><br/><div style=\"background-color: #2f3031;padding: 12px 0px 12px 12px;border-left: 5px solid #02F88F;\"><b>Sends Push Notification</b></div>",
+        "description": "Sends a friend request to the specified user. Conditional that both the authenticated user and the recipient have not reached the maximum number of friends allowed.<br/><br/><div style=\"background-color: #2f3031;padding: 12px 0px 12px 12px;border-left: 5px solid #F90258;\">Potential 400 Errors: <b>MaxLimit, MiscError</b></div><br/><br/><div style=\"background-color: #2f3031;padding: 12px 0px 12px 12px;border-left: 5px solid #02F88F;\"><b>Sends Push Notification</b></div>",
         "parameters": [
           {
             "name": "userId",
@@ -1440,7 +1442,7 @@
           "Users"
         ],
         "summary": "Accept Friend Request",
-        "description": "Accepts a friend request from the specified user, assuming authenticated user does not have maximum amount of friends allowed.<br/><br/><div style=\"background-color: #2f3031;padding: 12px 0px 12px 12px;border-left: 5px solid #F90258;\">Potential 400 Errors: <b>MaxLimit</b></div><br/><br/><div style=\"background-color: #2f3031;padding: 12px 0px 12px 12px;border-left: 5px solid #02F88F;\"><b>Sends Push Notification</b></div>",
+        "description": "Accepts a friend request and make the specified user a friend. Conditional that the authenticated user has not reached the maximum number of friends allowed.<br/><br/><div style=\"background-color: #2f3031;padding: 12px 0px 12px 12px;border-left: 5px solid #F90258;\">Potential 400 Errors: <b>MaxLimit</b></div><br/><br/><div style=\"background-color: #2f3031;padding: 12px 0px 12px 12px;border-left: 5px solid #02F88F;\"><b>Sends Push Notification</b></div>",
         "parameters": [
           {
             "name": "userId",
@@ -1897,11 +1899,12 @@
           "Workouts"
         ],
         "summary": "Get Workout",
-        "description": "Fetches a workout assuming it belongs to the authenticated user.",
+        "description": "Gets a workout. Conditional that the creator matches the authenticated user.",
         "parameters": [
           {
             "name": "workoutId",
             "in": "path",
+            "description": "Id of the workout to get",
             "required": true,
             "style": "simple",
             "schema": {
@@ -2038,6 +2041,7 @@
           {
             "name": "workoutId",
             "in": "path",
+            "description": "Id of the workout to copy",
             "required": true,
             "style": "simple",
             "schema": {
@@ -2046,6 +2050,7 @@
           }
         ],
         "requestBody": {
+          "description": "",
           "content": {
             "application/json": {
               "schema": {
@@ -2139,6 +2144,7 @@
           {
             "name": "workoutId",
             "in": "path",
+            "description": "Id of the workout of the routine",
             "required": true,
             "style": "simple",
             "schema": {
@@ -2147,6 +2153,7 @@
           }
         ],
         "requestBody": {
+          "description": "",
           "content": {
             "application/json": {
               "schema": {
@@ -2240,6 +2247,7 @@
           {
             "name": "workoutId",
             "in": "path",
+            "description": "Id of the workout to update the progress of",
             "required": true,
             "style": "simple",
             "schema": {
@@ -2248,6 +2256,7 @@
           }
         ],
         "requestBody": {
+          "description": "",
           "content": {
             "application/json": {
               "schema": {
@@ -2334,6 +2343,7 @@
           {
             "name": "workoutId",
             "in": "path",
+            "description": "Id of the workout to reset the statistics of",
             "required": true,
             "style": "simple",
             "schema": {
@@ -2399,6 +2409,7 @@
           {
             "name": "workoutId",
             "in": "path",
+            "description": "Id of the workout to restart",
             "required": true,
             "style": "simple",
             "schema": {
@@ -2407,6 +2418,7 @@
           }
         ],
         "requestBody": {
+          "description": "",
           "content": {
             "application/json": {
               "schema": {
@@ -2500,6 +2512,7 @@
           {
             "name": "workoutId",
             "in": "path",
+            "description": "Id of the workout to rename",
             "required": true,
             "style": "simple",
             "schema": {
@@ -2508,6 +2521,7 @@
           }
         ],
         "requestBody": {
+          "description": "",
           "content": {
             "application/json": {
               "schema": {
@@ -2686,8 +2700,9 @@
         "type": "object",
         "properties": {
           "workoutName": {
+            "maxLength": 40,
             "type": "string",
-            "description": "Optional name to set for the workout once accepted. Must be unique.",
+            "description": "Optional name to set for the workout once accepted. Must be unique. If not specified, the created workout will have the name of the shared workout.",
             "nullable": true,
             "example": "Olympic Routine"
           }
@@ -2746,6 +2761,12 @@
             "nullable": true,
             "example": "29062e23-fa61-4977-af93-aa4fdb177247"
           },
+          "description": {
+            "type": "string",
+            "description": "Description of the complaint.",
+            "nullable": true,
+            "example": "Inappropriate workout name."
+          },
           "claimantUserId": {
             "type": "string",
             "description": "User id of the user who made the complaint.",
@@ -2780,6 +2801,7 @@
         "type": "object",
         "properties": {
           "name": {
+            "maxLength": 40,
             "minLength": 1,
             "type": "string",
             "description": "Name for the workout created from the copy. Must be unique.",
@@ -2874,7 +2896,7 @@
           },
           "seen": {
             "type": "boolean",
-            "description": "Is this friend request seen?"
+            "description": "Is this friend request seen by the user?"
           },
           "sentUtc": {
             "type": "string",
@@ -2948,7 +2970,7 @@
           },
           "defaultWeight": {
             "type": "number",
-            "description": "Default weight of the exercise in pounds. Value that the exercise will be defaulted to when adding it to a workout.",
+            "description": "Default weight of the exercise (lb). Value that the exercise will be defaulted to when adding it to a workout.",
             "format": "double",
             "example": 65
           },
@@ -3051,6 +3073,7 @@
         "type": "object",
         "properties": {
           "name": {
+            "maxLength": 40,
             "minLength": 1,
             "type": "string",
             "description": "New name of the workout. Must be unique."
@@ -3065,6 +3088,7 @@
         "type": "object",
         "properties": {
           "description": {
+            "maxLength": 400,
             "minLength": 1,
             "type": "string",
             "description": "Description of the complaint.",

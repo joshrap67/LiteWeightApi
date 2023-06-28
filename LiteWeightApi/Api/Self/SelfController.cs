@@ -48,7 +48,7 @@ public class SelfController : BaseController
 	/// <summary>Create Self</summary>
 	/// <remarks>
 	/// Creates a user in the database using the email/firebase id in the authenticated token.
-	/// <br/><br/>Note that a single verified, authenticated user can only have one user in the database - this is determined by the firebase UUID in the authenticated token.
+	/// <br/><br/>Note that a single verified, authenticated user can only exist once in the database - this is determined by the firebase UUID in the authenticated token.
 	/// </remarks>
 	[HttpPost]
 	[AlreadyExists, InvalidRequest]
@@ -82,9 +82,7 @@ public class SelfController : BaseController
 	/// <summary>Set Firebase Messaging Token</summary>
 	/// <remarks>Sets the firebase messaging token to the authenticated user. This enables the authenticated user's ability to receive push notifications, or removes it if the token is null.</remarks>
 	[HttpPut("set-firebase-messaging-token")]
-	[InvalidRequest]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
-	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	public async Task<ActionResult> SetFirebaseMessagingToken(SetFirebaseMessagingTokenRequest request)
 	{
 		await _dispatcher.DispatchAsync<SetFirebaseMessagingToken, bool>(new SetFirebaseMessagingToken
@@ -125,7 +123,9 @@ public class SelfController : BaseController
 	/// <summary>Set Current Workout</summary>
 	/// <remarks>Sets the current workout of the authenticated user to the specified workout, if it exists.</remarks>
 	[HttpPut("current-workout")]
+	[WorkoutNotFound]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	public async Task<ActionResult> SetCurrentWorkout(SetCurrentWorkoutRequest request)
 	{
 		await _dispatcher.DispatchAsync<SetCurrentWorkout, bool>(new SetCurrentWorkout

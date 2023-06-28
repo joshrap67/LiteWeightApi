@@ -67,7 +67,6 @@ public class Routine
 
 	public Routine Clone()
 	{
-		// todo use library for this
 		var copy = new Routine
 		{
 			Weeks = new List<RoutineWeek>()

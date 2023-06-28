@@ -61,7 +61,7 @@ public class UsersController : BaseController
 	}
 
 	/// <summary>Send Friend Request</summary>
-	/// <remarks>Sends a friend request to the specified user, assuming the recipient and authenticated user have not reached the maximum allowed friends.</remarks>
+	/// <remarks>Sends a friend request to the specified user. Conditional that both the authenticated user and the recipient have not reached the maximum number of friends allowed.</remarks>
 	/// <param name="userId">User id of the user to send the friend request to</param>
 	[HttpPut("{userId}/send-friend-request")]
 	[MaxLimit, MiscError]
@@ -102,7 +102,7 @@ public class UsersController : BaseController
 	}
 
 	/// <summary>Accept Friend Request</summary>
-	/// <remarks>Accepts a friend request from the specified user, assuming authenticated user does not have maximum amount of friends allowed.</remarks>
+	/// <remarks>Accepts a friend request and make the specified user a friend. Conditional that the authenticated user has not reached the maximum number of friends allowed.</remarks>
 	/// <param name="userId">User id of the user to accept as a friend</param>
 	[HttpPut("{userId}/accept-friend-request")]
 	[MaxLimit]

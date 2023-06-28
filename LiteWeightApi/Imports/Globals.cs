@@ -22,4 +22,5 @@ public static class Globals
 	public const int MaxExerciseName = 40;
 	public const int MaxFocusesLength = 20;
 	public const int MaxUsernameLength = 50;
+	public const int MaxReportDescription = 400;
 }

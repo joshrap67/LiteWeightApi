@@ -21,7 +21,7 @@ public class FriendRequestResponse
 	public string ProfilePicture { get; set; }
 
 	/// <summary>
-	/// Is this friend request seen?
+	/// Is this friend request seen by the user?
 	/// </summary>
 	public bool Seen { get; set; }
 

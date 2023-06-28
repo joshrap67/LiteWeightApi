@@ -5,20 +5,20 @@ using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Errors.Exceptions;
 using LiteWeightAPI.Imports;
 
-namespace LiteWeightAPI.Commands.Exercises.AddExercise;
+namespace LiteWeightAPI.Commands.Exercises.CreateExercise;
 
-public class AddExerciseHandler : ICommandHandler<AddExercise, OwnedExerciseResponse>
+public class CreateExerciseHandler : ICommandHandler<CreateExercise, OwnedExerciseResponse>
 {
 	private readonly IRepository _repository;
 	private readonly IMapper _mapper;
 
-	public AddExerciseHandler(IRepository repository, IMapper mapper)
+	public CreateExerciseHandler(IRepository repository, IMapper mapper)
 	{
 		_repository = repository;
 		_mapper = mapper;
 	}
 
-	public async Task<OwnedExerciseResponse> HandleAsync(AddExercise command)
+	public async Task<OwnedExerciseResponse> HandleAsync(CreateExercise command)
 	{
 		var user = await _repository.GetUser(command.UserId);
 

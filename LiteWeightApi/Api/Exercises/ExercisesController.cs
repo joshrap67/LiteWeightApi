@@ -2,7 +2,7 @@ using AutoMapper;
 using LiteWeightAPI.Api.Exercises.Requests;
 using LiteWeightAPI.Api.Exercises.Responses;
 using LiteWeightAPI.Commands;
-using LiteWeightAPI.Commands.Exercises.AddExercise;
+using LiteWeightAPI.Commands.Exercises.CreateExercise;
 using LiteWeightAPI.Commands.Exercises.DeleteExercise;
 using LiteWeightAPI.Commands.Exercises.UpdateExercise;
 using LiteWeightAPI.Errors.Attributes;
@@ -32,10 +32,10 @@ public class ExercisesController : BaseController
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	public async Task<ActionResult<OwnedExerciseResponse>> CreateExercise(SetExerciseRequest request)
 	{
-		var command = _mapper.Map<AddExercise>(request);
+		var command = _mapper.Map<CreateExercise>(request);
 		command.UserId = CurrentUserId;
 
-		var response = await _dispatcher.DispatchAsync<AddExercise, OwnedExerciseResponse>(command);
+		var response = await _dispatcher.DispatchAsync<CreateExercise, OwnedExerciseResponse>(command);
 		return new CreatedResult(new Uri($"/exercises/{response.Id}", UriKind.Relative), response);
 	}
 

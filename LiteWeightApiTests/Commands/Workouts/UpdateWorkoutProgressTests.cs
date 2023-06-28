@@ -20,7 +20,10 @@ public class UpdateWorkoutProgressTests : BaseTest
 	[Fact]
 	public async Task Should_Update_Progress()
 	{
-		var command = Fixture.Create<UpdateWorkoutProgress>();
+		var command = Fixture.Build<UpdateWorkoutProgress>()
+			.With(x => x.CurrentWeek, 0)
+			.With(x => x.CurrentDay, 0)
+			.Create();
 
 		var workoutInfo = Fixture.Build<WorkoutInfo>().With(x => x.WorkoutId, command.WorkoutId).Create();
 		var workouts = new List<WorkoutInfo> { workoutInfo };

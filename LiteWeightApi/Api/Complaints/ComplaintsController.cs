@@ -19,6 +19,7 @@ public class ComplaintsController : BaseController
 
 	/// <summary>Get Complaint</summary>
 	/// <remarks>Gets a complaint that was filed by the authenticated user.</remarks>
+	/// <param name="complaintId">Id of the shared complaint to get</param>
 	[HttpGet("{complaintId}")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]

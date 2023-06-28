@@ -1,8 +1,8 @@
 using LiteWeightAPI.Api.Exercises.Responses;
 
-namespace LiteWeightAPI.Commands.Exercises.AddExercise;
+namespace LiteWeightAPI.Commands.Exercises.CreateExercise;
 
-public class AddExercise : ICommand<OwnedExerciseResponse>
+public class CreateExercise : ICommand<OwnedExerciseResponse>
 {
 	public string UserId { get; set; }
 

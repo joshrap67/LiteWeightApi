@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace LiteWeightAPI.Api.Self.Requests;
 
 public class SetFirebaseMessagingTokenRequest

@@ -14,7 +14,7 @@ public class SharedWorkout
 
 	public SharedWorkout(Workout workout, string recipientId, string sharedWorkoutId, User sender)
 	{
-		// todo unit test
+		// todo rename "SentWorkout" lmfao?
 		Id = sharedWorkoutId;
 		RecipientId = recipientId;
 		WorkoutName = workout.Name;
@@ -55,6 +55,7 @@ public class SharedWorkout
 	[FirestoreProperty("routine")]
 	public SharedRoutine Routine { get; set; }
 
+	// on the surface this property seems unnecessary, but it's required since the sender user can change their exercises. Need to preserve the original values of the exercise
 	[FirestoreProperty("distinctExercises")]
 	public IList<SharedWorkoutDistinctExercise> DistinctExercises { get; set; }
 }

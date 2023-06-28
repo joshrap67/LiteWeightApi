@@ -21,7 +21,8 @@ public class SharedWorkoutsController : BaseController
 	}
 
 	/// <summary>Get Shared Workout</summary>
-	/// <remarks>Returns a shared workout, assuming it was sent to the authenticated user.</remarks>
+	/// <remarks>Gets a shared workout. Conditional that it was sent to the authenticated user.</remarks>
+	/// <param name="sharedWorkoutId">Id of the shared workout to get</param>
 	[HttpGet("{sharedWorkoutId}")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -62,7 +63,7 @@ public class SharedWorkoutsController : BaseController
 	}
 
 	/// <summary>Decline Shared Workout</summary>
-	/// <remarks>Declines a workout and deletes it from the database, assuming the recipient matches the authenticated user.</remarks>
+	/// <remarks>Declines a workout and deletes it from the database. Conditional that the recipient matches the authenticated user.</remarks>
 	/// <param name="sharedWorkoutId">Id of the shared workout to decline</param>
 	[HttpDelete("{sharedWorkoutId}/decline")]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]

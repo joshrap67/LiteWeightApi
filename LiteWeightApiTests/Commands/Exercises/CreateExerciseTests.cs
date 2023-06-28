@@ -1,4 +1,4 @@
-using LiteWeightAPI.Commands.Exercises.AddExercise;
+using LiteWeightAPI.Commands.Exercises.CreateExercise;
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Errors.Exceptions;
@@ -6,21 +6,21 @@ using LiteWeightAPI.Imports;
 
 namespace LiteWeightApiTests.Commands.Exercises;
 
-public class AddExerciseTests : BaseTest
+public class CreateExerciseTests : BaseTest
 {
-	private readonly AddExerciseHandler _handler;
+	private readonly CreateExerciseHandler _handler;
 	private readonly Mock<IRepository> _mockRepository;
 
-	public AddExerciseTests()
+	public CreateExerciseTests()
 	{
 		_mockRepository = new Mock<IRepository>();
-		_handler = new AddExerciseHandler(_mockRepository.Object, Mapper);
+		_handler = new CreateExerciseHandler(_mockRepository.Object, Mapper);
 	}
 
 	[Fact]
 	public async Task Should_Create_Exercise()
 	{
-		var command = Fixture.Create<AddExercise>();
+		var command = Fixture.Create<CreateExercise>();
 		var exercises = Enumerable.Range(0, Globals.MaxExercises - 1)
 			.Select(_ => Fixture.Build<OwnedExercise>().Create())
 			.ToList();
@@ -49,7 +49,7 @@ public class AddExerciseTests : BaseTest
 	[Fact]
 	public async Task Should_Throw_Exception_Name_Already_Exists()
 	{
-		var command = Fixture.Create<AddExercise>();
+		var command = Fixture.Create<CreateExercise>();
 		command.Name = "Name";
 
 		_mockRepository
@@ -68,7 +68,7 @@ public class AddExerciseTests : BaseTest
 	[Fact]
 	public async Task Should_Throw_Exception_Max_Limit_Free()
 	{
-		var command = Fixture.Create<AddExercise>();
+		var command = Fixture.Create<CreateExercise>();
 		var exercises = Enumerable.Range(0, Globals.MaxFreeExercises + 1)
 			.Select(_ => Fixture.Build<OwnedExercise>().Create())
 			.ToList();
@@ -86,7 +86,7 @@ public class AddExerciseTests : BaseTest
 	[Fact]
 	public async Task Should_Throw_Exception_Max_Limit()
 	{
-		var command = Fixture.Create<AddExercise>();
+		var command = Fixture.Create<CreateExercise>();
 		var exercises = Enumerable.Range(0, Globals.MaxExercises + 1)
 			.Select(_ => Fixture.Build<OwnedExercise>().Create())
 			.ToList();

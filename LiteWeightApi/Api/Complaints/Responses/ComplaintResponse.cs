@@ -9,6 +9,12 @@ public class ComplaintResponse
 	public string Id { get; set; }
 
 	/// <summary>
+	/// Description of the complaint.
+	/// </summary>
+	/// <example>Inappropriate workout name.</example>
+	public string Description { get; set; }
+
+	/// <summary>
 	/// User id of the user who made the complaint.
 	/// </summary>
 	/// <example>3f96d8c2-127c-4605-8272-003630d8c1a1</example>

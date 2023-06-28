@@ -38,7 +38,6 @@ public static class WorkoutUtils
 		}
 	}
 
-	// todo unit test
 	public static void FixCurrentDayAndWeek(Workout editedWorkout, WorkoutInfo workoutInfo)
 	{
 		// make sure that the current week according to the request is actually valid
@@ -53,7 +52,9 @@ public static class WorkoutUtils
 				newWeekIndex = 0;
 			}
 
-			var newDayIndex = editedWorkout.Routine.Weeks[newWeekIndex].Days.Count - 1;
+			var newDayIndex = newWeekIndex > 0
+				? editedWorkout.Routine.Weeks[newWeekIndex].Days.Count - 1
+				: 0; // atm is overkill since app doesn't allow 0 weeks, but adding this check just in case that changes
 			if (newDayIndex < 0)
 			{
 				newDayIndex = 0;

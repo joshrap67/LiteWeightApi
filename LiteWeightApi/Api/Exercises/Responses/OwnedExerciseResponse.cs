@@ -15,7 +15,7 @@ public class OwnedExerciseResponse
 	public string Name { get; set; }
 
 	/// <summary>
-	/// Default weight of the exercise in pounds. Value that the exercise will be defaulted to when adding it to a workout.
+	/// Default weight of the exercise (lb). Value that the exercise will be defaulted to when adding it to a workout.
 	/// </summary>
 	/// <example>65.0</example>
 	public double DefaultWeight { get; set; }

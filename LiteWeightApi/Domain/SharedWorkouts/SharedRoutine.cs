@@ -14,7 +14,6 @@ public class SharedRoutine
 
 	public SharedRoutine(Routine routine, IEnumerable<OwnedExercise> ownedExercises)
 	{
-		// todo unit test
 		var exerciseIdToExercise = ownedExercises.ToDictionary(x => x.Id, x => x);
 		Weeks = new List<SharedWeek>();
 		foreach (var week in routine.Weeks)

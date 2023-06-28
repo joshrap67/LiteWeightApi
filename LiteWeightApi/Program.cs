@@ -1,3 +1,4 @@
+using System.Threading.RateLimiting;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using LiteWeightAPI.ExtensionMethods;
@@ -12,6 +13,21 @@ builder.Services.ConfigureDependencies();
 builder.Services.ConfigureApi();
 builder.Services.ConfigureSwagger();
 builder.Services.ConfigureOptions(builder.Configuration);
+
+
+builder.Services.AddRateLimiter(options =>
+{
+	options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+		RateLimitPartition.GetFixedWindowLimiter(
+			partitionKey: httpContext.User.Identity?.Name ?? httpContext.Request.Headers.Host.ToString(),
+			factory: _ => new FixedWindowRateLimiterOptions
+			{
+				AutoReplenishment = true,
+				PermitLimit = 10,
+				QueueLimit = 0,
+				Window = TimeSpan.FromMinutes(1)
+			}));
+});
 
 var app = builder.Build();
 

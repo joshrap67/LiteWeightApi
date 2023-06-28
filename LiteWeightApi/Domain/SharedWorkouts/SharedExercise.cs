@@ -13,7 +13,6 @@ public class SharedExercise
 
 	public SharedExercise(RoutineExercise exercise, string exerciseName)
 	{
-		// todo unit test
 		ExerciseName = exerciseName;
 		Weight = exercise.Weight;
 		Sets = exercise.Sets;

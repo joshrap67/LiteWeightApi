@@ -48,7 +48,8 @@ public class WorkoutsController : BaseController
 	}
 
 	/// <summary>Get Workout</summary>
-	/// <remarks>Fetches a workout assuming it belongs to the authenticated user.</remarks>
+	/// <remarks>Gets a workout. Conditional that the creator matches the authenticated user.</remarks>
+	/// <param name="workoutId">Id of the workout to get</param>
 	[HttpGet("{workoutId}")]
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -64,6 +65,8 @@ public class WorkoutsController : BaseController
 
 	/// <summary>Copy Workout</summary>
 	/// <remarks>Copies a workout as a new workout. Any exercises that are now apart of the copied workout are updated.</remarks>
+	/// <param name="workoutId">Id of the workout to copy</param>
+	/// <param name="request"></param>
 	[HttpPost("{workoutId}/copy")]
 	[InvalidRequest, AlreadyExists, MaxLimit]
 	[ProducesResponseType(StatusCodes.Status201Created)]
@@ -82,6 +85,8 @@ public class WorkoutsController : BaseController
 
 	/// <summary>Set Routine</summary>
 	/// <remarks>Sets the routine of a given workout. Any exercises that are now apart of the updated routine are updated.</remarks>
+	/// <param name="request"></param>
+	/// <param name="workoutId">Id of the workout of the routine</param>
 	[HttpPut("{workoutId}/routine")]
 	[InvalidRequest]
 	[ProducesResponseType(StatusCodes.Status200OK)]
@@ -100,6 +105,8 @@ public class WorkoutsController : BaseController
 
 	/// <summary>Update Workout Progress</summary>
 	/// <remarks>Updates the specified workout's progress.</remarks>
+	/// <param name="workoutId">Id of the workout to update the progress of</param>
+	/// <param name="request"></param>
 	[HttpPut("{workoutId}/update-progress")]
 	[InvalidRequest]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -121,6 +128,7 @@ public class WorkoutsController : BaseController
 
 	/// <summary>Reset Statistics</summary>
 	/// <remarks>Resets the statistics for a given workout, if it exists.</remarks>
+	/// <param name="workoutId">Id of the workout to reset the statistics of</param>
 	[HttpPut("{workoutId}/reset-statistics")]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -139,6 +147,8 @@ public class WorkoutsController : BaseController
 	/// Restarts the workout to have all exercises set to incomplete, and updates the statistics of the authenticated user using the state of the workout before it was restarted.
 	/// <br/><br/>If enabled on the authenticated user's preferences, the default weights of any completed exercises will be updated if their completed weight is greater than the current default weight.
 	/// </remarks>
+	/// <param name="workoutId">Id of the workout to restart</param>
+	/// <param name="request"></param>
 	[HttpPost("{workoutId}/restart")]
 	[InvalidRequest]
 	[ProducesResponseType(StatusCodes.Status200OK)]
@@ -158,6 +168,8 @@ public class WorkoutsController : BaseController
 
 	/// <summary>Rename Workout</summary>
 	/// <remarks>Renames a given workout. Name must be unique.</remarks>
+	/// <param name="workoutId">Id of the workout to rename</param>
+	/// <param name="request"></param>
 	[HttpPut("{workoutId}/rename")]
 	[InvalidRequest, AlreadyExists]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]

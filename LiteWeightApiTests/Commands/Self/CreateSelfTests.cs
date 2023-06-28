@@ -32,7 +32,7 @@ public class CreateSelfTests : BaseTest
 			.ReturnsAsync((User)null!);
 
 		var createdUser = await _handler.HandleAsync(command);
-		Assert.Equal(command.Username, createdUser.Username);
+		Assert.Equal(command.Username.ToLowerInvariant(), createdUser.Username);
 		Assert.Equal(command.UserEmail, createdUser.Email);
 		Assert.Equal(command.UserId, createdUser.Id);
 		Assert.Equal(command.MetricUnits, createdUser.Settings.MetricUnits);
