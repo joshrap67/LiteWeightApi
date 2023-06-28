@@ -14,7 +14,7 @@ builder.Services.ConfigureApi();
 builder.Services.ConfigureSwagger();
 builder.Services.ConfigureOptions(builder.Configuration);
 
-
+// todo
 builder.Services.AddRateLimiter(options =>
 {
 	options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>

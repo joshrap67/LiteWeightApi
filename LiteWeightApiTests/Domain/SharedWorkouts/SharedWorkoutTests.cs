@@ -34,15 +34,12 @@ public class SharedWorkoutTests : BaseTest
 		Assert.Equal(sharedWorkoutId, sharedWorkout.Id);
 
 		var exerciseNameToExercise = ownedExercises.ToDictionary(x => x.Name, x => x);
-		// var expectedDistinctHashSet = ownedExercises.Select(x => x.Name).ToHashSet();
-		// var actualDistinctHashSet = sharedWorkout.DistinctExercises.Select(x => x.ExerciseName).ToHashSet();
 		foreach (var distinctExercise in sharedWorkout.DistinctExercises)
 		{
 			var ownedExercise = exerciseNameToExercise[distinctExercise.ExerciseName];
 			Assert.Equal(ownedExercise.VideoUrl, distinctExercise.VideoUrl);
 			Assert.Equal(ownedExercise.Focuses, distinctExercise.Focuses);
 		}
-		// Assert.True(expectedDistinctHashSet.SetEquals(actualDistinctHashSet));
 
 		for (var i = 0; i < sharedWorkout.Routine.Weeks.Count; i++)
 		{
