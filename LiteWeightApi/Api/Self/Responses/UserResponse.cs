@@ -80,5 +80,5 @@ public class UserResponse
 	/// <summary>
 	/// List of workouts sent to the user.
 	/// </summary>
-	public IList<SharedWorkoutInfoResponse> ReceivedWorkouts { get; set; } = new List<SharedWorkoutInfoResponse>();
+	public IList<ReceivedWorkoutInfoResponse> ReceivedWorkouts { get; set; } = new List<ReceivedWorkoutInfoResponse>();
 }

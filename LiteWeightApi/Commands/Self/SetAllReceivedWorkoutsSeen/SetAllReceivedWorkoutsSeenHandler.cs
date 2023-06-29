@@ -14,9 +14,9 @@ public class SetAllReceivedWorkoutsSeenHandler : ICommandHandler<SetAllReceivedW
 	public async Task<bool> HandleAsync(SetAllReceivedWorkoutsSeen command)
 	{
 		var user = await _repository.GetUser(command.UserId);
-		foreach (var sharedWorkoutInfo in user.ReceivedWorkouts)
+		foreach (var receivedWorkoutInfo in user.ReceivedWorkouts)
 		{
-			sharedWorkoutInfo.Seen = true;
+			receivedWorkoutInfo.Seen = true;
 		}
 
 		await _repository.PutUser(user);

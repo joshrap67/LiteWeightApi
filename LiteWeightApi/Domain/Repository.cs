@@ -1,7 +1,7 @@
 using Google.Cloud.Firestore;
 using LiteWeightAPI.Api.Complaints.Responses;
 using LiteWeightAPI.Domain.Complaints;
-using LiteWeightAPI.Domain.SharedWorkouts;
+using LiteWeightAPI.Domain.ReceivedWorkouts;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Domain.Workouts;
 using LiteWeightAPI.Options;
@@ -22,13 +22,13 @@ public interface IRepository
 	Task CreateWorkout(Workout workout);
 	Task PutWorkout(Workout workout);
 	Task DeleteWorkout(string workoutId);
-	Task<SharedWorkout> GetSharedWorkout(string sharedWorkoutId);
-	Task DeleteSharedWorkout(string workoutId);
+	Task<ReceivedWorkout> GetReceivedWorkout(string receivedWorkoutId);
+	Task DeleteReceivedWorkout(string workoutId);
 	Task<Complaint> GetComplaint(string complaintId);
 
 	Task ExecuteBatchWrite(IList<Workout> workoutsToPut = null, IList<User> usersToPut = null,
-		IList<SharedWorkout> sharedWorkoutsToPut = null, IList<Workout> workoutsToDelete = null,
-		IList<User> usersToDelete = null, IList<SharedWorkout> sharedWorkoutsToDelete = null);
+		IList<ReceivedWorkout> receivedWorkoutsToPut = null, IList<Workout> workoutsToDelete = null,
+		IList<User> usersToDelete = null, IList<ReceivedWorkout> receivedWorkoutsToDelete = null);
 }
 
 public class Repository : IRepository
@@ -59,8 +59,8 @@ public class Repository : IRepository
 	}
 
 	public async Task ExecuteBatchWrite(IList<Workout> workoutsToPut = null, IList<User> usersToPut = null,
-		IList<SharedWorkout> sharedWorkoutsToPut = null, IList<Workout> workoutsToDelete = null,
-		IList<User> usersToDelete = null, IList<SharedWorkout> sharedWorkoutsToDelete = null)
+		IList<ReceivedWorkout> receivedWorkoutsToPut = null, IList<Workout> workoutsToDelete = null,
+		IList<User> usersToDelete = null, IList<ReceivedWorkout> receivedWorkoutsToDelete = null)
 	{
 		var db = GetDb();
 		var batch = db.StartBatch();
@@ -89,16 +89,16 @@ public class Repository : IRepository
 			batch.Set(usersRef, user);
 		}
 
-		foreach (var sharedWorkout in sharedWorkoutsToDelete ?? new List<SharedWorkout>())
+		foreach (var receivedWorkout in receivedWorkoutsToDelete ?? new List<ReceivedWorkout>())
 		{
-			var sharedWorkoutRef = db.Collection(_fireStoreOptions.SharedWorkoutsCollection).Document(sharedWorkout.Id);
-			batch.Delete(sharedWorkoutRef);
+			var receivedWorkoutRef = db.Collection(_fireStoreOptions.ReceivedWorkoutsCollection).Document(receivedWorkout.Id);
+			batch.Delete(receivedWorkoutRef);
 		}
 
-		foreach (var sharedWorkout in sharedWorkoutsToPut ?? new List<SharedWorkout>())
+		foreach (var receivedWorkout in receivedWorkoutsToPut ?? new List<ReceivedWorkout>())
 		{
-			var sharedWorkoutRef = db.Collection(_fireStoreOptions.SharedWorkoutsCollection).Document(sharedWorkout.Id);
-			batch.Set(sharedWorkoutRef, sharedWorkout);
+			var receivedWorkoutRef = db.Collection(_fireStoreOptions.ReceivedWorkoutsCollection).Document(receivedWorkout.Id);
+			batch.Set(receivedWorkoutRef, receivedWorkout);
 		}
 
 		await batch.CommitAsync();
@@ -197,21 +197,21 @@ public class Repository : IRepository
 		await docRef.DeleteAsync();
 	}
 
-	public async Task<SharedWorkout> GetSharedWorkout(string sharedWorkoutId)
+	public async Task<ReceivedWorkout> GetReceivedWorkout(string receivedWorkoutId)
 	{
 		var db = GetDb();
-		var docRef = db.Collection(_fireStoreOptions.SharedWorkoutsCollection).Document(sharedWorkoutId);
+		var docRef = db.Collection(_fireStoreOptions.ReceivedWorkoutsCollection).Document(receivedWorkoutId);
 		var snapshot = await docRef.GetSnapshotAsync();
 
 		if (!snapshot.Exists) return null;
-		var sharedWorkout = snapshot.ConvertTo<SharedWorkout>();
-		return sharedWorkout;
+		var receivedWorkout = snapshot.ConvertTo<ReceivedWorkout>();
+		return receivedWorkout;
 	}
 
-	public async Task DeleteSharedWorkout(string workoutId)
+	public async Task DeleteReceivedWorkout(string workoutId)
 	{
 		var db = GetDb();
-		var docRef = db.Collection(_fireStoreOptions.SharedWorkoutsCollection).Document(workoutId);
+		var docRef = db.Collection(_fireStoreOptions.ReceivedWorkoutsCollection).Document(workoutId);
 		await docRef.DeleteAsync();
 	}
 }

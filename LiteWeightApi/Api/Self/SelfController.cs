@@ -150,14 +150,15 @@ public class SelfController : BaseController
 
 	/// <summary>Set Received Workout Seen</summary>
 	/// <remarks>Sets a given received workout on the authenticated user as seen.</remarks>
-	/// <param name="sharedWorkoutId">Received workout to set as seen</param>
-	[HttpPut("received-workouts/{sharedWorkoutId}/seen")]
+	/// <param name="receivedWorkoutId">Received workout to set as seen</param>
+	[HttpPut("received-workouts/{receivedWorkoutId}/seen")]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
-	public async Task<ActionResult> SetReceivedWorkoutSeen(string sharedWorkoutId)
+	public async Task<ActionResult> SetReceivedWorkoutSeen(string receivedWorkoutId)
 	{
+		// todo move to other controller?
 		await _dispatcher.DispatchAsync<SetReceivedWorkoutSeen, bool>(new SetReceivedWorkoutSeen
 		{
-			UserId = CurrentUserId, SharedWorkoutId = sharedWorkoutId
+			UserId = CurrentUserId, ReceivedWorkoutId = receivedWorkoutId
 		});
 		return NoContent();
 	}

@@ -1,4 +1,4 @@
-using LiteWeightAPI.Domain.SharedWorkouts;
+using LiteWeightAPI.Domain.ReceivedWorkouts;
 using LiteWeightAPI.Domain.Workouts;
 
 namespace LiteWeightApiTests.Domain.Workouts;
@@ -6,7 +6,7 @@ namespace LiteWeightApiTests.Domain.Workouts;
 public class RoutineTests : BaseTest
 {
 	[Fact]
-	public void Should_Be_Created_From_Shared_Routine()
+	public void Should_Be_Created_From_Received_Routine()
 	{
 		var exerciseNameToId = new Dictionary<string, string>
 		{
@@ -16,65 +16,65 @@ public class RoutineTests : BaseTest
 			{ "D", Fixture.Create<string>() },
 			{ "E", Fixture.Create<string>() },
 		};
-		var sharedRoutine = Fixture.Build<SharedRoutine>()
-			.With(x => x.Weeks, new List<SharedWeek>
+		var receivedRoutine = Fixture.Build<ReceivedRoutine>()
+			.With(x => x.Weeks, new List<ReceivedWeek>
 			{
-				Fixture.Build<SharedWeek>().With(x => x.Days, new List<SharedDay>
+				Fixture.Build<ReceivedWeek>().With(x => x.Days, new List<ReceivedDay>
 				{
-					Fixture.Build<SharedDay>().With(x => x.Exercises, new List<SharedExercise>
+					Fixture.Build<ReceivedDay>().With(x => x.Exercises, new List<ReceivedExercise>
 					{
-						Fixture.Build<SharedExercise>().With(x => x.ExerciseName, "A").Create(),
-						Fixture.Build<SharedExercise>().With(x => x.ExerciseName, "B").Create(),
-						Fixture.Build<SharedExercise>().With(x => x.ExerciseName, "C").Create()
+						Fixture.Build<ReceivedExercise>().With(x => x.ExerciseName, "A").Create(),
+						Fixture.Build<ReceivedExercise>().With(x => x.ExerciseName, "B").Create(),
+						Fixture.Build<ReceivedExercise>().With(x => x.ExerciseName, "C").Create()
 					}).Create(),
-					Fixture.Build<SharedDay>().With(x => x.Exercises, new List<SharedExercise>
+					Fixture.Build<ReceivedDay>().With(x => x.Exercises, new List<ReceivedExercise>
 					{
-						Fixture.Build<SharedExercise>().With(x => x.ExerciseName, "E").Create(),
-						Fixture.Build<SharedExercise>().With(x => x.ExerciseName, "B").Create()
+						Fixture.Build<ReceivedExercise>().With(x => x.ExerciseName, "E").Create(),
+						Fixture.Build<ReceivedExercise>().With(x => x.ExerciseName, "B").Create()
 					}).Create(),
-					Fixture.Build<SharedDay>().With(x => x.Exercises, new List<SharedExercise>
+					Fixture.Build<ReceivedDay>().With(x => x.Exercises, new List<ReceivedExercise>
 					{
-						Fixture.Build<SharedExercise>().With(x => x.ExerciseName, "E").Create()
+						Fixture.Build<ReceivedExercise>().With(x => x.ExerciseName, "E").Create()
 					}).Create()
 				}).Create(),
-				Fixture.Build<SharedWeek>().With(x => x.Days, new List<SharedDay>
+				Fixture.Build<ReceivedWeek>().With(x => x.Days, new List<ReceivedDay>
 				{
-					Fixture.Build<SharedDay>().With(x => x.Exercises, new List<SharedExercise>
+					Fixture.Build<ReceivedDay>().With(x => x.Exercises, new List<ReceivedExercise>
 					{
-						Fixture.Build<SharedExercise>().With(x => x.ExerciseName, "A").Create(),
-						Fixture.Build<SharedExercise>().With(x => x.ExerciseName, "B").Create(),
-						Fixture.Build<SharedExercise>().With(x => x.ExerciseName, "C").Create(),
-						Fixture.Build<SharedExercise>().With(x => x.ExerciseName, "D").Create(),
-						Fixture.Build<SharedExercise>().With(x => x.ExerciseName, "E").Create(),
+						Fixture.Build<ReceivedExercise>().With(x => x.ExerciseName, "A").Create(),
+						Fixture.Build<ReceivedExercise>().With(x => x.ExerciseName, "B").Create(),
+						Fixture.Build<ReceivedExercise>().With(x => x.ExerciseName, "C").Create(),
+						Fixture.Build<ReceivedExercise>().With(x => x.ExerciseName, "D").Create(),
+						Fixture.Build<ReceivedExercise>().With(x => x.ExerciseName, "E").Create(),
 					}).Create(),
-					Fixture.Build<SharedDay>().With(x => x.Exercises, new List<SharedExercise>
+					Fixture.Build<ReceivedDay>().With(x => x.Exercises, new List<ReceivedExercise>
 					{
-						Fixture.Build<SharedExercise>().With(x => x.ExerciseName, "A").Create(),
-						Fixture.Build<SharedExercise>().With(x => x.ExerciseName, "B").Create()
+						Fixture.Build<ReceivedExercise>().With(x => x.ExerciseName, "A").Create(),
+						Fixture.Build<ReceivedExercise>().With(x => x.ExerciseName, "B").Create()
 					}).Create(),
-					Fixture.Build<SharedDay>().With(x => x.Exercises, new List<SharedExercise>
+					Fixture.Build<ReceivedDay>().With(x => x.Exercises, new List<ReceivedExercise>
 					{
-						Fixture.Build<SharedExercise>().With(x => x.ExerciseName, "D").Create()
+						Fixture.Build<ReceivedExercise>().With(x => x.ExerciseName, "D").Create()
 					}).Create()
 				}).Create()
 			}).Create();
 
-		var routine = new Routine(sharedRoutine, exerciseNameToId);
-		Assert.Equal(sharedRoutine.Weeks.Sum(x => x.Days.Count), routine.TotalNumberOfDays);
+		var routine = new Routine(receivedRoutine, exerciseNameToId);
+		Assert.Equal(receivedRoutine.Weeks.Sum(x => x.Days.Count), routine.TotalNumberOfDays);
 
 		for (var i = 0; i < routine.Weeks.Count; i++)
 		{
 			for (var j = 0; j < routine.Weeks[i].Days.Count; j++)
 			{
-				var sharedRoutineDayTag = sharedRoutine.Weeks[i].Days[j].Tag;
+				var receivedRoutineDayTag = receivedRoutine.Weeks[i].Days[j].Tag;
 				var routineDayTag = routine.Weeks[i].Days[j].Tag;
-				Assert.Equal(sharedRoutineDayTag, routineDayTag);
+				Assert.Equal(receivedRoutineDayTag, routineDayTag);
 
 				for (var k = 0; k < routine.Weeks[i].Days[j].Exercises.Count; k++)
 				{
-					var sharedRoutineExerciseName = sharedRoutine.Weeks[i].Days[j].Exercises[k].ExerciseName;
+					var routineExerciseName = receivedRoutine.Weeks[i].Days[j].Exercises[k].ExerciseName;
 					var exerciseId = routine.Weeks[i].Days[j].Exercises[k].ExerciseId;
-					Assert.Equal(exerciseNameToId[sharedRoutineExerciseName], exerciseId);
+					Assert.Equal(exerciseNameToId[routineExerciseName], exerciseId);
 				}
 			}
 		}

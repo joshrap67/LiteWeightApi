@@ -16,7 +16,7 @@ public class UserAndSelfMaps : Profile
 		CreateMap<WorkoutInfo, WorkoutInfoResponse>();
 		CreateMap<Friend, FriendResponse>();
 		CreateMap<FriendRequest, FriendRequestResponse>();
-		CreateMap<SharedWorkoutInfo, SharedWorkoutInfoResponse>();
+		CreateMap<ReceivedWorkoutInfo, ReceivedWorkoutInfoResponse>();
 		CreateMap<UserSettings, UserSettingsResponse>();
 		CreateMap<User, UserResponse>();
 		CreateMap<User, SearchUserResponse>();

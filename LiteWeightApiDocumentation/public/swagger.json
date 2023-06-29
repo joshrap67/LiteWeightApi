@@ -16,7 +16,7 @@
           {
             "name": "complaintId",
             "in": "path",
-            "description": "Id of the shared complaint to get",
+            "description": "Id of the complaint to get",
             "required": true,
             "style": "simple",
             "schema": {
@@ -264,6 +264,248 @@
             "name": "exerciseId",
             "in": "path",
             "description": "Id of the exercise to delete",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceNotFoundResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServerErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/received-workouts/{receivedWorkoutId}": {
+      "get": {
+        "tags": [
+          "ReceivedWorkouts"
+        ],
+        "summary": "Get Received Workout",
+        "description": "Gets a received workout. Conditional that it was sent to the authenticated user.",
+        "parameters": [
+          {
+            "name": "receivedWorkoutId",
+            "in": "path",
+            "description": "Id of the received workout to get",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReceivedWorkoutResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceNotFoundResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServerErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/received-workouts/{receivedWorkoutId}/accept": {
+      "post": {
+        "tags": [
+          "ReceivedWorkouts"
+        ],
+        "summary": "Accept Received Workout",
+        "description": "Accepts a received workout and adds any exercises that the user doesn't already own to their owned exercises.<br /><br />\r\nAccepting a workout deletes the received workout from the database and creates a workout with the values of that received workout.<br/><br/><div style=\"background-color: #2f3031;padding: 12px 0px 12px 12px;border-left: 5px solid #F90258;\">Potential 400 Errors: <b>AlreadyExists, InvalidRequest, MaxLimit</b></div>",
+        "parameters": [
+          {
+            "name": "receivedWorkoutId",
+            "in": "path",
+            "description": "Id of the received workout to accept",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Request",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AcceptReceivedWorkoutRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AcceptReceivedWorkoutRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AcceptReceivedWorkoutRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcceptReceivedWorkoutResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResourceNotFoundResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServerErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/received-workouts/{receivedWorkoutId}/decline": {
+      "delete": {
+        "tags": [
+          "ReceivedWorkouts"
+        ],
+        "summary": "Decline Received Workout",
+        "description": "Declines a workout and deletes it from the database. Conditional that the recipient matches the authenticated user.",
+        "parameters": [
+          {
+            "name": "receivedWorkoutId",
+            "in": "path",
+            "description": "Id of the received workout to decline",
             "required": true,
             "style": "simple",
             "schema": {
@@ -879,7 +1121,7 @@
         }
       }
     },
-    "/self/received-workouts/{sharedWorkoutId}/seen": {
+    "/self/received-workouts/{receivedWorkoutId}/seen": {
       "put": {
         "tags": [
           "Self"
@@ -888,7 +1130,7 @@
         "description": "Sets a given received workout on the authenticated user as seen.",
         "parameters": [
           {
-            "name": "sharedWorkoutId",
+            "name": "receivedWorkoutId",
             "in": "path",
             "description": "Received workout to set as seen",
             "required": true,
@@ -901,248 +1143,6 @@
         "responses": {
           "204": {
             "description": "No Content"
-          },
-          "401": {
-            "description": "Authentication Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UnauthorizedResponse"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Authorization Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ServerErrorResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/shared-workouts/{sharedWorkoutId}": {
-      "get": {
-        "tags": [
-          "SharedWorkouts"
-        ],
-        "summary": "Get Shared Workout",
-        "description": "Gets a shared workout. Conditional that it was sent to the authenticated user.",
-        "parameters": [
-          {
-            "name": "sharedWorkoutId",
-            "in": "path",
-            "description": "Id of the shared workout to get",
-            "required": true,
-            "style": "simple",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Success",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SharedWorkoutResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ResourceNotFoundResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Authentication Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UnauthorizedResponse"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Authorization Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ServerErrorResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/shared-workouts/{sharedWorkoutId}/accept": {
-      "post": {
-        "tags": [
-          "SharedWorkouts"
-        ],
-        "summary": "Accept Shared Workout",
-        "description": "Accepts a shared workout and adds any exercises that the user doesn't already own to their owned exercises.<br /><br />\r\nAccepting a workout deletes the shared workout from the database and creates a workout with the values of that shared workout.<br/><br/><div style=\"background-color: #2f3031;padding: 12px 0px 12px 12px;border-left: 5px solid #F90258;\">Potential 400 Errors: <b>AlreadyExists, InvalidRequest, MaxLimit</b></div>",
-        "parameters": [
-          {
-            "name": "sharedWorkoutId",
-            "in": "path",
-            "description": "Id of the shared workout to accept",
-            "required": true,
-            "style": "simple",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "description": "Request",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AcceptSharedWorkoutRequest"
-              }
-            },
-            "text/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AcceptSharedWorkoutRequest"
-              }
-            },
-            "application/*+json": {
-              "schema": {
-                "$ref": "#/components/schemas/AcceptSharedWorkoutRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Created",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AcceptSharedWorkoutResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BadRequestResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ResourceNotFoundResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Authentication Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UnauthorizedResponse"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Authorization Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ServerErrorResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/shared-workouts/{sharedWorkoutId}/decline": {
-      "delete": {
-        "tags": [
-          "SharedWorkouts"
-        ],
-        "summary": "Decline Shared Workout",
-        "description": "Declines a workout and deletes it from the database. Conditional that the recipient matches the authenticated user.",
-        "parameters": [
-          {
-            "name": "sharedWorkoutId",
-            "in": "path",
-            "description": "Id of the shared workout to decline",
-            "required": true,
-            "style": "simple",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ResourceNotFoundResponse"
-                }
-              }
-            }
           },
           "401": {
             "description": "Authentication Error",
@@ -1333,18 +1333,18 @@
         }
       }
     },
-    "/users/{userId}/share-workout": {
+    "/users/{userId}/send-workout": {
       "post": {
         "tags": [
           "Users"
         ],
-        "summary": "Share Workout",
-        "description": "Create a shared workout from a specified workout, and send it to the specified user.<br/><br/><div style=\"background-color: #2f3031;padding: 12px 0px 12px 12px;border-left: 5px solid #F90258;\">Potential 400 Errors: <b>InvalidRequest, MaxLimit, MiscError, WorkoutNotFound</b></div><br/><br/><div style=\"background-color: #2f3031;padding: 12px 0px 12px 12px;border-left: 5px solid #02F88F;\"><b>Sends Push Notification</b></div>",
+        "summary": "Send Workout",
+        "description": "Send a workout to a user. This creates a received workout that the recipient can accept or decline.<br/><br/><div style=\"background-color: #2f3031;padding: 12px 0px 12px 12px;border-left: 5px solid #F90258;\">Potential 400 Errors: <b>InvalidRequest, MaxLimit, MiscError, WorkoutNotFound</b></div><br/><br/><div style=\"background-color: #2f3031;padding: 12px 0px 12px 12px;border-left: 5px solid #02F88F;\"><b>Sends Push Notification</b></div>",
         "parameters": [
           {
             "name": "userId",
             "in": "path",
-            "description": "User id of the user to share the workout to",
+            "description": "User id of the user to send the workout to",
             "required": true,
             "style": "simple",
             "schema": {
@@ -1357,17 +1357,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ShareWorkoutRequest"
+                "$ref": "#/components/schemas/SendWorkoutRequest"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/ShareWorkoutRequest"
+                "$ref": "#/components/schemas/SendWorkoutRequest"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/ShareWorkoutRequest"
+                "$ref": "#/components/schemas/SendWorkoutRequest"
               }
             }
           }
@@ -1378,7 +1378,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ShareWorkoutResponse"
+                  "$ref": "#/components/schemas/SendWorkoutResponse"
                 }
               }
             }
@@ -2696,20 +2696,20 @@
   },
   "components": {
     "schemas": {
-      "AcceptSharedWorkoutRequest": {
+      "AcceptReceivedWorkoutRequest": {
         "type": "object",
         "properties": {
           "workoutName": {
             "maxLength": 40,
             "type": "string",
-            "description": "Optional name to set for the workout once accepted. Must be unique. If not specified, the created workout will have the name of the shared workout.",
+            "description": "Optional name to set for the workout once accepted. Must be unique. If not specified, the created workout will have the name of the received workout.",
             "nullable": true,
             "example": "Olympic Routine"
           }
         },
         "additionalProperties": false
       },
-      "AcceptSharedWorkoutResponse": {
+      "AcceptReceivedWorkoutResponse": {
         "type": "object",
         "properties": {
           "newWorkoutInfo": {
@@ -3066,6 +3066,225 @@
         },
         "additionalProperties": { }
       },
+      "ReceivedDayResponse": {
+        "type": "object",
+        "properties": {
+          "tag": {
+            "type": "string",
+            "description": "Arbitrary tag of the day.",
+            "nullable": true,
+            "example": "Cardio and Legs Day"
+          },
+          "exercises": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReceivedExerciseResponse"
+            },
+            "description": "List of exercises for the given day.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ReceivedExerciseResponse": {
+        "type": "object",
+        "properties": {
+          "exerciseName": {
+            "type": "string",
+            "description": "Name of the exercise.",
+            "nullable": true,
+            "example": "Squat"
+          },
+          "weight": {
+            "type": "number",
+            "description": "Weight of the exercise (lb).",
+            "format": "double",
+            "example": 215
+          },
+          "sets": {
+            "type": "integer",
+            "description": "Number of sets for the exercise.",
+            "format": "int32",
+            "example": 3
+          },
+          "reps": {
+            "type": "integer",
+            "description": "Number of reps for the exercise.",
+            "format": "int32",
+            "example": 15
+          },
+          "details": {
+            "type": "string",
+            "description": "Details of the exercise.",
+            "nullable": true,
+            "example": "Don't lock knees."
+          }
+        },
+        "additionalProperties": false
+      },
+      "ReceivedRoutineResponse": {
+        "type": "object",
+        "properties": {
+          "weeks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReceivedWeekResponse"
+            },
+            "description": "List of weeks in the routine.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ReceivedWeekResponse": {
+        "type": "object",
+        "properties": {
+          "days": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReceivedDayResponse"
+            },
+            "description": "List of days in the routine.",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ReceivedWorkoutDistinctExerciseResponse": {
+        "type": "object",
+        "properties": {
+          "exerciseName": {
+            "type": "string",
+            "description": "Name of the exercise.",
+            "nullable": true,
+            "example": "Squat"
+          },
+          "videoUrl": {
+            "type": "string",
+            "description": "Video url of the exercise.",
+            "nullable": true,
+            "example": "https://www.youtube.com/watch?v=Dy28eq2PjcM"
+          },
+          "focuses": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of focuses of the exercise.",
+            "nullable": true,
+            "example": [
+              "Legs",
+              "Strength Training"
+            ]
+          }
+        },
+        "additionalProperties": false
+      },
+      "ReceivedWorkoutInfoResponse": {
+        "type": "object",
+        "properties": {
+          "receivedWorkoutId": {
+            "type": "string",
+            "description": "Id of the received workout.",
+            "nullable": true,
+            "example": "194939d5-c40d-43e5-b40a-7d30d764b7f7"
+          },
+          "workoutName": {
+            "type": "string",
+            "description": "Name of the received workout.",
+            "nullable": true,
+            "example": "High Intensity Workout"
+          },
+          "receivedUtc": {
+            "type": "string",
+            "description": "Timestamp of when the workout was received (UTC).",
+            "nullable": true,
+            "example": "2023-04-23T13:43:44.685341Z"
+          },
+          "seen": {
+            "type": "boolean",
+            "description": "Is this received workout seen by the user?"
+          },
+          "senderId": {
+            "type": "string",
+            "description": "Id of the user who sent the workout.",
+            "nullable": true,
+            "example": "37386768-da24-47ba-b081-6493df36686f"
+          },
+          "senderUsername": {
+            "type": "string",
+            "description": "Username of who sent the workout.",
+            "nullable": true,
+            "example": "jessica78"
+          },
+          "senderProfilePicture": {
+            "type": "string",
+            "description": "File path of the sender's profile picture.",
+            "nullable": true,
+            "example": "61fcf9b4-15f1-4413-9534-683b085875b9.jpg"
+          },
+          "totalDays": {
+            "type": "integer",
+            "description": "Total number of days in the received workout.",
+            "format": "int32",
+            "example": 16
+          },
+          "mostFrequentFocus": {
+            "type": "string",
+            "description": "Most frequent exercise focus of the received workout.",
+            "nullable": true,
+            "example": "Biceps"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ReceivedWorkoutResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Id of the received workout.",
+            "nullable": true,
+            "example": "3ac84a61-4822-4ba3-ac93-626fdf087acf"
+          },
+          "workoutName": {
+            "type": "string",
+            "description": "Name of the received workout.",
+            "nullable": true,
+            "example": "Legs Galore"
+          },
+          "senderId": {
+            "type": "string",
+            "description": "Id of the user who sent the workout.",
+            "nullable": true,
+            "example": "juo06et3-n81k-9bb1-61dj-j12k1152hae1"
+          },
+          "senderUsername": {
+            "type": "string",
+            "description": "Username of the user who sent the workout.",
+            "nullable": true,
+            "example": "arthur_v"
+          },
+          "recipientId": {
+            "type": "string",
+            "description": "Id of the recipient of the received workout.",
+            "nullable": true,
+            "example": "f1e03cd1-e62c-4a53-84ed-498c72776fc2"
+          },
+          "routine": {
+            "$ref": "#/components/schemas/ReceivedRoutineResponse"
+          },
+          "distinctExercises": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReceivedWorkoutDistinctExerciseResponse"
+            },
+            "description": "List of distinct exercises in the routine of the received workout. May contain exercises the recipient does not have (by name).",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "RenameWorkoutRequest": {
         "required": [
           "name"
@@ -3236,6 +3455,33 @@
             "description": "File path of the user's profile picture.",
             "nullable": true,
             "example": "0f1d96c3-ca22-4657-9f9b-136bb4621985.jpg"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SendWorkoutRequest": {
+        "required": [
+          "workoutId"
+        ],
+        "type": "object",
+        "properties": {
+          "workoutId": {
+            "minLength": 1,
+            "type": "string",
+            "description": "Id of the workout to send.",
+            "example": "718e6712-744a-4075-897e-185d8c455c6a"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SendWorkoutResponse": {
+        "type": "object",
+        "properties": {
+          "receivedWorkoutId": {
+            "type": "string",
+            "description": "Id of the received workout that was created as a result of sending the workout.",
+            "nullable": true,
+            "example": "3ac84a61-4822-4ba3-ac93-626fdf087acf"
           }
         },
         "additionalProperties": false
@@ -3458,252 +3704,6 @@
         },
         "additionalProperties": false
       },
-      "ShareWorkoutRequest": {
-        "required": [
-          "workoutId"
-        ],
-        "type": "object",
-        "properties": {
-          "workoutId": {
-            "minLength": 1,
-            "type": "string",
-            "description": "Id of the workout to send.",
-            "example": "718e6712-744a-4075-897e-185d8c455c6a"
-          }
-        },
-        "additionalProperties": false
-      },
-      "ShareWorkoutResponse": {
-        "type": "object",
-        "properties": {
-          "sharedWorkoutId": {
-            "type": "string",
-            "description": "Id of the shared workout that was created as a result of sharing the workout.",
-            "nullable": true,
-            "example": "3ac84a61-4822-4ba3-ac93-626fdf087acf"
-          }
-        },
-        "additionalProperties": false
-      },
-      "SharedDayResponse": {
-        "type": "object",
-        "properties": {
-          "tag": {
-            "type": "string",
-            "description": "Arbitrary tag of the day.",
-            "nullable": true,
-            "example": "Cardio and Legs Day"
-          },
-          "exercises": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/SharedExerciseResponse"
-            },
-            "description": "List of exercises for the given day.",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "SharedExerciseResponse": {
-        "type": "object",
-        "properties": {
-          "exerciseName": {
-            "type": "string",
-            "description": "Name of the exercise.",
-            "nullable": true,
-            "example": "Squat"
-          },
-          "weight": {
-            "type": "number",
-            "description": "Weight of the exercise (lb).",
-            "format": "double",
-            "example": 215
-          },
-          "sets": {
-            "type": "integer",
-            "description": "Number of sets for the exercise.",
-            "format": "int32",
-            "example": 3
-          },
-          "reps": {
-            "type": "integer",
-            "description": "Number of reps for the exercise.",
-            "format": "int32",
-            "example": 15
-          },
-          "details": {
-            "type": "string",
-            "description": "Details of the exercise.",
-            "nullable": true,
-            "example": "Don't lock knees."
-          }
-        },
-        "additionalProperties": false
-      },
-      "SharedRoutineResponse": {
-        "type": "object",
-        "properties": {
-          "weeks": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/SharedWeekResponse"
-            },
-            "description": "List of weeks in the routine.",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "SharedWeekResponse": {
-        "type": "object",
-        "properties": {
-          "days": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/SharedDayResponse"
-            },
-            "description": "List of days in the routine.",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "SharedWorkoutDistinctExerciseResponse": {
-        "type": "object",
-        "properties": {
-          "exerciseName": {
-            "type": "string",
-            "description": "Name of the exercise.",
-            "nullable": true,
-            "example": "Squat"
-          },
-          "videoUrl": {
-            "type": "string",
-            "description": "Video url of the exercise.",
-            "nullable": true,
-            "example": "https://www.youtube.com/watch?v=Dy28eq2PjcM"
-          },
-          "focuses": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "List of focuses of the exercise.",
-            "nullable": true,
-            "example": [
-              "Legs",
-              "Strength Training"
-            ]
-          }
-        },
-        "additionalProperties": false
-      },
-      "SharedWorkoutInfoResponse": {
-        "type": "object",
-        "properties": {
-          "sharedWorkoutId": {
-            "type": "string",
-            "description": "Id of the shared workout.",
-            "nullable": true,
-            "example": "194939d5-c40d-43e5-b40a-7d30d764b7f7"
-          },
-          "workoutName": {
-            "type": "string",
-            "description": "Name of the shared workout.",
-            "nullable": true,
-            "example": "High Intensity Workout"
-          },
-          "sharedUtc": {
-            "type": "string",
-            "description": "Timestamp of when the workout was shared (UTC).",
-            "nullable": true,
-            "example": "2023-04-23T13:43:44.685341Z"
-          },
-          "seen": {
-            "type": "boolean",
-            "description": "Is this received workout seen by the user?"
-          },
-          "senderId": {
-            "type": "string",
-            "description": "Id of the user who shared the workout.",
-            "nullable": true,
-            "example": "37386768-da24-47ba-b081-6493df36686f"
-          },
-          "senderUsername": {
-            "type": "string",
-            "description": "Username of who shared the workout.",
-            "nullable": true,
-            "example": "jessica78"
-          },
-          "senderProfilePicture": {
-            "type": "string",
-            "description": "File path of the sender's profile picture.",
-            "nullable": true,
-            "example": "61fcf9b4-15f1-4413-9534-683b085875b9.jpg"
-          },
-          "totalDays": {
-            "type": "integer",
-            "description": "Total number of days in the shared workout.",
-            "format": "int32",
-            "example": 16
-          },
-          "mostFrequentFocus": {
-            "type": "string",
-            "description": "Most frequent exercise focus of the shared workout.",
-            "nullable": true,
-            "example": "Biceps"
-          }
-        },
-        "additionalProperties": false
-      },
-      "SharedWorkoutResponse": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "Id of the shared workout.",
-            "nullable": true,
-            "example": "3ac84a61-4822-4ba3-ac93-626fdf087acf"
-          },
-          "workoutName": {
-            "type": "string",
-            "description": "Name of the shared workout.",
-            "nullable": true,
-            "example": "Legs Galore"
-          },
-          "senderId": {
-            "type": "string",
-            "description": "Id of the user who shared the workout.",
-            "nullable": true,
-            "example": "juo06et3-n81k-9bb1-61dj-j12k1152hae1"
-          },
-          "senderUsername": {
-            "type": "string",
-            "description": "Username of the user who shared the workout.",
-            "nullable": true,
-            "example": "arthur_v"
-          },
-          "recipientId": {
-            "type": "string",
-            "description": "Id of the recipient of the shared workout.",
-            "nullable": true,
-            "example": "f1e03cd1-e62c-4a53-84ed-498c72776fc2"
-          },
-          "routine": {
-            "$ref": "#/components/schemas/SharedRoutineResponse"
-          },
-          "distinctExercises": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/SharedWorkoutDistinctExerciseResponse"
-            },
-            "description": "List of distinct exercises in the routine of the shared workout.",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
       "UnauthorizedResponse": {
         "type": "object",
         "properties": {
@@ -3860,7 +3860,7 @@
           "receivedWorkouts": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/SharedWorkoutInfoResponse"
+              "$ref": "#/components/schemas/ReceivedWorkoutInfoResponse"
             },
             "description": "List of workouts sent to the user.",
             "nullable": true
@@ -3873,7 +3873,7 @@
         "properties": {
           "privateAccount": {
             "type": "boolean",
-            "description": "If true, the user will not receive any friend requests or shared workouts from users who they are not friends with."
+            "description": "If true, the user will not receive any friend requests or sent workouts from users who they are not friends with."
           },
           "updateDefaultWeightOnSave": {
             "type": "boolean",

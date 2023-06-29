@@ -7,7 +7,7 @@ namespace LiteWeightAPI.Services;
 
 public interface IPushNotificationService
 {
-	Task SendReceivedWorkoutPushNotification(User recipientUser, SharedWorkoutInfo sharedWorkoutInfo);
+	Task SendReceivedWorkoutPushNotification(User recipientUser, ReceivedWorkoutInfo receivedWorkoutInfo);
 	Task SendNewFriendRequestNotification(User recipientUser, FriendRequest friendRequest);
 	Task SendFriendRequestAcceptedNotification(User acceptedUser, User initiator);
 	Task SendFriendRequestCanceledNotification(User canceledUser, User initiator);
@@ -31,13 +31,13 @@ public class PushNotificationService : IPushNotificationService
 		_fcmService = fcmService;
 	}
 
-	public async Task SendReceivedWorkoutPushNotification(User recipientUser, SharedWorkoutInfo sharedWorkoutInfo)
+	public async Task SendReceivedWorkoutPushNotification(User recipientUser, ReceivedWorkoutInfo receivedWorkoutInfo)
 	{
 		await _fcmService.SendPushNotification(recipientUser.FirebaseMessagingToken,
 			new NotificationData
 			{
 				Action = ReceivedWorkoutAction,
-				JsonPayload = JsonUtils.Serialize(sharedWorkoutInfo)
+				JsonPayload = JsonUtils.Serialize(receivedWorkoutInfo)
 			});
 	}
 

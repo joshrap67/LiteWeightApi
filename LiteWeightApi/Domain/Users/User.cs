@@ -45,5 +45,5 @@ public class User
 	public List<FriendRequest> FriendRequests { get; set; } = new();
 
 	[FirestoreProperty("receivedWorkouts")]
-	public List<SharedWorkoutInfo> ReceivedWorkouts { get; set; } = new();
+	public List<ReceivedWorkoutInfo> ReceivedWorkouts { get; set; } = new();
 }

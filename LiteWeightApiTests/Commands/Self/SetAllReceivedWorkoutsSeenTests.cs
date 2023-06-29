@@ -21,12 +21,12 @@ public class SetAllReceivedWorkoutsSeenTests : BaseTest
 		var command = Fixture.Create<SetAllReceivedWorkoutsSeen>();
 		var user = Fixture.Build<User>()
 			.With(x => x.ReceivedWorkouts,
-				new List<SharedWorkoutInfo>
+				new List<ReceivedWorkoutInfo>
 				{
-					Fixture.Build<SharedWorkoutInfo>().With(x => x.Seen, false).Create(),
-					Fixture.Build<SharedWorkoutInfo>().With(x => x.Seen, false).Create(),
-					Fixture.Build<SharedWorkoutInfo>().With(x => x.Seen, false).Create(),
-					Fixture.Build<SharedWorkoutInfo>().With(x => x.Seen, true).Create()
+					Fixture.Build<ReceivedWorkoutInfo>().With(x => x.Seen, false).Create(),
+					Fixture.Build<ReceivedWorkoutInfo>().With(x => x.Seen, false).Create(),
+					Fixture.Build<ReceivedWorkoutInfo>().With(x => x.Seen, false).Create(),
+					Fixture.Build<ReceivedWorkoutInfo>().With(x => x.Seen, true).Create()
 				})
 			.Create();
 
@@ -43,7 +43,7 @@ public class SetAllReceivedWorkoutsSeenTests : BaseTest
 	{
 		var command = Fixture.Create<SetAllReceivedWorkoutsSeen>();
 		var user = Fixture.Build<User>()
-			.With(x => x.ReceivedWorkouts, new List<SharedWorkoutInfo>())
+			.With(x => x.ReceivedWorkouts, new List<ReceivedWorkoutInfo>())
 			.Create();
 
 		_mockRepository

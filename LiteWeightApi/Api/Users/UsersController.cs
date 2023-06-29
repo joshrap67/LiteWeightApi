@@ -11,7 +11,7 @@ using LiteWeightAPI.Commands.Users.RemoveFriend;
 using LiteWeightAPI.Commands.Users.ReportUser;
 using LiteWeightAPI.Commands.Users.SearchByUsername;
 using LiteWeightAPI.Commands.Users.SendFriendRequest;
-using LiteWeightAPI.Commands.Users.ShareWorkout;
+using LiteWeightAPI.Commands.Users.SendWorkout;
 using LiteWeightAPI.Errors.Attributes;
 using LiteWeightAPI.Errors.Attributes.Setup;
 using LiteWeightAPI.Errors.Responses;
@@ -79,26 +79,26 @@ public class UsersController : BaseController
 		return response;
 	}
 
-	/// <summary>Share Workout</summary>
-	/// <remarks>Create a shared workout from a specified workout, and send it to the specified user.</remarks>
+	/// <summary>Send Workout</summary>
+	/// <remarks>Send a workout to a user. This creates a received workout that the recipient can accept or decline.</remarks>
 	/// <param name="request">Request</param>
-	/// <param name="userId">User id of the user to share the workout to</param>
-	[HttpPost("{userId}/share-workout")]
+	/// <param name="userId">User id of the user to send the workout to</param>
+	[HttpPost("{userId}/send-workout")]
 	[InvalidRequest, MaxLimit, MiscError, WorkoutNotFound]
 	[PushNotification]
 	[ProducesResponseType(StatusCodes.Status201Created)]
 	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
-	public async Task<ActionResult<ShareWorkoutResponse>> ShareWorkout(ShareWorkoutRequest request, string userId)
+	public async Task<ActionResult<SendWorkoutResponse>> SendWorkout(SendWorkoutRequest request, string userId)
 	{
-		var createdWorkoutId = await _dispatcher.DispatchAsync<ShareWorkout, string>(new ShareWorkout
+		var createdWorkoutId = await _dispatcher.DispatchAsync<SendWorkout, string>(new SendWorkout
 		{
 			WorkoutId = request.WorkoutId,
 			RecipientUserId = userId,
 			SenderUserId = CurrentUserId
 		});
-		var response = new ShareWorkoutResponse { SharedWorkoutId = createdWorkoutId };
-		return new CreatedResult(new Uri($"/shared-workouts/{createdWorkoutId}", UriKind.Relative), response);
+		var response = new SendWorkoutResponse { ReceivedWorkoutId = createdWorkoutId };
+		return new CreatedResult(new Uri($"/received-workouts/{createdWorkoutId}", UriKind.Relative), response);
 	}
 
 	/// <summary>Accept Friend Request</summary>

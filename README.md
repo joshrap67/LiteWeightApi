@@ -16,7 +16,7 @@ Below environment variables must be set
 
 - LiteWeight_Firebase__ProjectId
 - LiteWeight_Firestore__ComplaintsCollection
-- LiteWeight_Firestore__SharedWorkoutsCollection
+- LiteWeight_Firestore__ReceivedWorkoutsCollection
 - LiteWeight_Firestore__UsersCollection
 - LiteWeight_Firestore__WorkoutsCollection
 - LiteWeight_Jwt__AuthorityUrl

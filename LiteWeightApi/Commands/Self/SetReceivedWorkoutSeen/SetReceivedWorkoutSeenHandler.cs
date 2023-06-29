@@ -14,13 +14,13 @@ public class SetReceivedWorkoutSeenHandler : ICommandHandler<SetReceivedWorkoutS
 	public async Task<bool> HandleAsync(SetReceivedWorkoutSeen command)
 	{
 		var user = await _repository.GetUser(command.UserId);
-		var sharedWorkoutInfo = user.ReceivedWorkouts.FirstOrDefault(x => x.SharedWorkoutId == command.SharedWorkoutId);
-		if (sharedWorkoutInfo == null)
+		var receivedWorkoutInfo = user.ReceivedWorkouts.FirstOrDefault(x => x.ReceivedWorkoutId == command.ReceivedWorkoutId);
+		if (receivedWorkoutInfo == null)
 		{
 			return false;
 		}
 
-		sharedWorkoutInfo.Seen = true;
+		receivedWorkoutInfo.Seen = true;
 		await _repository.PutUser(user);
 
 		return true;

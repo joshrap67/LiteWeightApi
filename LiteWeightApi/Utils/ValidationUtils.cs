@@ -1,4 +1,4 @@
-﻿using LiteWeightAPI.Domain.SharedWorkouts;
+﻿using LiteWeightAPI.Domain.ReceivedWorkouts;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Domain.Workouts;
 using LiteWeightAPI.Errors.Exceptions;
@@ -40,19 +40,19 @@ public static class ValidationUtils
 		}
 	}
 
-	public static void EnsureSharedWorkoutOwnership(string userId, SharedWorkout sharedWorkout)
+	public static void EnsureReceivedWorkoutOwnership(string userId, ReceivedWorkout receivedWorkout)
 	{
-		if (sharedWorkout.RecipientId != userId)
+		if (receivedWorkout.RecipientId != userId)
 		{
-			throw new ForbiddenException("User does not have permissions to access shared workout");
+			throw new ForbiddenException("User does not have permissions to access received workout");
 		}
 	}
 
-	public static void SharedWorkoutExists(SharedWorkout workout)
+	public static void ReceivedWorkoutExists(ReceivedWorkout workout)
 	{
 		if (workout == null)
 		{
-			throw new ResourceNotFoundException("Shared workout");
+			throw new ResourceNotFoundException("Received workout");
 		}
 	}
 

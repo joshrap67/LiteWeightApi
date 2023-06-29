@@ -25,18 +25,18 @@ public class SetReceivedWorkoutSeenTests : BaseTest
 		var user = Fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
 			.Create();
-		var sharedWorkoutInfo = Fixture.Build<SharedWorkoutInfo>()
-			.With(x => x.SharedWorkoutId, command.SharedWorkoutId)
+		var receivedWorkoutInfo = Fixture.Build<ReceivedWorkoutInfo>()
+			.With(x => x.ReceivedWorkoutId, command.ReceivedWorkoutId)
 			.With(x => x.Seen, isAlreadySeen)
 			.Create();
-		user.ReceivedWorkouts.Add(sharedWorkoutInfo);
+		user.ReceivedWorkouts.Add(receivedWorkoutInfo);
 
 		_mockRepository
 			.Setup(x => x.GetUser(It.Is<string>(y => y == command.UserId)))
 			.ReturnsAsync(user);
 
 		await _handler.HandleAsync(command);
-		Assert.True(sharedWorkoutInfo.Seen);
+		Assert.True(receivedWorkoutInfo.Seen);
 	}
 
 	[Fact]
