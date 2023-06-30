@@ -3931,9 +3931,9 @@
             "format": "int32",
             "example": 15
           },
-          "averageExercisesCompleted": {
+          "averageWorkoutCompletion": {
             "type": "number",
-            "description": "Average of all exercises completed on the workout.",
+            "description": "Average of the exercise completion percentages for all restarted iterations of this workout.",
             "format": "double",
             "example": 94.2
           }

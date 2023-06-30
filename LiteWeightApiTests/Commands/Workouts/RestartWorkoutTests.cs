@@ -116,8 +116,7 @@ public class RestartWorkoutTests : BaseTest
 		var previousInfo = Fixture.Build<WorkoutInfo>()
 			.With(x => x.WorkoutId, command.WorkoutId)
 			.With(x => x.TimesRestarted, 2)
-			.With(x => x.TotalExercisesSum, 100)
-			.With(x => x.AverageExercisesCompleted, .850)
+			.With(x => x.AverageWorkoutCompletion, .850)
 			.Create();
 		workouts.Add(previousInfo);
 		var workout = Fixture.Build<Workout>()
@@ -160,11 +159,10 @@ public class RestartWorkoutTests : BaseTest
 
 		await _handler.HandleAsync(command);
 		Assert.Equal(3, previousInfo.TimesRestarted);
-		Assert.Equal(112, previousInfo.TotalExercisesSum);
-		Assert.Equal(.8125, previousInfo.AverageExercisesCompleted);
+		Assert.Equal(.73333333, previousInfo.AverageWorkoutCompletion, 4);
 		Assert.Equal(0, previousInfo.CurrentDay);
 		Assert.Equal(0, previousInfo.CurrentWeek);
-		Assert.True(workout.Routine.Weeks.SelectMany(x=>x.Days).SelectMany(x=>x.Exercises).All(x=>!x.Completed));
+		Assert.True(workout.Routine.Weeks.SelectMany(x => x.Days).SelectMany(x => x.Exercises).All(x => !x.Completed));
 		if (shouldUpdateDefault)
 		{
 			Assert.Equal(300, user.Exercises.First(x => x.Id == "A").DefaultWeight);

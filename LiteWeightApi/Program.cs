@@ -37,7 +37,6 @@ if (app.Environment.IsDevelopment())
 	app.UseSwaggerUI();
 }
 
-// todo rate throttling
 FirebaseApp.Create(new AppOptions
 {
 	Credential = GoogleCredential.GetApplicationDefault(),

@@ -29,37 +29,19 @@ public class RestartWorkoutHandler : ICommandHandler<RestartWorkout, UserAndWork
 		ValidationUtils.EnsureWorkoutOwnership(user.Id, workout);
 
 		var workoutInfo = user.Workouts.First(x => x.WorkoutId == command.WorkoutId);
-		RestartWorkout(routine, workoutInfo, user);
-		workout.Routine = routine;
-		workoutInfo.TimesRestarted += 1;
-		workoutInfo.CurrentDay = 0;
-		workoutInfo.CurrentWeek = 0;
-
-		await _repository.ExecuteBatchWrite(
-			workoutsToPut: new List<Workout> { workout },
-			usersToPut: new List<User> { user }
-		);
-
-		return new UserAndWorkoutResponse
-		{
-			User = _mapper.Map<UserResponse>(user),
-			Workout = _mapper.Map<WorkoutResponse>(workout)
-		};
-	}
-
-	private static void RestartWorkout(Routine routine, WorkoutInfo workoutInfo, User user)
-	{
 		var exerciseIdToExercise = user.Exercises.ToDictionary(x => x.Id, x => x);
+		var completedCount = 0;
+		var totalCount = 0;
 		foreach (var week in routine.Weeks)
 		{
 			foreach (var day in week.Days)
 			{
 				foreach (var routineExercise in day.Exercises)
 				{
+					totalCount++;
 					if (routineExercise.Completed)
 					{
-						workoutInfo.AverageExercisesCompleted =
-							IncreaseAverage(workoutInfo.AverageExercisesCompleted, workoutInfo.TotalExercisesSum, 1);
+						completedCount++;
 						routineExercise.Completed = false;
 
 						if (user.Settings.UpdateDefaultWeightOnRestart)
@@ -73,21 +55,39 @@ public class RestartWorkoutHandler : ICommandHandler<RestartWorkout, UserAndWork
 							}
 						}
 					}
-					else
-					{
-						// didn't complete the exercise, still need to update new average with this 0 value
-						workoutInfo.AverageExercisesCompleted =
-							IncreaseAverage(workoutInfo.AverageExercisesCompleted, workoutInfo.TotalExercisesSum, 0);
-					}
-
-					workoutInfo.TotalExercisesSum += 1;
 				}
 			}
 		}
+
+		var completionPercentage = 0.0;
+		if (totalCount != 0)
+		{
+			completionPercentage = (double)completedCount / totalCount;
+		}
+
+		var newAverage = CalculateAverage(workoutInfo.AverageWorkoutCompletion, workoutInfo.TimesRestarted,
+			completionPercentage);
+
+		workoutInfo.AverageWorkoutCompletion = newAverage;
+		workoutInfo.TimesRestarted += 1;
+		workoutInfo.CurrentDay = 0;
+		workoutInfo.CurrentWeek = 0;
+		workout.Routine = routine;
+
+		await _repository.ExecuteBatchWrite(
+			workoutsToPut: new List<Workout> { workout },
+			usersToPut: new List<User> { user }
+		);
+
+		return new UserAndWorkoutResponse
+		{
+			User = _mapper.Map<UserResponse>(user),
+			Workout = _mapper.Map<WorkoutResponse>(workout)
+		};
 	}
 
-	private static double IncreaseAverage(double oldAverage, int count, double newValue)
+	private static double CalculateAverage(double oldAverage, int oldCount, double newCompletionPercentage)
 	{
-		return ((newValue + (oldAverage * count)) / (count + 1));
+		return (oldAverage * oldCount + newCompletionPercentage) / (oldCount + 1);
 	}
 }

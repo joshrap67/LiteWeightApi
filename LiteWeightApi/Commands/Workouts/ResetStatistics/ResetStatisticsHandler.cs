@@ -23,8 +23,7 @@ public class ResetStatisticsHandler : ICommandHandler<ResetStatistics, bool>
 
 		var workoutInfo = user.Workouts.First(x => x.WorkoutId == command.WorkoutId);
 		workoutInfo.TimesRestarted = 0;
-		workoutInfo.AverageExercisesCompleted = 0.0;
-		workoutInfo.TotalExercisesSum = 0;
+		workoutInfo.AverageWorkoutCompletion = 0.0;
 
 		await _repository.PutUser(user);
 

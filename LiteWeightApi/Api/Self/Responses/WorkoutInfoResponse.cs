@@ -39,8 +39,8 @@ public class WorkoutInfoResponse
 	public int TimesRestarted { get; set; }
 
 	/// <summary>
-	/// Average of all exercises completed on the workout.
+	/// Average of the exercise completion percentages for all restarted iterations of this workout.
 	/// </summary>
 	/// <example>94.2</example>
-	public double AverageExercisesCompleted { get; set; }
+	public double AverageWorkoutCompletion { get; set; }
 }

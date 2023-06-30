@@ -25,9 +25,6 @@ public class WorkoutInfo
 	[FirestoreProperty("timesRestarted")]
 	public int TimesRestarted { get; set; }
 
-	[FirestoreProperty("averageExercisesCompleted")]
-	public double AverageExercisesCompleted { get; set; }
-
-	[FirestoreProperty("totalExercisesSum")]
-	public int TotalExercisesSum { get; set; }
+	[FirestoreProperty("averageWorkoutCompletion")]
+	public double AverageWorkoutCompletion { get; set; }
 }

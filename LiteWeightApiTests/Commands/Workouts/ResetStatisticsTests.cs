@@ -37,8 +37,7 @@ public class ResetStatisticsTests : BaseTest
 
 		await _handler.HandleAsync(command);
 		Assert.Equal(0, user.Workouts.First(x => x.WorkoutId == command.WorkoutId).TimesRestarted);
-		Assert.Equal(0, user.Workouts.First(x => x.WorkoutId == command.WorkoutId).TotalExercisesSum);
-		Assert.Equal(0, user.Workouts.First(x => x.WorkoutId == command.WorkoutId).AverageExercisesCompleted);
+		Assert.Equal(0, user.Workouts.First(x => x.WorkoutId == command.WorkoutId).AverageWorkoutCompletion);
 	}
 
 
