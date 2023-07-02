@@ -62,6 +62,7 @@ public class CreateWorkoutHandler : ICommandHandler<CreateWorkout, UserAndWorkou
 		if (command.SetAsCurrentWorkout)
 		{
 			user.CurrentWorkoutId = workoutId;
+			workoutInfo.LastSetAsCurrentUtc = now;
 		}
 
 		// update all the exercises that are now part of this workout
