@@ -17,7 +17,8 @@ public class DeleteSelfTests : BaseTest
 		var storageService = new Mock<IStorageService>().Object;
 		var firebaseAuthService = new Mock<IFirebaseAuthService>().Object;
 		var pushNotificationService = new Mock<IPushNotificationService>().Object;
-		_handler = new DeleteSelfHandler(_mockRepository.Object, storageService, firebaseAuthService, pushNotificationService);
+		_handler = new DeleteSelfHandler(_mockRepository.Object, storageService, firebaseAuthService,
+			pushNotificationService);
 	}
 
 	[Fact]
@@ -44,7 +45,7 @@ public class DeleteSelfTests : BaseTest
 					Fixture.Build<FriendRequest>()
 						.With(x => x.UserId, userWhoSentFriendRequestId).Create()
 				})
-			.With(x=>x.Id, command.UserId)
+			.With(x => x.Id, command.UserId)
 			.Create();
 		var userId = user.Id;
 
@@ -85,6 +86,10 @@ public class DeleteSelfTests : BaseTest
 		Assert.True(friendOfUser.Friends.All(x => x.UserId != userId));
 		Assert.True(userWhoSentFriendRequest.Friends.All(x => x.UserId != userId));
 		Assert.True(userWhoReceivedFriendRequest.FriendRequests.All(x => x.UserId != userId));
+		_mockRepository.Verify(
+			x => x.DeleteReceivedWorkout(It.IsAny<string>()), Times.Exactly(user.ReceivedWorkouts.Count));
+		_mockRepository.Verify(
+			x => x.DeleteWorkout(It.IsAny<string>()), Times.Exactly(user.Workouts.Count));
 	}
 
 	[Fact]

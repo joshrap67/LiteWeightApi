@@ -25,6 +25,7 @@ public class DeleteSelfHandler : ICommandHandler<DeleteSelf, bool>
 		var user = await _repository.GetUser(command.UserId) ?? throw new ResourceNotFoundException("Self");
 		await _storageService.DeleteProfilePicture(user.ProfilePicture);
 		var workoutsToDelete = user.Workouts.Select(x => x.WorkoutId).ToList();
+		var receivedWorkoutsToDelete = user.ReceivedWorkouts.Select(x => x.ReceivedWorkoutId).ToList();
 
 		var usersWhoSentFriendRequests = user.FriendRequests.Select(x => x.UserId).ToList();
 		var usersWhoAreFriends = user.Friends
@@ -40,6 +41,11 @@ public class DeleteSelfHandler : ICommandHandler<DeleteSelf, bool>
 		foreach (var workoutId in workoutsToDelete)
 		{
 			await _repository.DeleteWorkout(workoutId);
+		}
+
+		foreach (var workoutId in receivedWorkoutsToDelete)
+		{
+			await _repository.DeleteReceivedWorkout(workoutId);
 		}
 
 		foreach (var otherUserId in usersWhoSentFriendRequests)
