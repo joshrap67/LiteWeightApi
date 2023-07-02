@@ -99,7 +99,6 @@ public class ReceivedWorkoutsController : BaseController
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
 	public async Task<ActionResult> SetReceivedWorkoutSeen(string receivedWorkoutId)
 	{
-		// todo move to other controller?
 		await _dispatcher.DispatchAsync<SetReceivedWorkoutSeen, bool>(new SetReceivedWorkoutSeen
 		{
 			UserId = CurrentUserId, ReceivedWorkoutId = receivedWorkoutId

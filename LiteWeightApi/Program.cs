@@ -13,21 +13,7 @@ builder.Services.ConfigureDependencies();
 builder.Services.ConfigureApi();
 builder.Services.ConfigureSwagger();
 builder.Services.ConfigureOptions(builder.Configuration);
-
-// todo
-builder.Services.AddRateLimiter(options =>
-{
-	options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
-		RateLimitPartition.GetFixedWindowLimiter(
-			partitionKey: httpContext.User.Identity?.Name ?? httpContext.Request.Headers.Host.ToString(),
-			factory: _ => new FixedWindowRateLimiterOptions
-			{
-				AutoReplenishment = true,
-				PermitLimit = 10,
-				QueueLimit = 0,
-				Window = TimeSpan.FromMinutes(1)
-			}));
-});
+builder.Services.ConfigureRateLimiting();
 
 var app = builder.Build();
 
@@ -50,5 +36,6 @@ app.UseRouting();
 app.UseAuthorization();
 app.UseMiddleware<EmailVerifiedMiddleware>();
 app.MapControllers();
+app.UseRateLimiter();
 
 app.Run();

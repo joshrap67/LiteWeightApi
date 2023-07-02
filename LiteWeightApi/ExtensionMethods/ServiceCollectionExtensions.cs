@@ -1,8 +1,10 @@
 ﻿using System.Reflection;
+using System.Threading.RateLimiting;
 using LiteWeightAPI.Errors.Exceptions;
 using LiteWeightAPI.Errors.Responses;
 using LiteWeightAPI.Options;
 using LiteWeightAPI.Swagger;
+using LiteWeightAPI.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -41,6 +43,34 @@ public static class ServiceCollectionExtensions
 		services.Configure<JwtOptions>(configuration.GetSection(EnvRootKey + "Jwt"));
 		services.Configure<FirebaseOptions>(configuration.GetSection(EnvRootKey + "Firebase"));
 		services.Configure<FirestoreOptions>(configuration.GetSection(EnvRootKey + "Firestore"));
+	}
+
+	public static void ConfigureRateLimiting(this IServiceCollection services)
+	{
+		services.AddRateLimiter(options =>
+		{
+			options.OnRejected = (context, token) =>
+			{
+				context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
+				context.HttpContext.Response.WriteAsync(JsonUtils.Serialize(new TooManyRequestsResponse
+					{ Message = "Too many requests. Please try again later." }), cancellationToken: token);
+
+				return new ValueTask();
+			};
+			options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+			{
+				var userIdClaim = httpContext.User.Claims.ToList().FirstOrDefault(x => x.Type == "user_id");
+				return RateLimitPartition.GetFixedWindowLimiter(
+					partitionKey: userIdClaim?.Value ?? httpContext.Request.Headers.Host.ToString(),
+					factory: _ => new FixedWindowRateLimiterOptions
+					{
+						AutoReplenishment = true,
+						PermitLimit = 100,
+						QueueLimit = 0,
+						Window = TimeSpan.FromMinutes(1)
+					});
+			});
+		});
 	}
 
 	public static void ConfigureSwagger(this IServiceCollection services)

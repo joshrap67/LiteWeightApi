@@ -39,6 +39,20 @@ public class DefaultResponsesOperationFilter : IOperationFilter
 				}
 			};
 
+		operation.Responses[StatusCodes.Status429TooManyRequests.ToString()] =
+			new OpenApiResponse
+			{
+				Description = "Too many requests",
+				Content = new Dictionary<string, OpenApiMediaType>
+				{
+					[contentType] = new()
+					{
+						Schema = context.SchemaGenerator.GenerateSchema(typeof(ForbiddenResponse),
+							context.SchemaRepository)
+					}
+				}
+			};
+
 		operation.Responses[StatusCodes.Status500InternalServerError.ToString()] =
 			new OpenApiResponse
 			{
