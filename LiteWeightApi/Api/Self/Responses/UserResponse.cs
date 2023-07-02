@@ -53,6 +53,26 @@ public class UserResponse
 	public int WorkoutsSent { get; set; }
 
 	/// <summary>
+	/// List of exercises the user owns.
+	/// </summary>
+	public IList<OwnedExerciseResponse> Exercises { get; set; } = new List<OwnedExerciseResponse>();
+
+	/// <summary>
+	/// List of pending friend requests for the user.
+	/// </summary>
+	public IList<FriendRequestResponse> FriendRequests { get; set; } = new List<FriendRequestResponse>();
+
+	/// <summary>
+	/// List of friends for the user.
+	/// </summary>
+	public IList<FriendResponse> Friends { get; set; } = new List<FriendResponse>();
+
+	/// <summary>
+	/// List of workouts sent to the user.
+	/// </summary>
+	public IList<ReceivedWorkoutInfoResponse> ReceivedWorkouts { get; set; } = new List<ReceivedWorkoutInfoResponse>();
+
+	/// <summary>
 	/// Preferences of the user.
 	/// </summary>
 	public UserSettingsResponse Settings { get; set; }
@@ -61,24 +81,4 @@ public class UserResponse
 	/// List of workouts the user owns.
 	/// </summary>
 	public IList<WorkoutInfoResponse> Workouts { get; set; } = new List<WorkoutInfoResponse>();
-
-	/// <summary>
-	/// List of exercises the user owns.
-	/// </summary>
-	public IList<OwnedExerciseResponse> Exercises { get; set; } = new List<OwnedExerciseResponse>();
-
-	/// <summary>
-	/// List of friends for the user.
-	/// </summary>
-	public IList<FriendResponse> Friends { get; set; } = new List<FriendResponse>();
-
-	/// <summary>
-	/// List of pending friend requests for the user.
-	/// </summary>
-	public IList<FriendRequestResponse> FriendRequests { get; set; } = new List<FriendRequestResponse>();
-
-	/// <summary>
-	/// List of workouts sent to the user.
-	/// </summary>
-	public IList<ReceivedWorkoutInfoResponse> ReceivedWorkouts { get; set; } = new List<ReceivedWorkoutInfoResponse>();
 }

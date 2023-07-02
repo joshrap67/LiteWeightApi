@@ -560,6 +560,106 @@
         }
       }
     },
+    "/received-workouts/all-seen": {
+      "put": {
+        "tags": [
+          "ReceivedWorkouts"
+        ],
+        "summary": "Set All Received Workouts Seen",
+        "description": "Sets all received workouts for the authenticated user as seen.",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Authentication Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServerErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/received-workouts/{receivedWorkoutId}/seen": {
+      "put": {
+        "tags": [
+          "ReceivedWorkouts"
+        ],
+        "summary": "Set Received Workout Seen",
+        "description": "Sets a given received workout for the authenticated user as seen.",
+        "parameters": [
+          {
+            "name": "receivedWorkoutId",
+            "in": "path",
+            "description": "Received workout to set as seen",
+            "required": true,
+            "style": "simple",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Authentication Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Authorization Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ForbiddenResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServerErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/self": {
       "get": {
         "tags": [
@@ -1043,106 +1143,6 @@
                 }
               }
             }
-          },
-          "401": {
-            "description": "Authentication Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UnauthorizedResponse"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Authorization Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ServerErrorResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/self/received-workouts/all-seen": {
-      "put": {
-        "tags": [
-          "Self"
-        ],
-        "summary": "Set All Received Workouts Seen",
-        "description": "Sets all received workouts on the authenticated user as seen.",
-        "responses": {
-          "204": {
-            "description": "No Content"
-          },
-          "401": {
-            "description": "Authentication Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UnauthorizedResponse"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Authorization Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ServerErrorResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/self/received-workouts/{receivedWorkoutId}/seen": {
-      "put": {
-        "tags": [
-          "Self"
-        ],
-        "summary": "Set Received Workout Seen",
-        "description": "Sets a given received workout on the authenticated user as seen.",
-        "parameters": [
-          {
-            "name": "receivedWorkoutId",
-            "in": "path",
-            "description": "Received workout to set as seen",
-            "required": true,
-            "style": "simple",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
           },
           "401": {
             "description": "Authentication Error",
@@ -3822,31 +3822,12 @@
             "format": "int32",
             "example": 14
           },
-          "settings": {
-            "$ref": "#/components/schemas/UserSettingsResponse"
-          },
-          "workouts": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/WorkoutInfoResponse"
-            },
-            "description": "List of workouts the user owns.",
-            "nullable": true
-          },
           "exercises": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/OwnedExerciseResponse"
             },
             "description": "List of exercises the user owns.",
-            "nullable": true
-          },
-          "friends": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/FriendResponse"
-            },
-            "description": "List of friends for the user.",
             "nullable": true
           },
           "friendRequests": {
@@ -3857,12 +3838,31 @@
             "description": "List of pending friend requests for the user.",
             "nullable": true
           },
+          "friends": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FriendResponse"
+            },
+            "description": "List of friends for the user.",
+            "nullable": true
+          },
           "receivedWorkouts": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ReceivedWorkoutInfoResponse"
             },
             "description": "List of workouts sent to the user.",
+            "nullable": true
+          },
+          "settings": {
+            "$ref": "#/components/schemas/UserSettingsResponse"
+          },
+          "workouts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkoutInfoResponse"
+            },
+            "description": "List of workouts the user owns.",
             "nullable": true
           }
         },

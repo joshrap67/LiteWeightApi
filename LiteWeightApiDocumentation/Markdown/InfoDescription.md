@@ -2,15 +2,15 @@
 
 This REST API provides functionality for the mobile
 application [LiteWeight](https://play.google.com/store/apps/details?id=com.joshrap.liteweight&hl=en_US&gl=US). While
-that is the primary consumer, you can still consume this API if you follow the authentication steps.
+that is the primary consumer, this API can still be consumed if the authentication steps below are followed.
 
 ## Authentication
 
-All endpoints in this API require a properly issued id token (JWT). This JWT can only be received if you have an
-Firebase account registered for LiteWeight. This can be received outside the app by utilizing the Firebase identity API
+All endpoints in this API require a properly issued id token (JWT). This JWT can only be received if with a
+Firebase account registered for LiteWeight. This token can be received outside the app by utilizing the Firebase identity API
 endpoint https://firebase.google.com/docs/reference/rest/auth#section-sign-in-email-password.
 
-The token is used for a standard Bearer token authentication schema: `Bearer <token>`
+The token is used in a standard Bearer token authentication schema: `Bearer <token>`
 
 ## Authorization
 
@@ -30,4 +30,4 @@ occurred, e.g. "UserNotFound". They can facilitate better error handling for the
 
 For some methods, successful execution will result in a push notification being sent. The push notification is sent via
 Firebase Cloud Messaging, and the recipient device token is determined from the context of the method. E.g. for Send
-Friend request the target device token is that of the recipient of the friend request.
+Friend Request the target device token is that of the recipient of the friend request.

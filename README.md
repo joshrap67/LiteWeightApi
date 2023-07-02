@@ -2,6 +2,8 @@
 
 This web service exposes a REST API intended to be consumed by the Android Application [Liteweight](https://github.com/joshrap67/LiteWeight) (compatible with Android versions >= 3.x.x)
 
+[API References](https://storage.googleapis.com/liteweight-api-documentation/apiDocs.html)
+
 Refer to the [Wiki](https://github.com/joshrap67/LiteWeightApi/wiki) for details on the implementation of the service.
 
 ## Prerequisites

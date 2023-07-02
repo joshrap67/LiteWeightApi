@@ -4,6 +4,8 @@ using LiteWeightAPI.Commands;
 using LiteWeightAPI.Commands.ReceivedWorkouts.AcceptReceivedWorkout;
 using LiteWeightAPI.Commands.ReceivedWorkouts.DeclineReceivedWorkout;
 using LiteWeightAPI.Commands.ReceivedWorkouts.GetReceivedWorkout;
+using LiteWeightAPI.Commands.Self.SetAllReceivedWorkoutsSeen;
+using LiteWeightAPI.Commands.Self.SetReceivedWorkoutSeen;
 using LiteWeightAPI.Errors.Attributes;
 using Microsoft.AspNetCore.Mvc;
 
@@ -71,6 +73,34 @@ public class ReceivedWorkoutsController : BaseController
 	public async Task<ActionResult> DeclineReceivedWorkout(string receivedWorkoutId)
 	{
 		await _dispatcher.DispatchAsync<DeclineReceivedWorkout, bool>(new DeclineReceivedWorkout
+		{
+			UserId = CurrentUserId, ReceivedWorkoutId = receivedWorkoutId
+		});
+		return NoContent();
+	}
+	
+	/// <summary>Set All Received Workouts Seen</summary>
+	/// <remarks>Sets all received workouts for the authenticated user as seen.</remarks>
+	[HttpPut("all-seen")]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	public async Task<ActionResult> SetAllReceivedWorkoutsSeen()
+	{
+		await _dispatcher.DispatchAsync<SetAllReceivedWorkoutsSeen, bool>(new SetAllReceivedWorkoutsSeen
+		{
+			UserId = CurrentUserId
+		});
+		return NoContent();
+	}
+
+	/// <summary>Set Received Workout Seen</summary>
+	/// <remarks>Sets a given received workout for the authenticated user as seen.</remarks>
+	/// <param name="receivedWorkoutId">Received workout to set as seen</param>
+	[HttpPut("{receivedWorkoutId}/seen")]
+	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	public async Task<ActionResult> SetReceivedWorkoutSeen(string receivedWorkoutId)
+	{
+		// todo move to other controller?
+		await _dispatcher.DispatchAsync<SetReceivedWorkoutSeen, bool>(new SetReceivedWorkoutSeen
 		{
 			UserId = CurrentUserId, ReceivedWorkoutId = receivedWorkoutId
 		});

@@ -135,34 +135,6 @@ public class SelfController : BaseController
 		return NoContent();
 	}
 
-	/// <summary>Set All Received Workouts Seen</summary>
-	/// <remarks>Sets all received workouts on the authenticated user as seen.</remarks>
-	[HttpPut("received-workouts/all-seen")]
-	[ProducesResponseType(StatusCodes.Status204NoContent)]
-	public async Task<ActionResult> SetAllReceivedWorkoutsSeen()
-	{
-		await _dispatcher.DispatchAsync<SetAllReceivedWorkoutsSeen, bool>(new SetAllReceivedWorkoutsSeen
-		{
-			UserId = CurrentUserId
-		});
-		return NoContent();
-	}
-
-	/// <summary>Set Received Workout Seen</summary>
-	/// <remarks>Sets a given received workout on the authenticated user as seen.</remarks>
-	/// <param name="receivedWorkoutId">Received workout to set as seen</param>
-	[HttpPut("received-workouts/{receivedWorkoutId}/seen")]
-	[ProducesResponseType(StatusCodes.Status204NoContent)]
-	public async Task<ActionResult> SetReceivedWorkoutSeen(string receivedWorkoutId)
-	{
-		// todo move to other controller?
-		await _dispatcher.DispatchAsync<SetReceivedWorkoutSeen, bool>(new SetReceivedWorkoutSeen
-		{
-			UserId = CurrentUserId, ReceivedWorkoutId = receivedWorkoutId
-		});
-		return NoContent();
-	}
-
 	/// <summary>Delete Self</summary>
 	/// <remarks>
 	/// Deletes a user and all data associated with it.<br/><br/>
