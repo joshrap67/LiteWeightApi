@@ -72,10 +72,18 @@ public class StatisticsServiceTests : BaseTest
 
 	[Theory]
 	[MemberData(nameof(FocusTestCases))]
-	public void FindMostFrequentFocus(Dictionary<string, OwnedExercise> exerciseIdToExercise, string expectedValue)
+	public void Find_Most_Frequent_Focus(Dictionary<string, OwnedExercise> exerciseIdToExercise, string expectedValue)
 	{
 		var mostFrequentFocus = _service.FindMostFrequentFocus(exerciseIdToExercise, GetRoutine());
 		Assert.Equal(expectedValue, mostFrequentFocus);
+	}
+
+	[Fact]
+	public void Find_Most_Frequent_Focus_Empty()
+	{
+		var mostFrequentFocus = _service.FindMostFrequentFocus(new Dictionary<string, OwnedExercise>(),
+			new Routine { Weeks = new List<RoutineWeek> { new() { Days = new List<RoutineDay> { new() } } } });
+		Assert.Equal("", mostFrequentFocus);
 	}
 
 	public static IEnumerable<object[]> FocusTestCases

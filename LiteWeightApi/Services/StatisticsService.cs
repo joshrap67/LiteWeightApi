@@ -35,6 +35,10 @@ public class StatisticsService : IStatisticsService
 			}
 		}
 
+		if (!focusCount.Values.Any())
+		{
+			return "";
+		}
 		var max = focusCount.Values.Max();
 
 		var maxFocuses = (from focus in focusCount.Keys
