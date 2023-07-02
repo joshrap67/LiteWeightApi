@@ -153,7 +153,7 @@ public class UpdateRoutineTests : BaseTest
 			{ "D", 20.0 },
 			{ "E", 100.0 },
 			{ "F", 100 },
-			{ "Z", 100 },
+			{ "Z", 100 }
 		};
 		ownedExercises.AddRange(exerciseIdToWeight.Select(kvp =>
 			Fixture.Build<OwnedExercise>()

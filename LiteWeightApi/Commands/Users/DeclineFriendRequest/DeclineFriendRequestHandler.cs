@@ -1,7 +1,6 @@
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Services;
-using LiteWeightAPI.Services.Notifications;
 using LiteWeightAPI.Utils;
 
 namespace LiteWeightAPI.Commands.Users.DeclineFriendRequest;

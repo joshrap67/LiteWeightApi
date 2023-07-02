@@ -1,14 +1,12 @@
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Domain.Workouts;
 using LiteWeightAPI.Services;
-using LiteWeightAPI.Utils;
 
 namespace LiteWeightApiTests.Utils;
 
-public class StatisticsServiceTests
+public class StatisticsServiceTests : BaseTest
 {
 	private readonly StatisticsService _service;
-	private readonly Fixture Fixture = new();
 
 	public StatisticsServiceTests()
 	{
@@ -31,7 +29,7 @@ public class StatisticsServiceTests
 							{
 								Fixture.Build<RoutineExercise>().With(x => x.ExerciseId, "A").Create(),
 								Fixture.Build<RoutineExercise>().With(x => x.ExerciseId, "B").Create(),
-								Fixture.Build<RoutineExercise>().With(x => x.ExerciseId, "C").Create(),
+								Fixture.Build<RoutineExercise>().With(x => x.ExerciseId, "C").Create()
 							}
 						},
 						new RoutineDay
@@ -41,9 +39,9 @@ public class StatisticsServiceTests
 								Fixture.Build<RoutineExercise>().With(x => x.ExerciseId, "A").Create(),
 								Fixture.Build<RoutineExercise>().With(x => x.ExerciseId, "B").Create(),
 								Fixture.Build<RoutineExercise>().With(x => x.ExerciseId, "B").Create(),
-								Fixture.Build<RoutineExercise>().With(x => x.ExerciseId, "D").Create(),
+								Fixture.Build<RoutineExercise>().With(x => x.ExerciseId, "D").Create()
 							}
-						},
+						}
 					}
 				},
 				new()
@@ -55,7 +53,7 @@ public class StatisticsServiceTests
 							Exercises = new List<RoutineExercise>
 							{
 								Fixture.Build<RoutineExercise>().With(x => x.ExerciseId, "A").Create(),
-								Fixture.Build<RoutineExercise>().With(x => x.ExerciseId, "D").Create(),
+								Fixture.Build<RoutineExercise>().With(x => x.ExerciseId, "D").Create()
 							}
 						},
 						new RoutineDay
@@ -63,9 +61,9 @@ public class StatisticsServiceTests
 							Exercises = new List<RoutineExercise>
 							{
 								Fixture.Build<RoutineExercise>().With(x => x.ExerciseId, "B").Create(),
-								Fixture.Build<RoutineExercise>().With(x => x.ExerciseId, "E").Create(),
+								Fixture.Build<RoutineExercise>().With(x => x.ExerciseId, "E").Create()
 							}
-						},
+						}
 					}
 				}
 			}

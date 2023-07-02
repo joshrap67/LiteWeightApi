@@ -243,7 +243,7 @@ public class AcceptReceivedWorkoutTests : BaseTest
 			.Select(_ => Fixture.Create<WorkoutInfo>())
 			.ToList();
 
-		var exercisesToCreate = (Globals.MaxFreeExercises - receivedWorkout.DistinctExercises.Count) + 1;
+		var exercisesToCreate = Globals.MaxFreeExercises - receivedWorkout.DistinctExercises.Count + 1;
 		var ownedExercises = Enumerable.Range(0, exercisesToCreate)
 			.Select(_ => Fixture.Create<OwnedExercise>())
 			.ToList();
@@ -277,7 +277,7 @@ public class AcceptReceivedWorkoutTests : BaseTest
 			.Select(_ => Fixture.Create<WorkoutInfo>())
 			.ToList();
 
-		var exercisesToCreate = (Globals.MaxExercises - receivedWorkout.DistinctExercises.Count) + 1;
+		var exercisesToCreate = Globals.MaxExercises - receivedWorkout.DistinctExercises.Count + 1;
 		var ownedExercises = Enumerable.Range(0, exercisesToCreate)
 			.Select(_ => Fixture.Create<OwnedExercise>())
 			.ToList();

@@ -26,7 +26,7 @@ public class CancelFriendRequestTests : BaseTest
 		var friends = new List<Friend>
 		{
 			Fixture.Create<Friend>(),
-			Fixture.Build<Friend>().With(x => x.UserId, command.UserIdToCancel).Create(),
+			Fixture.Build<Friend>().With(x => x.UserId, command.UserIdToCancel).Create()
 		};
 		var initiator = Fixture.Build<User>()
 			.With(x => x.Id, command.InitiatorUserId)

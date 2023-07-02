@@ -26,7 +26,7 @@ public class RemoveFriendTests : BaseTest
 		var initiatorFriends = new List<Friend>
 		{
 			Fixture.Create<Friend>(),
-			Fixture.Build<Friend>().With(x => x.UserId, command.RemovedUserId).Create(),
+			Fixture.Build<Friend>().With(x => x.UserId, command.RemovedUserId).Create()
 		};
 		var initiator = Fixture.Build<User>()
 			.With(x => x.Id, command.InitiatorUserId)

@@ -6,11 +6,8 @@ namespace LiteWeightAPI.Swagger;
 
 public class CreateSwaggerInfoSection : IConfigureOptions<SwaggerGenOptions>
 {
-	private readonly IWebHostEnvironment _environment;
-
-	public CreateSwaggerInfoSection( IWebHostEnvironment environment)
+	public CreateSwaggerInfoSection()
 	{
-		_environment = environment;
 	}
 
 	public void Configure(SwaggerGenOptions options)

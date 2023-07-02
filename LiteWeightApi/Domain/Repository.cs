@@ -1,5 +1,4 @@
 using Google.Cloud.Firestore;
-using LiteWeightAPI.Api.Complaints.Responses;
 using LiteWeightAPI.Domain.Complaints;
 using LiteWeightAPI.Domain.ReceivedWorkouts;
 using LiteWeightAPI.Domain.Users;

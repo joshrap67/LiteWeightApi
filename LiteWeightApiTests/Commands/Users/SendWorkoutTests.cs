@@ -6,7 +6,6 @@ using LiteWeightAPI.Errors.Exceptions;
 using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
 using LiteWeightAPI.Imports;
 using LiteWeightAPI.Services;
-using LiteWeightAPI.Utils;
 using NodaTime;
 
 namespace LiteWeightApiTests.Commands.Users;
@@ -49,7 +48,7 @@ public class SendWorkoutTests : BaseTest
 		var recipientUser = Fixture.Build<User>()
 			.With(x => x.Id, command.RecipientUserId)
 			.With(x => x.Settings, preferences)
-			.With(x => x.Friends, new List<Friend>()
+			.With(x => x.Friends, new List<Friend>
 			{
 				Fixture.Build<Friend>().With(x => x.UserId, command.SenderUserId).Create()
 			})

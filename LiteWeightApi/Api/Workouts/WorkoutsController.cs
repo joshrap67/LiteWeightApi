@@ -74,7 +74,7 @@ public class WorkoutsController : BaseController
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult<UserAndWorkoutResponse>> CopyWorkout(string workoutId, CopyWorkoutRequest request)
 	{
-		var response = await _dispatcher.DispatchAsync<CopyWorkout, UserAndWorkoutResponse>(new CopyWorkout()
+		var response = await _dispatcher.DispatchAsync<CopyWorkout, UserAndWorkoutResponse>(new CopyWorkout
 		{
 			UserId = CurrentUserId,
 			Name = request.Name,

@@ -133,7 +133,7 @@ public class RestartWorkoutTests : BaseTest
 			{ "C", 100.0 },
 			{ "D", 20.0 },
 			{ "E", 100.0 },
-			{ "F", 100 },
+			{ "F", 100 }
 		};
 		ownedExercises.AddRange(originalExercisesToWeight.Select(kvp =>
 			Fixture.Build<OwnedExercise>()

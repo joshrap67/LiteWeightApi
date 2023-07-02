@@ -39,7 +39,7 @@ public class GetWorkoutTests : BaseTest
 			.ReturnsAsync(user);
 
 		var response = await _handler.HandleAsync(command);
-		Assert.Equal(command.WorkoutId, workout.Id);
+		Assert.Equal(command.WorkoutId, response.Id);
 	}
 
 	[Fact]

@@ -14,7 +14,7 @@ public class RoutineTests : BaseTest
 			{ "B", Fixture.Create<string>() },
 			{ "C", Fixture.Create<string>() },
 			{ "D", Fixture.Create<string>() },
-			{ "E", Fixture.Create<string>() },
+			{ "E", Fixture.Create<string>() }
 		};
 		var receivedRoutine = Fixture.Build<ReceivedRoutine>()
 			.With(x => x.Weeks, new List<ReceivedWeek>
@@ -45,7 +45,7 @@ public class RoutineTests : BaseTest
 						Fixture.Build<ReceivedExercise>().With(x => x.ExerciseName, "B").Create(),
 						Fixture.Build<ReceivedExercise>().With(x => x.ExerciseName, "C").Create(),
 						Fixture.Build<ReceivedExercise>().With(x => x.ExerciseName, "D").Create(),
-						Fixture.Build<ReceivedExercise>().With(x => x.ExerciseName, "E").Create(),
+						Fixture.Build<ReceivedExercise>().With(x => x.ExerciseName, "E").Create()
 					}).Create(),
 					Fixture.Build<ReceivedDay>().With(x => x.Exercises, new List<ReceivedExercise>
 					{
