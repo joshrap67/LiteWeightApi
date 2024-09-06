@@ -71,7 +71,7 @@ public class StatisticsServiceTests : BaseTest
 	}
 
 	[Theory]
-	[MemberData(nameof(FocusTestCases))]
+	[ClassData(typeof(FocusTestData))]
 	public void Find_Most_Frequent_Focus(Dictionary<string, OwnedExercise> exerciseIdToExercise, string expectedValue)
 	{
 		var mostFrequentFocus = _service.FindMostFrequentFocus(exerciseIdToExercise, GetRoutine());
@@ -86,14 +86,12 @@ public class StatisticsServiceTests : BaseTest
 		Assert.Equal("", mostFrequentFocus);
 	}
 
-	public static IEnumerable<object[]> FocusTestCases
+	private class FocusTestData : TheoryData<Dictionary<string, OwnedExercise>, string>
 	{
-		get
+		public FocusTestData()
 		{
 			var fixture = new Fixture();
-			yield return
-			[
-				new Dictionary<string, OwnedExercise>
+			Add(new Dictionary<string, OwnedExercise>
 				{
 					{
 						"A",
@@ -121,11 +119,8 @@ public class StatisticsServiceTests : BaseTest
 							.Create()
 					}
 				},
-				"Back"
-			];
-			yield return
-			[
-				new Dictionary<string, OwnedExercise>
+				"Back");
+			Add(new Dictionary<string, OwnedExercise>
 				{
 					{
 						"A",
@@ -153,11 +148,8 @@ public class StatisticsServiceTests : BaseTest
 							.Create()
 					}
 				},
-				"Legs,Cardio"
-			];
-			yield return
-			[
-				new Dictionary<string, OwnedExercise>
+				"Legs,Cardio");
+			Add(new Dictionary<string, OwnedExercise>
 				{
 					{
 						"A",
@@ -186,8 +178,7 @@ public class StatisticsServiceTests : BaseTest
 							.Create()
 					}
 				},
-				"Biceps"
-			];
+				"Biceps");
 		}
 	}
 }
