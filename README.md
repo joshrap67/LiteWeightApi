@@ -8,7 +8,7 @@ Refer to the [Wiki](https://github.com/joshrap67/LiteWeightApi/wiki) for details
 
 ## Prerequisites
 
-.Net 7 is used for the C# projects in this repository.
+.Net 8 is used for the C# projects in this repository.
 
 Firebase credentials must be installed locally. Ensure environment variable GOOGLE_APPLICATION_CREDENTIALS is pointed to `%APPDATA%\gcloud\application_default_credentials.json`
 
