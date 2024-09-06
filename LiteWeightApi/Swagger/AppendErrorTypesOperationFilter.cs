@@ -1,4 +1,5 @@
 using LiteWeightAPI.Errors.Attributes.Setup;
+using LiteWeightAPI.Errors.Responses;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -23,7 +24,7 @@ public class AppendErrorTypesOperationFilter : IOperationFilter
 		var errors = attributes
 			.Select(x => x.ErrorType)
 			.ToList();
-		if (!errors.Any())
+		if (errors.Count == 0)
 		{
 			return;
 		}
@@ -34,5 +35,18 @@ public class AppendErrorTypesOperationFilter : IOperationFilter
 			$"<div style=\"background-color: #2f3031;padding: 12px 0px 12px 12px;border-left: 5px solid #F90258;\">" +
 			$"Potential 400 Errors: <b>{string.Join(", ", errors)}</b>" +
 			$"</div>";
+		operation.Responses[StatusCodes.Status400BadRequest.ToString()] =
+			new OpenApiResponse
+			{
+				Description = "Bad Request",
+				Content = new Dictionary<string, OpenApiMediaType>
+				{
+					["application/json"] = new()
+					{
+						Schema = context.SchemaGenerator.GenerateSchema(typeof(BadRequestResponse),
+							context.SchemaRepository)
+					}
+				}
+			};
 	}
 }

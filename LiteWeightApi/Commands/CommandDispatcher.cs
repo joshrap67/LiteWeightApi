@@ -21,6 +21,7 @@ public class CommandDispatcher : ICommandDispatcher
 		{
 			throw new Exception("Missing service");
 		}
+
 		var response = await service.HandleAsync(command);
 		return response;
 	}

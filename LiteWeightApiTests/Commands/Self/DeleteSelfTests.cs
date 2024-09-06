@@ -30,39 +30,32 @@ public class DeleteSelfTests : BaseTest
 		var userWhoReceivedFriendRequestId = Fixture.Create<string>();
 
 		var user = Fixture.Build<User>()
-			.With(x => x.Friends, new List<Friend>
-			{
+			.With(x => x.Friends, [
 				Fixture.Build<Friend>()
 					.With(x => x.Confirmed, true)
 					.With(x => x.UserId, friendOfUserId).Create(),
+
 				Fixture.Build<Friend>()
 					.With(x => x.Confirmed, false)
 					.With(x => x.UserId, userWhoReceivedFriendRequestId).Create()
-			})
+			])
 			.With(x => x.FriendRequests,
-				new List<FriendRequest>
-				{
-					Fixture.Build<FriendRequest>()
-						.With(x => x.UserId, userWhoSentFriendRequestId).Create()
-				})
+			[
+				Fixture.Build<FriendRequest>()
+					.With(x => x.UserId, userWhoSentFriendRequestId).Create()
+			])
 			.With(x => x.Id, command.UserId)
 			.Create();
 		var userId = user.Id;
 
-		var friendOfUser = Fixture.Build<User>().With(x => x.Friends, new List<Friend>
-		{
-			Fixture.Build<Friend>().With(y => y.UserId, userId).Create()
-		}).Create();
+		var friendOfUser = Fixture.Build<User>().With(x => x.Friends,
+			[Fixture.Build<Friend>().With(y => y.UserId, userId).Create()]).Create();
 
-		var userWhoSentFriendRequest = Fixture.Build<User>().With(x => x.Friends, new List<Friend>
-		{
-			Fixture.Build<Friend>().With(y => y.UserId, userId).Create()
-		}).Create();
+		var userWhoSentFriendRequest = Fixture.Build<User>().With(x => x.Friends,
+			[Fixture.Build<Friend>().With(y => y.UserId, userId).Create()]).Create();
 
-		var userWhoReceivedFriendRequest = Fixture.Build<User>().With(x => x.FriendRequests, new List<FriendRequest>
-		{
-			Fixture.Build<FriendRequest>().With(y => y.UserId, userId).Create()
-		}).Create();
+		var userWhoReceivedFriendRequest = Fixture.Build<User>().With(x => x.FriendRequests,
+			[Fixture.Build<FriendRequest>().With(y => y.UserId, userId).Create()]).Create();
 
 
 		_mockRepository

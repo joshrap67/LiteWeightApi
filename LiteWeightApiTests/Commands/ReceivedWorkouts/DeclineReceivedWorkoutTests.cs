@@ -25,10 +25,10 @@ public class DeclineReceivedWorkoutTests : BaseTest
 		var receivedWorkout = ReceivedWorkoutHelper.GetReceivedWorkout(command.UserId);
 		var user = Fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
-			.With(x => x.ReceivedWorkouts, new List<ReceivedWorkoutInfo>
-			{
+			.With(x => x.ReceivedWorkouts,
+			[
 				Fixture.Build<ReceivedWorkoutInfo>().With(x => x.ReceivedWorkoutId, command.ReceivedWorkoutId).Create()
-			})
+			])
 			.Create();
 
 		_mockRepository

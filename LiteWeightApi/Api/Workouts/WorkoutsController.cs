@@ -26,7 +26,7 @@ public class WorkoutsController : BaseController
 	private readonly ICommandDispatcher _dispatcher;
 	private readonly IMapper _mapper;
 
-	public WorkoutsController(Serilog.ILogger logger, ICommandDispatcher dispatcher, IMapper mapper) : base(logger)
+	public WorkoutsController(ICommandDispatcher dispatcher, IMapper mapper)
 	{
 		_dispatcher = dispatcher;
 		_mapper = mapper;
@@ -37,7 +37,6 @@ public class WorkoutsController : BaseController
 	[HttpPost]
 	[InvalidRequest, MaxLimit]
 	[ProducesResponseType(StatusCodes.Status201Created)]
-	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	public async Task<ActionResult<UserAndWorkoutResponse>> CreateWorkout(CreateWorkoutRequest request)
 	{
 		var command = _mapper.Map<CreateWorkout>(request);
@@ -70,7 +69,6 @@ public class WorkoutsController : BaseController
 	[HttpPost("{workoutId}/copy")]
 	[InvalidRequest, AlreadyExists, MaxLimit]
 	[ProducesResponseType(StatusCodes.Status201Created)]
-	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult<UserAndWorkoutResponse>> CopyWorkout(string workoutId, CopyWorkoutRequest request)
 	{
@@ -90,7 +88,6 @@ public class WorkoutsController : BaseController
 	[HttpPut("{workoutId}/routine")]
 	[InvalidRequest]
 	[ProducesResponseType(StatusCodes.Status200OK)]
-	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult<UserAndWorkoutResponse>> SetRoutine(SetRoutineRequest request, string workoutId)
 	{
@@ -110,7 +107,6 @@ public class WorkoutsController : BaseController
 	[HttpPut("{workoutId}/update-progress")]
 	[InvalidRequest]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
-	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult> UpdateProgress(string workoutId, UpdateWorkoutProgressRequest request)
 	{
@@ -152,7 +148,6 @@ public class WorkoutsController : BaseController
 	[HttpPost("{workoutId}/restart")]
 	[InvalidRequest]
 	[ProducesResponseType(StatusCodes.Status200OK)]
-	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult<UserAndWorkoutResponse>> RestartWorkout(string workoutId,
 		RestartWorkoutRequest request)
@@ -173,7 +168,6 @@ public class WorkoutsController : BaseController
 	[HttpPut("{workoutId}/rename")]
 	[InvalidRequest, AlreadyExists]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
-	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult> RenameWorkout(string workoutId, RenameWorkoutRequest request)
 	{
@@ -212,7 +206,6 @@ public class WorkoutsController : BaseController
 	[HttpPut("{workoutId}/delete-and-set-current")]
 	[WorkoutNotFound]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
-	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult> DeleteWorkoutAndSetCurrent(string workoutId, SetCurrentWorkoutRequest request)
 	{

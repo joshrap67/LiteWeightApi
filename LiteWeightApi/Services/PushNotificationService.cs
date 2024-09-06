@@ -19,17 +19,17 @@ public class PushNotificationService : IPushNotificationService
 {
 	private readonly IFcmService _fcmService;
 
+	public PushNotificationService(IFcmService fcmService)
+	{
+		_fcmService = fcmService;
+	}
+
 	private const string FriendRequestAction = "friendRequest";
 	private const string CanceledFriendRequestAction = "canceledFriendRequest";
 	private const string AcceptedFriendRequestAction = "acceptedFriendRequest";
 	private const string DeclinedFriendRequestAction = "declinedFriendRequest";
 	private const string RemovedAsFriendAction = "removedAsFriend";
 	private const string ReceivedWorkoutAction = "receivedWorkout";
-
-	public PushNotificationService(IFcmService fcmService)
-	{
-		_fcmService = fcmService;
-	}
 
 	public async Task SendReceivedWorkoutPushNotification(User recipientUser, ReceivedWorkoutInfo receivedWorkoutInfo)
 	{

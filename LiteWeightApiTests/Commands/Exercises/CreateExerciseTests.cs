@@ -55,10 +55,7 @@ public class CreateExerciseTests : BaseTest
 		_mockRepository
 			.Setup(x => x.GetUser(It.Is<string>(y => y == command.UserId)))
 			.ReturnsAsync(Fixture.Build<User>()
-				.With(x => x.Exercises, new List<OwnedExercise>
-				{
-					new() { Name = "Name" }
-				})
+				.With(x => x.Exercises, [new() { Name = "Name" }])
 				.Create()
 			);
 

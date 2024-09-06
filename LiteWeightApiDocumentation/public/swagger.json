@@ -18,7 +18,6 @@
             "in": "path",
             "description": "Id of the complaint to get",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -26,7 +25,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
@@ -70,7 +69,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
+                  "$ref": "#/components/schemas/TooManyRequestsResponse"
                 }
               }
             }
@@ -125,16 +124,6 @@
               }
             }
           },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BadRequestResponse"
-                }
-              }
-            }
-          },
           "401": {
             "description": "Authentication Error",
             "content": {
@@ -160,7 +149,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
+                  "$ref": "#/components/schemas/TooManyRequestsResponse"
                 }
               }
             }
@@ -171,6 +160,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ServerErrorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestResponse"
                 }
               }
             }
@@ -191,7 +190,6 @@
             "in": "path",
             "description": "Id of the exercise to update",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -221,16 +219,6 @@
           "204": {
             "description": "No Content"
           },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BadRequestResponse"
-                }
-              }
-            }
-          },
           "404": {
             "description": "Not Found",
             "content": {
@@ -266,7 +254,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
+                  "$ref": "#/components/schemas/TooManyRequestsResponse"
                 }
               }
             }
@@ -277,6 +265,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ServerErrorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestResponse"
                 }
               }
             }
@@ -295,7 +293,6 @@
             "in": "path",
             "description": "Id of the exercise to delete",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -340,7 +337,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
+                  "$ref": "#/components/schemas/TooManyRequestsResponse"
                 }
               }
             }
@@ -371,7 +368,6 @@
             "in": "path",
             "description": "Id of the received workout to get",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -379,7 +375,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
@@ -423,7 +419,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
+                  "$ref": "#/components/schemas/TooManyRequestsResponse"
                 }
               }
             }
@@ -447,14 +443,13 @@
           "ReceivedWorkouts"
         ],
         "summary": "Accept Received Workout",
-        "description": "Accepts a received workout and adds any exercises that the user doesn't already own to their owned exercises.<br /><br />\r\nAccepting a workout deletes the received workout from the database and creates a workout with the values of that received workout.<br/><br/><div style=\"background-color: #2f3031;padding: 12px 0px 12px 12px;border-left: 5px solid #F90258;\">Potential 400 Errors: <b>AlreadyExists, InvalidRequest, MaxLimit</b></div>",
+        "description": "Accepts a received workout and adds any exercises that the user doesn't already own to their owned exercises.\r\n\r\n\r\nAccepting a workout deletes the received workout from the database and creates a workout with the values of that received workout.<br/><br/><div style=\"background-color: #2f3031;padding: 12px 0px 12px 12px;border-left: 5px solid #F90258;\">Potential 400 Errors: <b>AlreadyExists, InvalidRequest, MaxLimit</b></div>",
         "parameters": [
           {
             "name": "receivedWorkoutId",
             "in": "path",
             "description": "Id of the received workout to accept",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -487,16 +482,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/AcceptReceivedWorkoutResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BadRequestResponse"
                 }
               }
             }
@@ -536,7 +521,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
+                  "$ref": "#/components/schemas/TooManyRequestsResponse"
                 }
               }
             }
@@ -547,6 +532,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ServerErrorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestResponse"
                 }
               }
             }
@@ -567,7 +562,6 @@
             "in": "path",
             "description": "Id of the received workout to decline",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -612,7 +606,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
+                  "$ref": "#/components/schemas/TooManyRequestsResponse"
                 }
               }
             }
@@ -666,7 +660,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
+                  "$ref": "#/components/schemas/TooManyRequestsResponse"
                 }
               }
             }
@@ -697,7 +691,6 @@
             "in": "path",
             "description": "Received workout to set as seen",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -732,7 +725,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
+                  "$ref": "#/components/schemas/TooManyRequestsResponse"
                 }
               }
             }
@@ -759,7 +752,7 @@
         "description": "Returns the user that is currently authenticated.",
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
@@ -803,7 +796,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
+                  "$ref": "#/components/schemas/TooManyRequestsResponse"
                 }
               }
             }
@@ -825,7 +818,7 @@
           "Self"
         ],
         "summary": "Create Self",
-        "description": "Creates a user in the database using the email/firebase id in the authenticated token.\r\n<br /><br />Note that a single verified, authenticated user can only exist once in the database - this is determined by the firebase UUID in the authenticated token.<br/><br/><div style=\"background-color: #2f3031;padding: 12px 0px 12px 12px;border-left: 5px solid #F90258;\">Potential 400 Errors: <b>AlreadyExists, InvalidRequest</b></div>",
+        "description": "Creates a user in the database using the email/firebase id in the authenticated token.\r\n\r\n\r\nNote that a single verified, authenticated user can only exist once in the database - this is determined by the firebase UUID in the authenticated token.<br/><br/><div style=\"background-color: #2f3031;padding: 12px 0px 12px 12px;border-left: 5px solid #F90258;\">Potential 400 Errors: <b>AlreadyExists, InvalidRequest</b></div>",
         "requestBody": {
           "content": {
             "application/json": {
@@ -856,16 +849,6 @@
               }
             }
           },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BadRequestResponse"
-                }
-              }
-            }
-          },
           "401": {
             "description": "Authentication Error",
             "content": {
@@ -891,7 +874,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
+                  "$ref": "#/components/schemas/TooManyRequestsResponse"
                 }
               }
             }
@@ -905,6 +888,16 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestResponse"
+                }
+              }
+            }
           }
         }
       },
@@ -913,7 +906,7 @@
           "Self"
         ],
         "summary": "Delete Self",
-        "description": "Deletes a user and all data associated with it.<br /><br />\r\nData deleted: user, workouts belonging to user, images belonging to user. The user is also removed as a friend from any other users, and any friend requests they sent are canceled.<br/><br/><div style=\"background-color: #2f3031;padding: 12px 0px 12px 12px;border-left: 5px solid #02F88F;\"><b>Sends Push Notification</b></div>",
+        "description": "Deletes a user and all data associated with it.\r\n\r\n\r\nData deleted: user, workouts belonging to user, images belonging to user. The user is also removed as a friend from any other users, and any friend requests they sent are canceled.<br/><br/><div style=\"background-color: #2f3031;padding: 12px 0px 12px 12px;border-left: 5px solid #02F88F;\"><b>Sends Push Notification</b></div>",
         "responses": {
           "204": {
             "description": "No Content"
@@ -953,7 +946,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
+                  "$ref": "#/components/schemas/TooManyRequestsResponse"
                 }
               }
             }
@@ -1001,16 +994,6 @@
           "204": {
             "description": "No Content"
           },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BadRequestResponse"
-                }
-              }
-            }
-          },
           "401": {
             "description": "Authentication Error",
             "content": {
@@ -1036,7 +1019,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
+                  "$ref": "#/components/schemas/TooManyRequestsResponse"
                 }
               }
             }
@@ -1047,6 +1030,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ServerErrorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestResponse"
                 }
               }
             }
@@ -1109,7 +1102,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
+                  "$ref": "#/components/schemas/TooManyRequestsResponse"
                 }
               }
             }
@@ -1163,7 +1156,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
+                  "$ref": "#/components/schemas/TooManyRequestsResponse"
                 }
               }
             }
@@ -1211,16 +1204,6 @@
           "204": {
             "description": "No Content"
           },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BadRequestResponse"
-                }
-              }
-            }
-          },
           "401": {
             "description": "Authentication Error",
             "content": {
@@ -1246,7 +1229,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
+                  "$ref": "#/components/schemas/TooManyRequestsResponse"
                 }
               }
             }
@@ -1257,6 +1240,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ServerErrorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestResponse"
                 }
               }
             }
@@ -1294,16 +1287,6 @@
           "204": {
             "description": "No Content"
           },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BadRequestResponse"
-                }
-              }
-            }
-          },
           "401": {
             "description": "Authentication Error",
             "content": {
@@ -1329,7 +1312,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
+                  "$ref": "#/components/schemas/TooManyRequestsResponse"
                 }
               }
             }
@@ -1340,6 +1323,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ServerErrorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestResponse"
                 }
               }
             }
@@ -1360,7 +1353,6 @@
             "in": "query",
             "description": "Username to search by",
             "required": true,
-            "style": "form",
             "schema": {
               "type": "string"
             }
@@ -1368,21 +1360,11 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SearchUserResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BadRequestResponse"
                 }
               }
             }
@@ -1412,7 +1394,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
+                  "$ref": "#/components/schemas/TooManyRequestsResponse"
                 }
               }
             }
@@ -1423,6 +1405,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ServerErrorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestResponse"
                 }
               }
             }
@@ -1443,7 +1435,6 @@
             "in": "path",
             "description": "User id of the user to send the friend request to",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1451,21 +1442,11 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/FriendResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BadRequestResponse"
                 }
               }
             }
@@ -1505,7 +1486,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
+                  "$ref": "#/components/schemas/TooManyRequestsResponse"
                 }
               }
             }
@@ -1516,6 +1497,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ServerErrorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestResponse"
                 }
               }
             }
@@ -1536,7 +1527,6 @@
             "in": "path",
             "description": "User id of the user to send the workout to",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1573,16 +1563,6 @@
               }
             }
           },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BadRequestResponse"
-                }
-              }
-            }
-          },
           "404": {
             "description": "Not Found",
             "content": {
@@ -1618,7 +1598,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
+                  "$ref": "#/components/schemas/TooManyRequestsResponse"
                 }
               }
             }
@@ -1629,6 +1609,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ServerErrorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestResponse"
                 }
               }
             }
@@ -1649,7 +1639,6 @@
             "in": "path",
             "description": "User id of the user to accept as a friend",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1658,16 +1647,6 @@
         "responses": {
           "204": {
             "description": "No Content"
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BadRequestResponse"
-                }
-              }
-            }
           },
           "404": {
             "description": "Not Found",
@@ -1704,7 +1683,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
+                  "$ref": "#/components/schemas/TooManyRequestsResponse"
                 }
               }
             }
@@ -1715,6 +1694,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ServerErrorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestResponse"
                 }
               }
             }
@@ -1735,7 +1724,6 @@
             "in": "path",
             "description": "User id of the user to remove as a friend",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1780,7 +1768,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
+                  "$ref": "#/components/schemas/TooManyRequestsResponse"
                 }
               }
             }
@@ -1811,7 +1799,6 @@
             "in": "path",
             "description": "User id of the user to cancel the friend request of",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1856,7 +1843,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
+                  "$ref": "#/components/schemas/TooManyRequestsResponse"
                 }
               }
             }
@@ -1887,7 +1874,6 @@
             "in": "path",
             "description": "User id of the user to cancel the pending friend request",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -1932,7 +1918,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
+                  "$ref": "#/components/schemas/TooManyRequestsResponse"
                 }
               }
             }
@@ -1963,7 +1949,6 @@
             "in": "path",
             "description": "User id of the user to report",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2000,16 +1985,6 @@
               }
             }
           },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BadRequestResponse"
-                }
-              }
-            }
-          },
           "404": {
             "description": "Not Found",
             "content": {
@@ -2045,7 +2020,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
+                  "$ref": "#/components/schemas/TooManyRequestsResponse"
                 }
               }
             }
@@ -2056,6 +2031,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ServerErrorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestResponse"
                 }
               }
             }
@@ -2100,16 +2085,6 @@
               }
             }
           },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BadRequestResponse"
-                }
-              }
-            }
-          },
           "401": {
             "description": "Authentication Error",
             "content": {
@@ -2135,7 +2110,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
+                  "$ref": "#/components/schemas/TooManyRequestsResponse"
                 }
               }
             }
@@ -2146,6 +2121,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ServerErrorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestResponse"
                 }
               }
             }
@@ -2166,7 +2151,6 @@
             "in": "path",
             "description": "Id of the workout to get",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2174,7 +2158,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
@@ -2218,7 +2202,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
+                  "$ref": "#/components/schemas/TooManyRequestsResponse"
                 }
               }
             }
@@ -2247,7 +2231,6 @@
             "in": "path",
             "description": "Id of the workout to delete",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2292,7 +2275,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
+                  "$ref": "#/components/schemas/TooManyRequestsResponse"
                 }
               }
             }
@@ -2323,7 +2306,6 @@
             "in": "path",
             "description": "Id of the workout to copy",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2360,16 +2342,6 @@
               }
             }
           },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BadRequestResponse"
-                }
-              }
-            }
-          },
           "404": {
             "description": "Not Found",
             "content": {
@@ -2405,7 +2377,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
+                  "$ref": "#/components/schemas/TooManyRequestsResponse"
                 }
               }
             }
@@ -2416,6 +2388,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ServerErrorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestResponse"
                 }
               }
             }
@@ -2436,7 +2418,6 @@
             "in": "path",
             "description": "Id of the workout of the routine",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2464,21 +2445,11 @@
         },
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/UserAndWorkoutResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BadRequestResponse"
                 }
               }
             }
@@ -2518,7 +2489,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
+                  "$ref": "#/components/schemas/TooManyRequestsResponse"
                 }
               }
             }
@@ -2529,6 +2500,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ServerErrorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestResponse"
                 }
               }
             }
@@ -2549,7 +2530,6 @@
             "in": "path",
             "description": "Id of the workout to update the progress of",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2579,16 +2559,6 @@
           "204": {
             "description": "No Content"
           },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BadRequestResponse"
-                }
-              }
-            }
-          },
           "404": {
             "description": "Not Found",
             "content": {
@@ -2624,7 +2594,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
+                  "$ref": "#/components/schemas/TooManyRequestsResponse"
                 }
               }
             }
@@ -2635,6 +2605,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ServerErrorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestResponse"
                 }
               }
             }
@@ -2655,7 +2635,6 @@
             "in": "path",
             "description": "Id of the workout to reset the statistics of",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2700,7 +2679,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
+                  "$ref": "#/components/schemas/TooManyRequestsResponse"
                 }
               }
             }
@@ -2724,14 +2703,13 @@
           "Workouts"
         ],
         "summary": "Restart Workout",
-        "description": "Restarts the workout to have all exercises set to incomplete, and updates the statistics of the authenticated user using the state of the workout before it was restarted.\r\n<br /><br />If enabled on the authenticated user's preferences, the default weights of any completed exercises will be updated if their completed weight is greater than the current default weight.<br/><br/><div style=\"background-color: #2f3031;padding: 12px 0px 12px 12px;border-left: 5px solid #F90258;\">Potential 400 Errors: <b>InvalidRequest</b></div>",
+        "description": "Restarts the workout to have all exercises set to incomplete, and updates the statistics of the authenticated user using the state of the workout before it was restarted.\r\n\r\n\r\nIf enabled on the authenticated user's preferences, the default weights of any completed exercises will be updated if their completed weight is greater than the current default weight.<br/><br/><div style=\"background-color: #2f3031;padding: 12px 0px 12px 12px;border-left: 5px solid #F90258;\">Potential 400 Errors: <b>InvalidRequest</b></div>",
         "parameters": [
           {
             "name": "workoutId",
             "in": "path",
             "description": "Id of the workout to restart",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2759,21 +2737,11 @@
         },
         "responses": {
           "200": {
-            "description": "Success",
+            "description": "OK",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/UserAndWorkoutResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BadRequestResponse"
                 }
               }
             }
@@ -2813,7 +2781,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
+                  "$ref": "#/components/schemas/TooManyRequestsResponse"
                 }
               }
             }
@@ -2824,6 +2792,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ServerErrorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestResponse"
                 }
               }
             }
@@ -2844,7 +2822,6 @@
             "in": "path",
             "description": "Id of the workout to rename",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2874,16 +2851,6 @@
           "204": {
             "description": "No Content"
           },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BadRequestResponse"
-                }
-              }
-            }
-          },
           "404": {
             "description": "Not Found",
             "content": {
@@ -2919,7 +2886,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
+                  "$ref": "#/components/schemas/TooManyRequestsResponse"
                 }
               }
             }
@@ -2933,6 +2900,16 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -2943,14 +2920,13 @@
           "Workouts"
         ],
         "summary": "Delete Workout and Set Current",
-        "description": "Deletes a given workout. Removes it from the authenticated user's list of workouts, and from the list of workouts on the exercises of the deleted workout.\r\n<br /><br /> Also sets the current workout to the specified workout, if it exists.<br/><br/><div style=\"background-color: #2f3031;padding: 12px 0px 12px 12px;border-left: 5px solid #F90258;\">Potential 400 Errors: <b>WorkoutNotFound</b></div>",
+        "description": "Deletes a given workout. Removes it from the authenticated user's list of workouts, and from the list of workouts on the exercises of the deleted workout.\r\n\r\n\r\n Also sets the current workout to the specified workout, if it exists.<br/><br/><div style=\"background-color: #2f3031;padding: 12px 0px 12px 12px;border-left: 5px solid #F90258;\">Potential 400 Errors: <b>WorkoutNotFound</b></div>",
         "parameters": [
           {
             "name": "workoutId",
             "in": "path",
             "description": "Id of the workout to delete",
             "required": true,
-            "style": "simple",
             "schema": {
               "type": "string"
             }
@@ -2980,16 +2956,6 @@
           "204": {
             "description": "No Content"
           },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BadRequestResponse"
-                }
-              }
-            }
-          },
           "404": {
             "description": "Not Found",
             "content": {
@@ -3025,7 +2991,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ForbiddenResponse"
+                  "$ref": "#/components/schemas/TooManyRequestsResponse"
                 }
               }
             }
@@ -3036,6 +3002,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ServerErrorResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestResponse"
                 }
               }
             }
@@ -4050,6 +4026,18 @@
               "$ref": "#/components/schemas/SetRoutineDayRequest"
             },
             "description": "Days of the routine"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TooManyRequestsResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Response message.",
+            "nullable": true,
+            "example": "Too many requests. Please try again later."
           }
         },
         "additionalProperties": false

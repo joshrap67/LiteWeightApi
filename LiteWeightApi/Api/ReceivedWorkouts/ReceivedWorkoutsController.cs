@@ -17,7 +17,7 @@ public class ReceivedWorkoutsController : BaseController
 {
 	private readonly ICommandDispatcher _dispatcher;
 
-	public ReceivedWorkoutsController(Serilog.ILogger logger, ICommandDispatcher dispatcher) : base(logger)
+	public ReceivedWorkoutsController(ICommandDispatcher dispatcher)
 	{
 		_dispatcher = dispatcher;
 	}
@@ -49,7 +49,6 @@ public class ReceivedWorkoutsController : BaseController
 	[HttpPost("{receivedWorkoutId}/accept")]
 	[InvalidRequest, MaxLimit, AlreadyExists]
 	[ProducesResponseType(StatusCodes.Status201Created)]
-	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult<AcceptReceivedWorkoutResponse>> AcceptReceivedWorkout(string receivedWorkoutId,
 		AcceptReceivedWorkoutRequest request)

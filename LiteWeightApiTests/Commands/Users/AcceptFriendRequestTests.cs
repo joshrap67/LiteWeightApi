@@ -40,13 +40,12 @@ public class AcceptFriendRequestTests : BaseTest
 			.Create();
 		var acceptedUser = Fixture.Build<User>()
 			.With(x => x.Id, command.AcceptedUserId)
-			.With(x => x.Friends, new List<Friend>
-			{
+			.With(x => x.Friends, [
 				Fixture.Build<Friend>()
 					.With(x => x.UserId, command.InitiatorUserId)
 					.With(x => x.Confirmed, false)
 					.Create()
-			})
+			])
 			.Create();
 
 		_mockRepository

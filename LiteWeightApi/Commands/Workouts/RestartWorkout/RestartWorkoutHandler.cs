@@ -39,21 +39,19 @@ public class RestartWorkoutHandler : ICommandHandler<RestartWorkout, UserAndWork
 				foreach (var routineExercise in day.Exercises)
 				{
 					totalCount++;
-					if (routineExercise.Completed)
-					{
-						completedCount++;
-						routineExercise.Completed = false;
+					if (!routineExercise.Completed) continue;
+					
+					completedCount++;
+					routineExercise.Completed = false;
 
-						if (user.Settings.UpdateDefaultWeightOnRestart)
-						{
-							// automatically update default weight with this weight if it's higher than previous
-							var exerciseId = routineExercise.ExerciseId;
-							var ownedExercise = exerciseIdToExercise[exerciseId];
-							if (routineExercise.Weight > ownedExercise.DefaultWeight)
-							{
-								ownedExercise.DefaultWeight = routineExercise.Weight;
-							}
-						}
+					if (!user.Settings.UpdateDefaultWeightOnRestart) continue;
+					
+					// automatically update default weight with this weight if it's higher than previous
+					var exerciseId = routineExercise.ExerciseId;
+					var ownedExercise = exerciseIdToExercise[exerciseId];
+					if (routineExercise.Weight > ownedExercise.DefaultWeight)
+					{
+						ownedExercise.DefaultWeight = routineExercise.Weight;
 					}
 				}
 			}
