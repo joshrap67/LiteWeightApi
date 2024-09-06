@@ -2,8 +2,15 @@ using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
 
 namespace LiteWeightAPI.Middleware;
 
-public class EmailVerifiedMiddleware(RequestDelegate next)
+public class EmailVerifiedMiddleware
 {
+	private readonly RequestDelegate _next;
+
+	public EmailVerifiedMiddleware(RequestDelegate next)
+	{
+		_next = next;
+	}
+
 	public async Task InvokeAsync(HttpContext context)
 	{
 		var emailVerified = context.User.Claims.ToList().FirstOrDefault(x => x.Type == "email_verified");
@@ -12,6 +19,6 @@ public class EmailVerifiedMiddleware(RequestDelegate next)
 			throw new ForbiddenException("Email not verified");
 		}
 
-		await next(context);
+		await _next(context);
 	}
 }
