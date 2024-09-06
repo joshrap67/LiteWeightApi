@@ -22,11 +22,7 @@ public class StatisticsService : IStatisticsService
 					var exerciseId = routineExercise.ExerciseId;
 					foreach (var focus in exerciseIdToExercise[exerciseId].Focuses)
 					{
-						if (!focusCount.ContainsKey(focus))
-						{
-							focusCount[focus] = 1;
-						}
-						else
+						if (!focusCount.TryAdd(focus, 1))
 						{
 							focusCount[focus]++;
 						}
@@ -35,7 +31,7 @@ public class StatisticsService : IStatisticsService
 			}
 		}
 
-		if (!focusCount.Values.Any())
+		if (focusCount.Values.Count == 0)
 		{
 			return "";
 		}

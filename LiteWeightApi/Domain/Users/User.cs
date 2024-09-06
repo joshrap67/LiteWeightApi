@@ -33,17 +33,17 @@ public class User
 	public UserSettings Settings { get; set; }
 
 	[FirestoreProperty("workouts")]
-	public List<WorkoutInfo> Workouts { get; set; } = new();
+	public List<WorkoutInfo> Workouts { get; set; } = [];
 
 	[FirestoreProperty("exercises")]
-	public List<OwnedExercise> Exercises { get; set; } = new();
+	public List<OwnedExercise> Exercises { get; set; } = [];
 
 	[FirestoreProperty("friends")]
-	public List<Friend> Friends { get; set; } = new();
+	public List<Friend> Friends { get; set; } = [];
 
 	[FirestoreProperty("friendRequests")]
-	public List<FriendRequest> FriendRequests { get; set; } = new();
+	public List<FriendRequest> FriendRequests { get; set; } = [];
 
 	[FirestoreProperty("receivedWorkouts")]
-	public List<ReceivedWorkoutInfo> ReceivedWorkouts { get; set; } = new();
+	public List<ReceivedWorkoutInfo> ReceivedWorkouts { get; set; } = [];
 }

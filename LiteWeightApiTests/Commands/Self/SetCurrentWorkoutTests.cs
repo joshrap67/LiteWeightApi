@@ -27,7 +27,7 @@ public class SetCurrentWorkoutTests : BaseTest
 		var workoutInfo = Fixture.Build<WorkoutInfo>().With(x => x.WorkoutId, command.CurrentWorkoutId).Create();
 		var user = Fixture.Build<User>()
 			.With(x => x.Id, command.UserId)
-			.With(x => x.Workouts, new List<WorkoutInfo> { workoutInfo })
+			.With(x => x.Workouts, [workoutInfo])
 			.Create();
 		var instant = Fixture.Create<Instant>();
 		_mockClock.Setup(x => x.GetCurrentInstant()).Returns(instant);

@@ -48,10 +48,7 @@ public class SendWorkoutTests : BaseTest
 		var recipientUser = Fixture.Build<User>()
 			.With(x => x.Id, command.RecipientUserId)
 			.With(x => x.Settings, preferences)
-			.With(x => x.Friends, new List<Friend>
-			{
-				Fixture.Build<Friend>().With(x => x.UserId, command.SenderUserId).Create()
-			})
+			.With(x => x.Friends, [Fixture.Build<Friend>().With(x => x.UserId, command.SenderUserId).Create()])
 			.Create();
 
 		var senderUser = Fixture.Build<User>()

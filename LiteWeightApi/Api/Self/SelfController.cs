@@ -23,7 +23,7 @@ public class SelfController : BaseController
 	private readonly ICommandDispatcher _dispatcher;
 	private readonly IMapper _mapper;
 
-	public SelfController(ICommandDispatcher dispatcher, IMapper mapper, Serilog.ILogger logger) : base(logger)
+	public SelfController(ICommandDispatcher dispatcher, IMapper mapper)
 	{
 		_dispatcher = dispatcher;
 		_mapper = mapper;
@@ -51,7 +51,6 @@ public class SelfController : BaseController
 	[HttpPost]
 	[AlreadyExists, InvalidRequest]
 	[ProducesResponseType(StatusCodes.Status201Created)]
-	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	public async Task<ActionResult<UserResponse>> CreateSelf(CreateSelfRequest request)
 	{
 		var command = _mapper.Map<CreateSelf>(request);
@@ -67,7 +66,6 @@ public class SelfController : BaseController
 	[HttpPut("profile-picture")]
 	[InvalidRequest]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
-	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	public async Task<ActionResult> UpdateProfilePicture(UpdateProfilePictureRequest request)
 	{
 		await _dispatcher.DispatchAsync<UpdateProfilePicture, bool>(new UpdateProfilePicture
@@ -108,7 +106,6 @@ public class SelfController : BaseController
 	[HttpPut("settings")]
 	[InvalidRequest]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
-	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	public async Task<ActionResult> SetSettings(UserSettingsResponse request)
 	{
 		var command = _mapper.Map<SetSettings>(request);
@@ -123,7 +120,6 @@ public class SelfController : BaseController
 	[HttpPut("current-workout")]
 	[WorkoutNotFound]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
-	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	public async Task<ActionResult> SetCurrentWorkout(SetCurrentWorkoutRequest request)
 	{
 		await _dispatcher.DispatchAsync<SetCurrentWorkout, bool>(new SetCurrentWorkout

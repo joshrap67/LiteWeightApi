@@ -45,10 +45,7 @@ public class SearchByUsernameTests : BaseTest
 		var foundUser = Fixture.Build<User>()
 			.With(x => x.Username, command.Username)
 			.With(x => x.Settings, preferences)
-			.With(x => x.Friends, new List<Friend>
-			{
-				Fixture.Build<Friend>().With(x => x.UserId, command.InitiatorId).Create()
-			})
+			.With(x => x.Friends, [Fixture.Build<Friend>().With(x => x.UserId, command.InitiatorId).Create()])
 			.Create();
 
 		_mockRepository

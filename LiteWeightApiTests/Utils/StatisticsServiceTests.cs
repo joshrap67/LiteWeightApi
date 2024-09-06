@@ -91,8 +91,8 @@ public class StatisticsServiceTests : BaseTest
 		get
 		{
 			var fixture = new Fixture();
-			yield return new object[]
-			{
+			yield return
+			[
 				new Dictionary<string, OwnedExercise>
 				{
 					{
@@ -122,9 +122,9 @@ public class StatisticsServiceTests : BaseTest
 					}
 				},
 				"Back"
-			};
-			yield return new object[]
-			{
+			];
+			yield return
+			[
 				new Dictionary<string, OwnedExercise>
 				{
 					{
@@ -154,9 +154,9 @@ public class StatisticsServiceTests : BaseTest
 					}
 				},
 				"Legs,Cardio"
-			};
-			yield return new object[]
-			{
+			];
+			yield return
+			[
 				new Dictionary<string, OwnedExercise>
 				{
 					{
@@ -187,7 +187,7 @@ public class StatisticsServiceTests : BaseTest
 					}
 				},
 				"Biceps"
-			};
+			];
 		}
 	}
 }

@@ -106,11 +106,11 @@ public class AcceptReceivedWorkoutHandler : ICommandHandler<AcceptReceivedWorkou
 		};
 	}
 
-	private static IEnumerable<OwnedExercise> GetNewExercisesFromReceivedWorkout(ReceivedWorkout receivedWorkout, User user)
+	private static List<OwnedExercise> GetNewExercisesFromReceivedWorkout(ReceivedWorkout receivedWorkout, User user)
 	{
 		if (receivedWorkout == null || user == null)
 		{
-			return new List<OwnedExercise>();
+			return [];
 		}
 
 		var newExercises = new List<OwnedExercise>();

@@ -47,7 +47,7 @@ public class DefaultResponsesOperationFilter : IOperationFilter
 				{
 					[contentType] = new()
 					{
-						Schema = context.SchemaGenerator.GenerateSchema(typeof(ForbiddenResponse),
+						Schema = context.SchemaGenerator.GenerateSchema(typeof(TooManyRequestsResponse),
 							context.SchemaRepository)
 					}
 				}

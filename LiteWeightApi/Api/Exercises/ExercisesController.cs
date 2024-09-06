@@ -18,7 +18,7 @@ public class ExercisesController : BaseController
 	private readonly ICommandDispatcher _dispatcher;
 	private readonly IMapper _mapper;
 
-	public ExercisesController(ILogger logger, ICommandDispatcher dispatcher, IMapper mapper) : base(logger)
+	public ExercisesController(ICommandDispatcher dispatcher, IMapper mapper)
 	{
 		_dispatcher = dispatcher;
 		_mapper = mapper;
@@ -29,7 +29,6 @@ public class ExercisesController : BaseController
 	[HttpPost]
 	[AlreadyExists, InvalidRequest, MaxLimit]
 	[ProducesResponseType(StatusCodes.Status201Created)]
-	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	public async Task<ActionResult<OwnedExerciseResponse>> CreateExercise(SetExerciseRequest request)
 	{
 		var command = _mapper.Map<CreateExercise>(request);
@@ -46,7 +45,6 @@ public class ExercisesController : BaseController
 	[HttpPut("{exerciseId}")]
 	[AlreadyExists, InvalidRequest]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
-	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult> UpdateExercise(string exerciseId, SetExerciseRequest request)
 	{

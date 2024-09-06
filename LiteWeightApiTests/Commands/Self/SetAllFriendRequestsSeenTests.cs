@@ -21,13 +21,12 @@ public class SetAllFriendRequestsSeenTests : BaseTest
 		var command = Fixture.Create<SetAllFriendRequestsSeen>();
 		var user = Fixture.Build<User>()
 			.With(x => x.FriendRequests,
-				new List<FriendRequest>
-				{
-					Fixture.Build<FriendRequest>().With(x => x.Seen, false).Create(),
-					Fixture.Build<FriendRequest>().With(x => x.Seen, false).Create(),
-					Fixture.Build<FriendRequest>().With(x => x.Seen, false).Create(),
-					Fixture.Build<FriendRequest>().With(x => x.Seen, true).Create()
-				})
+			[
+				Fixture.Build<FriendRequest>().With(x => x.Seen, false).Create(),
+				Fixture.Build<FriendRequest>().With(x => x.Seen, false).Create(),
+				Fixture.Build<FriendRequest>().With(x => x.Seen, false).Create(),
+				Fixture.Build<FriendRequest>().With(x => x.Seen, true).Create()
+			])
 			.Create();
 
 		_mockRepository
@@ -43,7 +42,7 @@ public class SetAllFriendRequestsSeenTests : BaseTest
 	{
 		var command = Fixture.Create<SetAllFriendRequestsSeen>();
 		var user = Fixture.Build<User>()
-			.With(x => x.FriendRequests, new List<FriendRequest>())
+			.With(x => x.FriendRequests, [])
 			.Create();
 
 		_mockRepository

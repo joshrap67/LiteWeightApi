@@ -27,7 +27,7 @@ public class UsersController : BaseController
 {
 	private readonly ICommandDispatcher _dispatcher;
 
-	public UsersController(ILogger logger, ICommandDispatcher dispatcher) : base(logger)
+	public UsersController(ICommandDispatcher dispatcher)
 	{
 		_dispatcher = dispatcher;
 	}
@@ -38,7 +38,6 @@ public class UsersController : BaseController
 	[HttpGet("search")]
 	[InvalidRequest, UserNotFound]
 	[ProducesResponseType(StatusCodes.Status200OK)]
-	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	public async Task<ActionResult<SearchUserResponse>> SearchByUsername([FromQuery] [Required] string username)
 	{
 		var result = await _dispatcher.DispatchAsync<SearchByUsername, SearchUserResponse>(new SearchByUsername
@@ -67,7 +66,6 @@ public class UsersController : BaseController
 	[MaxLimit, MiscError]
 	[PushNotification]
 	[ProducesResponseType(StatusCodes.Status200OK)]
-	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult<FriendResponse>> SendFriendRequest(string userId)
 	{
@@ -87,7 +85,6 @@ public class UsersController : BaseController
 	[InvalidRequest, MaxLimit, MiscError, WorkoutNotFound]
 	[PushNotification]
 	[ProducesResponseType(StatusCodes.Status201Created)]
-	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult<SendWorkoutResponse>> SendWorkout(SendWorkoutRequest request, string userId)
 	{
@@ -108,7 +105,6 @@ public class UsersController : BaseController
 	[MaxLimit]
 	[PushNotification]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
-	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult> AcceptFriendRequest(string userId)
 	{
@@ -178,7 +174,6 @@ public class UsersController : BaseController
 	[HttpPost("{userId}/report")]
 	[InvalidRequest]
 	[ProducesResponseType(StatusCodes.Status201Created)]
-	[ProducesResponseType(StatusCodes.Status400BadRequest)]
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult<ComplaintResponse>> Report(string userId, ReportUserRequest request)
 	{

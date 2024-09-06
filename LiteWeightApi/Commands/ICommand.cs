@@ -1,5 +1,3 @@
 namespace LiteWeightAPI.Commands;
 
-public interface ICommand<TResult>
-{
-}
+public interface ICommand<TResult>;

@@ -34,6 +34,7 @@ app.UseAuthentication();
 app.UseRouting();
 app.UseAuthorization();
 app.UseMiddleware<EmailVerifiedMiddleware>();
+app.UseMiddleware<LogInfoMiddleware>();
 app.MapControllers();
 app.UseRateLimiter();
 

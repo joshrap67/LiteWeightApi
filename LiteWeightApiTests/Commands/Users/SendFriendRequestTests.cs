@@ -69,10 +69,7 @@ public class SendFriendRequestTests : BaseTest
 
 		var senderUser = Fixture.Build<User>()
 			.With(x => x.Id, command.SenderId)
-			.With(x => x.Friends, new List<Friend>
-			{
-				Fixture.Build<Friend>().With(x => x.UserId, command.RecipientId).Create()
-			})
+			.With(x => x.Friends, [Fixture.Build<Friend>().With(x => x.UserId, command.RecipientId).Create()])
 			.Create();
 
 		_mockRepository
@@ -169,10 +166,7 @@ public class SendFriendRequestTests : BaseTest
 		var recipientUser = Fixture.Build<User>()
 			.With(x => x.Id, command.RecipientId)
 			.With(x => x.Settings, preferences)
-			.With(x => x.Friends, new List<Friend>
-			{
-				Fixture.Build<Friend>().With(x => x.UserId, command.SenderId).Create()
-			})
+			.With(x => x.Friends, [Fixture.Build<Friend>().With(x => x.UserId, command.SenderId).Create()])
 			.Create();
 
 		var friends = Enumerable.Range(0, Globals.MaxNumberFriends + 1)

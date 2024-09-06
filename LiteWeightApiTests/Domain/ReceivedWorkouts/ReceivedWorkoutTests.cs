@@ -14,12 +14,10 @@ public class ReceivedWorkoutTests : BaseTest
 			.SelectMany(x => x.Days)
 			.SelectMany(x => x.Exercises)
 			.ToList();
-		var ownedExercises = new List<OwnedExercise>();
-		foreach (var exerciseId in distinctExercises.Select(x => x.ExerciseId))
-		{
-			var exercise = Fixture.Build<OwnedExercise>().With(x => x.Id, exerciseId).Create();
-			ownedExercises.Add(exercise);
-		}
+		var ownedExercises = distinctExercises
+			.Select(x => x.ExerciseId)
+			.Select(exerciseId => Fixture.Build<OwnedExercise>().With(x => x.Id, exerciseId).Create())
+			.ToList();
 
 		var sender = Fixture.Build<User>().With(x => x.Exercises, ownedExercises).Create();
 		var receivedWorkoutId = Fixture.Create<string>();

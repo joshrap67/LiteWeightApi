@@ -6,10 +6,6 @@ namespace LiteWeightAPI.Swagger;
 
 public class CreateSwaggerInfoSection : IConfigureOptions<SwaggerGenOptions>
 {
-	public CreateSwaggerInfoSection()
-	{
-	}
-
 	public void Configure(SwaggerGenOptions options)
 	{
 		options.SwaggerDoc("v1", CreateApiInfo());

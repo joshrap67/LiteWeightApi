@@ -12,7 +12,7 @@ public class ComplaintsController : BaseController
 {
 	private readonly ICommandDispatcher _dispatcher;
 
-	public ComplaintsController(ILogger logger, ICommandDispatcher dispatcher) : base(logger)
+	public ComplaintsController(ICommandDispatcher dispatcher)
 	{
 		_dispatcher = dispatcher;
 	}
