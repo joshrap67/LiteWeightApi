@@ -1,6 +1,6 @@
 # Overview
 
-This REST API provides functionality for the mobile
+This HTTP API provides functionality for the mobile
 application [LiteWeight](https://play.google.com/store/apps/details?id=com.joshrap.liteweight&hl=en_US&gl=US). While
 that is the primary consumer, this API can still be consumed if the authentication steps below are followed.
 
