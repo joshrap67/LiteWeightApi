@@ -2,8 +2,7 @@ using AutoMapper;
 using LiteWeightAPI.Api.Self.Requests;
 using LiteWeightAPI.Api.Self.Responses;
 using LiteWeightAPI.Api.Users.Responses;
-using LiteWeightAPI.Commands.Self.CreateSelf;
-using LiteWeightAPI.Commands.Self.SetSettings;
+using LiteWeightAPI.Commands.Self;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.ExtensionMethods;
 

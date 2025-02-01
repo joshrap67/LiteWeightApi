@@ -1,8 +1,7 @@
 using AutoMapper;
 using LiteWeightAPI.Api.Exercises.Requests;
 using LiteWeightAPI.Api.Exercises.Responses;
-using LiteWeightAPI.Commands.Exercises.CreateExercise;
-using LiteWeightAPI.Commands.Exercises.UpdateExercise;
+using LiteWeightAPI.Commands.Exercises;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.ExtensionMethods;
 

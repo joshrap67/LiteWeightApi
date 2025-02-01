@@ -1,4 +1,4 @@
-using LiteWeightAPI.Commands.Complaints.GetComplaint;
+using LiteWeightAPI.Commands.Complaints;
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Complaints;
 using LiteWeightAPI.Errors.Exceptions.BaseExceptions;

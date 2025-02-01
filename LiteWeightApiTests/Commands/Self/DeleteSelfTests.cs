@@ -1,4 +1,4 @@
-using LiteWeightAPI.Commands.Self.DeleteSelf;
+using LiteWeightAPI.Commands.Self;
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Errors.Exceptions.BaseExceptions;

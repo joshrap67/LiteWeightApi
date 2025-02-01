@@ -1,4 +1,4 @@
-using LiteWeightAPI.Commands.Users.SearchByUsername;
+using LiteWeightAPI.Commands.Users;
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightApiTests.TestHelpers;

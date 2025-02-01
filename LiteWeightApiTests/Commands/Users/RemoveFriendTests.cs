@@ -1,4 +1,4 @@
-using LiteWeightAPI.Commands.Users.RemoveFriend;
+using LiteWeightAPI.Commands.Users;
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Errors.Exceptions.BaseExceptions;

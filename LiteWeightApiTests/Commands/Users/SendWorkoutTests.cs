@@ -1,4 +1,4 @@
-using LiteWeightAPI.Commands.Users.SendWorkout;
+using LiteWeightAPI.Commands.Users;
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Domain.Workouts;

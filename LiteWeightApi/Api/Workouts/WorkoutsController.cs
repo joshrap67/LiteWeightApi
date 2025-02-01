@@ -4,16 +4,6 @@ using LiteWeightAPI.Api.Workouts.Requests;
 using LiteWeightAPI.Api.Workouts.Responses;
 using LiteWeightAPI.Commands;
 using LiteWeightAPI.Commands.Workouts;
-using LiteWeightAPI.Commands.Workouts.CopyWorkout;
-using LiteWeightAPI.Commands.Workouts.CreateWorkout;
-using LiteWeightAPI.Commands.Workouts.DeleteWorkout;
-using LiteWeightAPI.Commands.Workouts.DeleteWorkoutAndSetCurrent;
-using LiteWeightAPI.Commands.Workouts.GetWorkout;
-using LiteWeightAPI.Commands.Workouts.RenameWorkout;
-using LiteWeightAPI.Commands.Workouts.ResetStatistics;
-using LiteWeightAPI.Commands.Workouts.RestartWorkout;
-using LiteWeightAPI.Commands.Workouts.UpdateRoutine;
-using LiteWeightAPI.Commands.Workouts.UpdateWorkoutProgress;
 using LiteWeightAPI.Errors.Attributes;
 using Microsoft.AspNetCore.Mvc;
 

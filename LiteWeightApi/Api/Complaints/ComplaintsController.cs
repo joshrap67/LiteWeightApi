@@ -1,6 +1,6 @@
 using LiteWeightAPI.Api.Complaints.Responses;
 using LiteWeightAPI.Commands;
-using LiteWeightAPI.Commands.Complaints.GetComplaint;
+using LiteWeightAPI.Commands.Complaints;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LiteWeightAPI.Api.Complaints;

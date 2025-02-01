@@ -1,4 +1,4 @@
-using LiteWeightAPI.Commands.Exercises.CreateExercise;
+using LiteWeightAPI.Commands.Exercises;
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Errors.Exceptions;

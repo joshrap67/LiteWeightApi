@@ -1,5 +1,4 @@
 using LiteWeightAPI.Commands.Workouts;
-using LiteWeightAPI.Commands.Workouts.UpdateRoutine;
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Domain.Workouts;

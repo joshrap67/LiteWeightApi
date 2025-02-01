@@ -1,4 +1,4 @@
-using LiteWeightAPI.Commands.Self.UpdateProfilePicture;
+using LiteWeightAPI.Commands.Self;
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Services;

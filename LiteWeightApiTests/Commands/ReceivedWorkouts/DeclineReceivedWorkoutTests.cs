@@ -1,4 +1,4 @@
-using LiteWeightAPI.Commands.ReceivedWorkouts.DeclineReceivedWorkout;
+using LiteWeightAPI.Commands.ReceivedWorkouts;
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.ReceivedWorkouts;
 using LiteWeightAPI.Domain.Users;

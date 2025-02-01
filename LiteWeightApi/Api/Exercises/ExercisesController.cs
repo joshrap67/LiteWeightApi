@@ -2,9 +2,7 @@ using AutoMapper;
 using LiteWeightAPI.Api.Exercises.Requests;
 using LiteWeightAPI.Api.Exercises.Responses;
 using LiteWeightAPI.Commands;
-using LiteWeightAPI.Commands.Exercises.CreateExercise;
-using LiteWeightAPI.Commands.Exercises.DeleteExercise;
-using LiteWeightAPI.Commands.Exercises.UpdateExercise;
+using LiteWeightAPI.Commands.Exercises;
 using LiteWeightAPI.Errors.Attributes;
 using Microsoft.AspNetCore.Mvc;
 

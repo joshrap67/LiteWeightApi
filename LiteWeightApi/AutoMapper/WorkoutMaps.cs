@@ -2,7 +2,6 @@
 using LiteWeightAPI.Api.Workouts.Requests;
 using LiteWeightAPI.Api.Workouts.Responses;
 using LiteWeightAPI.Commands.Workouts;
-using LiteWeightAPI.Commands.Workouts.CreateWorkout;
 using LiteWeightAPI.Domain.Workouts;
 using LiteWeightAPI.ExtensionMethods;
 

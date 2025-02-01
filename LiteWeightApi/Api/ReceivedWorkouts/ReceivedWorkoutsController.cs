@@ -1,11 +1,8 @@
 using LiteWeightAPI.Api.ReceivedWorkouts.Requests;
 using LiteWeightAPI.Api.ReceivedWorkouts.Responses;
 using LiteWeightAPI.Commands;
-using LiteWeightAPI.Commands.ReceivedWorkouts.AcceptReceivedWorkout;
-using LiteWeightAPI.Commands.ReceivedWorkouts.DeclineReceivedWorkout;
-using LiteWeightAPI.Commands.ReceivedWorkouts.GetReceivedWorkout;
-using LiteWeightAPI.Commands.Self.SetAllReceivedWorkoutsSeen;
-using LiteWeightAPI.Commands.Self.SetReceivedWorkoutSeen;
+using LiteWeightAPI.Commands.ReceivedWorkouts;
+using LiteWeightAPI.Commands.Self;
 using LiteWeightAPI.Errors.Attributes;
 using Microsoft.AspNetCore.Mvc;
 

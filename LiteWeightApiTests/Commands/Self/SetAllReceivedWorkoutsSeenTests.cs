@@ -1,4 +1,4 @@
-using LiteWeightAPI.Commands.Self.SetAllReceivedWorkoutsSeen;
+using LiteWeightAPI.Commands.Self;
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Users;
 

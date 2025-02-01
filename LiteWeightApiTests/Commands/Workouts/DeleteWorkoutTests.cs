@@ -1,4 +1,4 @@
-using LiteWeightAPI.Commands.Workouts.DeleteWorkout;
+using LiteWeightAPI.Commands.Workouts;
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Domain.Workouts;
