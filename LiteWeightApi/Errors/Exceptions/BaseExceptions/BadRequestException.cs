@@ -12,7 +12,7 @@ public class BadRequestException : Exception
 	public BadRequestResponse FormattedResponse { get; }
 
 	protected static BadRequestResponse GetFormattedResponse(string message, string errorType,
-		IEnumerable<ModelBindingError> bindingErrors = null)
+		IEnumerable<ModelBindingError>? bindingErrors = null)
 	{
 		return new BadRequestResponse
 		{

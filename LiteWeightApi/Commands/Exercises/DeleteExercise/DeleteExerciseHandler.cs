@@ -16,7 +16,7 @@ public class DeleteExerciseHandler : ICommandHandler<DeleteExercise, bool>
 
 	public async Task<bool> HandleAsync(DeleteExercise command)
 	{
-		var user = await _repository.GetUser(command.UserId);
+		var user = (await _repository.GetUser(command.UserId))!;
 		var oldExercise = user.Exercises.FirstOrDefault(x => x.Id == command.ExerciseId);
 		if (oldExercise == null)
 		{
@@ -30,7 +30,7 @@ public class DeleteExerciseHandler : ICommandHandler<DeleteExercise, bool>
 		foreach (var workoutId in ownedExercise.Workouts.Select(x => x.WorkoutId))
 		{
 			var workout = await _repository.GetWorkout(workoutId);
-			workout.Routine.DeleteExerciseFromRoutine(command.ExerciseId);
+			workout!.Routine.DeleteExerciseFromRoutine(command.ExerciseId);
 			workouts.Add(workout);
 		}
 

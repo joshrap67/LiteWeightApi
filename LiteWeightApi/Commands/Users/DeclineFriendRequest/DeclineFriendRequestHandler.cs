@@ -1,7 +1,7 @@
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Users;
+using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
 using LiteWeightAPI.Services;
-using LiteWeightAPI.Utils;
 
 namespace LiteWeightAPI.Commands.Users.DeclineFriendRequest;
 
@@ -18,16 +18,20 @@ public class DeclineFriendRequestHandler : ICommandHandler<DeclineFriendRequest,
 
 	public async Task<bool> HandleAsync(DeclineFriendRequest command)
 	{
-		var initiator = await _repository.GetUser(command.InitiatorUserId);
+		var initiator = (await _repository.GetUser(command.InitiatorUserId))!;
 		var userToDecline = await _repository.GetUser(command.UserIdToDecline);
 
-		ValidationUtils.UserExists(userToDecline);
+		if (userToDecline == null)
+		{
+			throw new ResourceNotFoundException("User");
+		}
 
 		var friendRequest = initiator.FriendRequests.FirstOrDefault(x => x.UserId == command.UserIdToDecline);
 		if (friendRequest == null) return false;
 		initiator.FriendRequests.Remove(friendRequest);
 
 		var initiatorToRemove = userToDecline.Friends.FirstOrDefault(x => x.UserId == command.InitiatorUserId);
+		if (initiatorToRemove == null) return false;
 		userToDecline.Friends.Remove(initiatorToRemove);
 
 		await _repository.ExecuteBatchWrite(usersToPut: new List<User> { initiator, userToDecline });

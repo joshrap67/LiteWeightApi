@@ -4,7 +4,7 @@ using LiteWeightAPI.Domain;
 
 namespace LiteWeightAPI.Commands.Users.SearchByUsername;
 
-public class SearchByUsernameHandler : ICommandHandler<SearchByUsername, SearchUserResponse>
+public class SearchByUsernameHandler : ICommandHandler<SearchByUsername, SearchUserResponse?>
 {
 	private readonly IMapper _mapper;
 	private readonly IRepository _repository;
@@ -15,7 +15,7 @@ public class SearchByUsernameHandler : ICommandHandler<SearchByUsername, SearchU
 		_repository = repository;
 	}
 
-	public async Task<SearchUserResponse> HandleAsync(SearchByUsername command)
+	public async Task<SearchUserResponse?> HandleAsync(SearchByUsername command)
 	{
 		var user = await _repository.GetUserByUsername(command.Username);
 		if (user == null)

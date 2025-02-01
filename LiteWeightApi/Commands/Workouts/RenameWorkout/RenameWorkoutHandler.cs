@@ -1,6 +1,7 @@
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Domain.Workouts;
+using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
 using LiteWeightAPI.Utils;
 
 namespace LiteWeightAPI.Commands.Workouts.RenameWorkout;
@@ -16,10 +17,13 @@ public class RenameWorkoutHandler : ICommandHandler<RenameWorkout, bool>
 
 	public async Task<bool> HandleAsync(RenameWorkout command)
 	{
+		var user = (await _repository.GetUser(command.UserId))!;
 		var workout = await _repository.GetWorkout(command.WorkoutId);
-		var user = await _repository.GetUser(command.UserId);
+		if (workout == null)
+		{
+			throw new ResourceNotFoundException("Workout");
+		}
 
-		ValidationUtils.WorkoutExists(workout);
 		ValidationUtils.EnsureWorkoutOwnership(user.Id, workout);
 		ValidationUtils.ValidWorkoutName(command.NewName, user);
 

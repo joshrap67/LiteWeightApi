@@ -8,5 +8,5 @@ public class RestartWorkoutRequest
 	/// Workout to restart.
 	/// </summary>
 	[Required]
-	public SetRoutineRequest Routine { get; set; }
+	public SetRoutineRequest Routine { get; set; } = null!;
 }

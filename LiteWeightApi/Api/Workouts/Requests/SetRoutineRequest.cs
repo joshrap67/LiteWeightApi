@@ -10,7 +10,7 @@ public class SetRoutineRequest
 	/// </summary>
 	[Required]
 	[MaxLength(Globals.MaxWeeksRoutine)]
-	public IList<SetRoutineWeekRequest> Weeks { get; set; } = new List<SetRoutineWeekRequest>();
+	public IList<SetRoutineWeekRequest> Weeks { get; set; } = [];
 }
 
 public class SetRoutineWeekRequest
@@ -20,7 +20,7 @@ public class SetRoutineWeekRequest
 	/// </summary>
 	[Required]
 	[MaxLength(Globals.MaxDaysRoutine)]
-	public IList<SetRoutineDayRequest> Days { get; set; } = new List<SetRoutineDayRequest>();
+	public IList<SetRoutineDayRequest> Days { get; set; } = [];
 }
 
 public class SetRoutineDayRequest
@@ -30,14 +30,14 @@ public class SetRoutineDayRequest
 	/// </summary>
 	/// <example>Back and Biceps Day</example>
 	[MaxLength(Globals.MaxDayTagLength)]
-	public string Tag { get; set; }
+	public string? Tag { get; set; }
 
 	/// <summary>
 	/// List of exercises for the given day.
 	/// </summary>
 	[Required]
 	[MaxLength(Globals.MaxExercises)]
-	public IList<SetRoutineExerciseRequest> Exercises { get; set; } = new List<SetRoutineExerciseRequest>();
+	public IList<SetRoutineExerciseRequest> Exercises { get; set; } = [];
 }
 
 public class SetRoutineExerciseRequest
@@ -47,7 +47,7 @@ public class SetRoutineExerciseRequest
 	/// </summary>
 	/// <example>88a54457-2253-404e-ac09-82a8f2ce5fb8</example>
 	[Required]
-	public string ExerciseId { get; set; }
+	public string ExerciseId { get; set; } = null!;
 
 	/// <summary>
 	/// Has the user completed this exercise?
@@ -83,5 +83,5 @@ public class SetRoutineExerciseRequest
 	/// </summary>
 	/// <example>Don't overextend arms.</example>
 	[MaxLength(Globals.MaxDetailsLength)]
-	public string Details { get; set; }
+	public string? Details { get; set; }
 }

@@ -9,5 +9,5 @@ public class SendWorkoutRequest
 	/// </summary>
 	/// <example>718e6712-744a-4075-897e-185d8c455c6a</example>
 	[Required]
-	public string WorkoutId { get; set; }
+	public string WorkoutId { get; set; } = null!;
 }

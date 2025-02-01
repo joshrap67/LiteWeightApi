@@ -4,6 +4,7 @@ using LiteWeightAPI.Api.Workouts.Responses;
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Domain.Workouts;
+using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
 using LiteWeightAPI.Utils;
 
 namespace LiteWeightAPI.Commands.Workouts.RestartWorkout;
@@ -21,11 +22,14 @@ public class RestartWorkoutHandler : ICommandHandler<RestartWorkout, UserAndWork
 
 	public async Task<UserAndWorkoutResponse> HandleAsync(RestartWorkout command)
 	{
-		var user = await _repository.GetUser(command.UserId);
+		var user = (await _repository.GetUser(command.UserId))!;
 		var workout = await _repository.GetWorkout(command.WorkoutId);
 		var routine = _mapper.Map<Routine>(command.Routine);
+		if (workout == null)
+		{
+			throw new ResourceNotFoundException("Workout");
+		}
 
-		ValidationUtils.WorkoutExists(workout);
 		ValidationUtils.EnsureWorkoutOwnership(user.Id, workout);
 
 		var workoutInfo = user.Workouts.First(x => x.WorkoutId == command.WorkoutId);
@@ -40,12 +44,12 @@ public class RestartWorkoutHandler : ICommandHandler<RestartWorkout, UserAndWork
 				{
 					totalCount++;
 					if (!routineExercise.Completed) continue;
-					
+
 					completedCount++;
 					routineExercise.Completed = false;
 
 					if (!user.Settings.UpdateDefaultWeightOnRestart) continue;
-					
+
 					// automatically update default weight with this weight if it's higher than previous
 					var exerciseId = routineExercise.ExerciseId;
 					var ownedExercise = exerciseIdToExercise[exerciseId];

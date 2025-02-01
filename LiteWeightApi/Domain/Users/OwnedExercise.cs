@@ -9,7 +9,7 @@ public class OwnedExercise
 	public string Id { get; set; } = Guid.NewGuid().ToString();
 
 	[FirestoreProperty("name")]
-	public string Name { get; set; }
+	public required string Name { get; set; }
 
 	[FirestoreProperty("defaultWeight")]
 	public double DefaultWeight { get; set; } // stored in lbs
@@ -21,10 +21,10 @@ public class OwnedExercise
 	public int DefaultReps { get; set; } = 15;
 
 	[FirestoreProperty("defaultDetails")]
-	public string DefaultDetails { get; set; } = "";
+	public string? DefaultDetails { get; set; }
 
 	[FirestoreProperty("videoUrl")]
-	public string VideoUrl { get; set; } = "";
+	public string? VideoUrl { get; set; }
 
 	[FirestoreProperty("focuses")]
 	public IList<string> Focuses { get; set; } = new List<string>();
@@ -33,7 +33,7 @@ public class OwnedExercise
 	public IList<OwnedExerciseWorkout> Workouts { get; set; } = new List<OwnedExerciseWorkout>();
 
 	public void Update(string exerciseName, double defaultWeight, int defaultSets, int defaultReps,
-		string defaultDetails, string videoUrl, IList<string> focuses)
+		string? defaultDetails, string? videoUrl, IList<string> focuses)
 	{
 		Name = exerciseName;
 		DefaultWeight = defaultWeight;

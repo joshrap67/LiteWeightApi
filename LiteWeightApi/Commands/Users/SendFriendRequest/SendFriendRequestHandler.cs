@@ -6,7 +6,6 @@ using LiteWeightAPI.Errors.Exceptions;
 using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
 using LiteWeightAPI.Imports;
 using LiteWeightAPI.Services;
-using LiteWeightAPI.Utils;
 using NodaTime;
 
 namespace LiteWeightAPI.Commands.Users.SendFriendRequest;
@@ -36,11 +35,14 @@ public class SendFriendRequestHandler : ICommandHandler<SendFriendRequest, Frien
 			throw new MiscErrorException("Cannot send a friend request to yourself");
 		}
 
-		var senderUser = await _repository.GetUser(senderId);
+		var senderUser = (await _repository.GetUser(senderId))!;
 		var recipientUser = await _repository.GetUser(recipientId);
 
 		// validation
-		ValidationUtils.UserExists(recipientUser);
+		if (recipientUser == null)
+		{
+			throw new ResourceNotFoundException("User");
+		}
 		var senderUserId = senderUser.Id;
 
 		if (recipientUser.Settings.PrivateAccount)

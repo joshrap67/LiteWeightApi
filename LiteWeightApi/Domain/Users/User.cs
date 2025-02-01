@@ -6,31 +6,31 @@ namespace LiteWeightAPI.Domain.Users;
 public class User
 {
 	[FirestoreDocumentId]
-	public string Id { get; set; }
+	public string Id { get; set; } = null!;
 
 	[FirestoreProperty("username")]
-	public string Username { get; set; }
+	public required string Username { get; set; }
 
 	[FirestoreProperty("email")]
-	public string Email { get; set; }
+	public required string Email { get; set; }
 
 	[FirestoreProperty("profilePicture")]
-	public string ProfilePicture { get; set; }
+	public required string ProfilePicture { get; set; }
 
 	[FirestoreProperty("firebaseMessagingToken")]
-	public string FirebaseMessagingToken { get; set; }
+	public string? FirebaseMessagingToken { get; set; }
 
 	[FirestoreProperty("premiumToken")]
-	public string PremiumToken { get; set; }
+	public string? PremiumToken { get; set; }
 
 	[FirestoreProperty("currentWorkoutId")]
-	public string CurrentWorkoutId { get; set; }
+	public string? CurrentWorkoutId { get; set; }
 
 	[FirestoreProperty("workoutsSent")]
 	public int WorkoutsSent { get; set; }
 
 	[FirestoreProperty("settings")]
-	public UserSettings Settings { get; set; }
+	public required UserSettings Settings { get; set; }
 
 	[FirestoreProperty("workouts")]
 	public List<WorkoutInfo> Workouts { get; set; } = [];

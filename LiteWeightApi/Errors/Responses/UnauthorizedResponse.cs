@@ -6,5 +6,5 @@ public class UnauthorizedResponse
 	/// Response message.
 	/// </summary>
 	/// <example>Unauthorized access</example>
-	public string Message { get; set; }
+	public string Message { get; set; } = null!;
 }

@@ -20,8 +20,7 @@ public class CreateExerciseHandler : ICommandHandler<CreateExercise, OwnedExerci
 
 	public async Task<OwnedExerciseResponse> HandleAsync(CreateExercise command)
 	{
-		var user = await _repository.GetUser(command.UserId);
-
+		var user = (await _repository.GetUser(command.UserId))!;
 		var exerciseNames = user.Exercises.Select(x => x.Name);
 
 		if (exerciseNames.Any(x => x == command.Name))

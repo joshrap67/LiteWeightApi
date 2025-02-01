@@ -1,9 +1,9 @@
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Errors.Exceptions;
+using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
 using LiteWeightAPI.Imports;
 using LiteWeightAPI.Services;
-using LiteWeightAPI.Utils;
 
 namespace LiteWeightAPI.Commands.Users.AcceptFriendRequest;
 
@@ -20,10 +20,13 @@ public class AcceptFriendRequestHandler : ICommandHandler<AcceptFriendRequest, b
 
 	public async Task<bool> HandleAsync(AcceptFriendRequest command)
 	{
-		var initiator = await _repository.GetUser(command.InitiatorUserId);
+		var initiator = (await _repository.GetUser(command.InitiatorUserId))!;
 		var acceptedUser = await _repository.GetUser(command.AcceptedUserId);
 
-		ValidationUtils.UserExists(acceptedUser);
+		if (acceptedUser == null)
+		{
+			throw new ResourceNotFoundException("User");
+		}
 
 		if (initiator.Friends.Count >= Globals.MaxNumberFriends)
 		{

@@ -8,23 +8,9 @@ namespace LiteWeightAPI.Utils;
 
 public static class ValidationUtils
 {
-	public static void UserExists(User user)
-	{
-		if (user == null)
-		{
-			throw new ResourceNotFoundException("User");
-		}
-	}
+	
 
-	public static void WorkoutExists(Workout workout)
-	{
-		if (workout == null)
-		{
-			throw new ResourceNotFoundException("Workout");
-		}
-	}
-
-	public static void ReferencedWorkoutExists(Workout workout)
+	public static void ReferencedWorkoutExists(Workout? workout)
 	{
 		if (workout == null)
 		{
@@ -45,14 +31,6 @@ public static class ValidationUtils
 		if (receivedWorkout.RecipientId != userId)
 		{
 			throw new ForbiddenException("User does not have permissions to access received workout");
-		}
-	}
-
-	public static void ReceivedWorkoutExists(ReceivedWorkout workout)
-	{
-		if (workout == null)
-		{
-			throw new ResourceNotFoundException("Received workout");
 		}
 	}
 

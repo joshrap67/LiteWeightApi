@@ -7,6 +7,7 @@ using LiteWeightAPI.Domain.ReceivedWorkouts;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Domain.Workouts;
 using LiteWeightAPI.Errors.Exceptions;
+using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
 using LiteWeightAPI.Imports;
 using LiteWeightAPI.Utils;
 using NodaTime;
@@ -28,10 +29,13 @@ public class AcceptReceivedWorkoutHandler : ICommandHandler<AcceptReceivedWorkou
 
 	public async Task<AcceptReceivedWorkoutResponse> HandleAsync(AcceptReceivedWorkout command)
 	{
-		var user = await _repository.GetUser(command.UserId);
+		var user = (await _repository.GetUser(command.UserId))!;
 		var workoutToAccept = await _repository.GetReceivedWorkout(command.ReceivedWorkoutId);
 
-		ValidationUtils.ReceivedWorkoutExists(workoutToAccept);
+		if (workoutToAccept == null)
+		{
+			throw new ResourceNotFoundException("Received workout");
+		}
 		ValidationUtils.EnsureReceivedWorkoutOwnership(user.Id, workoutToAccept);
 
 		// lots of validation
@@ -106,7 +110,7 @@ public class AcceptReceivedWorkoutHandler : ICommandHandler<AcceptReceivedWorkou
 		};
 	}
 
-	private static List<OwnedExercise> GetNewExercisesFromReceivedWorkout(ReceivedWorkout receivedWorkout, User user)
+	private static List<OwnedExercise> GetNewExercisesFromReceivedWorkout(ReceivedWorkout? receivedWorkout, User? user)
 	{
 		if (receivedWorkout == null || user == null)
 		{

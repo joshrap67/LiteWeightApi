@@ -6,12 +6,12 @@ namespace LiteWeightAPI.Services;
 
 public interface IFcmService
 {
-	Task SendPushNotification(string targetToken, NotificationData notificationData);
+	Task SendPushNotification(string? targetToken, NotificationData notificationData);
 }
 
 public class FcmService : IFcmService
 {
-	public async Task SendPushNotification(string targetToken, NotificationData notificationData)
+	public async Task SendPushNotification(string? targetToken, NotificationData notificationData)
 	{
 		if (targetToken == null)
 		{

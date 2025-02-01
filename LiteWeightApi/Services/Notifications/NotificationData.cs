@@ -2,6 +2,6 @@
 
 public class NotificationData
 {
-	public string Action { get; set; }
-	public string JsonPayload { get; set; }
+	public required string Action { get; set; }
+	public required string JsonPayload { get; set; }
 }

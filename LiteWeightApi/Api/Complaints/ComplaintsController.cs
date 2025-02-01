@@ -2,7 +2,6 @@ using LiteWeightAPI.Api.Complaints.Responses;
 using LiteWeightAPI.Commands;
 using LiteWeightAPI.Commands.Complaints.GetComplaint;
 using Microsoft.AspNetCore.Mvc;
-using ILogger = Serilog.ILogger;
 
 namespace LiteWeightAPI.Api.Complaints;
 

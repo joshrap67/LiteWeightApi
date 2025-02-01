@@ -17,7 +17,6 @@ using LiteWeightAPI.Errors.Attributes.Setup;
 using LiteWeightAPI.Errors.Responses;
 using LiteWeightAPI.Imports;
 using Microsoft.AspNetCore.Mvc;
-using ILogger = Serilog.ILogger;
 
 namespace LiteWeightAPI.Api.Users;
 
@@ -40,7 +39,7 @@ public class UsersController : BaseController
 	[ProducesResponseType(StatusCodes.Status200OK)]
 	public async Task<ActionResult<SearchUserResponse>> SearchByUsername([FromQuery] [Required] string username)
 	{
-		var result = await _dispatcher.DispatchAsync<SearchByUsername, SearchUserResponse>(new SearchByUsername
+		var result = await _dispatcher.DispatchAsync<SearchByUsername, SearchUserResponse?>(new SearchByUsername
 		{
 			Username = username,
 			InitiatorId = CurrentUserId

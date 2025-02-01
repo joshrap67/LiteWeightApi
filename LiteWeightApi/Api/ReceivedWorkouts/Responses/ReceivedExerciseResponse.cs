@@ -6,7 +6,7 @@ public class ReceivedExerciseResponse
 	/// Name of the exercise.
 	/// </summary>
 	/// <example>Squat</example>
-	public string ExerciseName { get; set; }
+	public string ExerciseName { get; set; } = null!;
 
 	/// <summary>
 	/// Weight of the exercise (lb).
@@ -30,5 +30,5 @@ public class ReceivedExerciseResponse
 	/// Details of the exercise.
 	/// </summary>
 	/// <example>Don't lock knees.</example>
-	public string Details { get; set; }
+	public string? Details { get; set; }
 }

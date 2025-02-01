@@ -8,10 +8,10 @@ namespace LiteWeightAPI.Domain.Users;
 public class WorkoutInfo
 {
 	[FirestoreProperty("workoutId")]
-	public string WorkoutId { get; set; }
+	public required string WorkoutId { get; set; }
 
 	[FirestoreProperty("workoutName")]
-	public string WorkoutName { get; set; }
+	public required string WorkoutName { get; set; }
 	
 	[FirestoreProperty("currentDay")]
 	public int CurrentDay { get; set; }

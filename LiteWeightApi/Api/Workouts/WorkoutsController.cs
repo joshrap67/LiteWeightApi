@@ -209,7 +209,7 @@ public class WorkoutsController : BaseController
 	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult> DeleteWorkoutAndSetCurrent(string workoutId, SetCurrentWorkoutRequest request)
 	{
-		// combining these two actions since it is a really bad state to be in on the app atm if the delete succeeds and the set current workout does not. So need a transactional request
+		// combining these two actions since it is a terrible state to be in on the app atm if the delete succeeds and the set current workout does not. So need a transactional request
 		await _dispatcher.DispatchAsync<DeleteWorkoutAndSetCurrent, bool>(new DeleteWorkoutAndSetCurrent
 		{
 			UserId = CurrentUserId,

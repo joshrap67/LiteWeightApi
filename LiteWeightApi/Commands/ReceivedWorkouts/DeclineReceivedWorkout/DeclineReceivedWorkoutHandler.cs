@@ -1,6 +1,7 @@
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.ReceivedWorkouts;
 using LiteWeightAPI.Domain.Users;
+using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
 using LiteWeightAPI.Utils;
 
 namespace LiteWeightAPI.Commands.ReceivedWorkouts.DeclineReceivedWorkout;
@@ -16,13 +17,19 @@ public class DeclineReceivedWorkoutHandler : ICommandHandler<DeclineReceivedWork
 
 	public async Task<bool> HandleAsync(DeclineReceivedWorkout command)
 	{
-		var user = await _repository.GetUser(command.UserId);
+		var user = (await _repository.GetUser(command.UserId))!;
 		var workoutToDecline = await _repository.GetReceivedWorkout(command.ReceivedWorkoutId);
 
-		ValidationUtils.ReceivedWorkoutExists(workoutToDecline);
+		if (workoutToDecline == null)
+		{
+			throw new ResourceNotFoundException("Received workout");
+		}
+
 		ValidationUtils.EnsureReceivedWorkoutOwnership(command.UserId, workoutToDecline);
 
-		var workoutToRemove = user.ReceivedWorkouts.FirstOrDefault(x => x.ReceivedWorkoutId == command.ReceivedWorkoutId);
+		var workoutToRemove =
+			user!.ReceivedWorkouts.FirstOrDefault(x => x.ReceivedWorkoutId == command.ReceivedWorkoutId);
+		if (workoutToRemove == null) return false;
 		user.ReceivedWorkouts.Remove(workoutToRemove);
 
 		await _repository.ExecuteBatchWrite(

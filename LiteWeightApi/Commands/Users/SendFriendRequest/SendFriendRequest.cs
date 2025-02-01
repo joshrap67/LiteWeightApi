@@ -4,6 +4,6 @@ namespace LiteWeightAPI.Commands.Users.SendFriendRequest;
 
 public class SendFriendRequest : ICommand<FriendResponse>
 {
-	public string SenderId { get; init; }
-	public string RecipientId { get; init; }
+	public required string SenderId { get; init; }
+	public required string RecipientId { get; init; }
 }

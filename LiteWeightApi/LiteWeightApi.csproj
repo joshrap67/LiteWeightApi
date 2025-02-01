@@ -4,6 +4,7 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <RootNamespace>LiteWeightAPI</RootNamespace>
+		<Nullable>enable</Nullable>
     </PropertyGroup>
 
     <PropertyGroup>

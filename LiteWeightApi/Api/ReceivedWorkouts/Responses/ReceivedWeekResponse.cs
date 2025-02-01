@@ -5,5 +5,5 @@ public class ReceivedWeekResponse
 	/// <summary>
 	/// List of days in the routine.
 	/// </summary>
-	public IList<ReceivedDayResponse> Days { get; set; } = new List<ReceivedDayResponse>();
+	public IList<ReceivedDayResponse> Days { get; set; } = [];
 }

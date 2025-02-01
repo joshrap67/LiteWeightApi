@@ -21,7 +21,7 @@ public class ReceivedExercise
 	}
 
 	[FirestoreProperty("exerciseName")]
-	public string ExerciseName { get; set; }
+	public string ExerciseName { get; set; } = null!;
 
 	[FirestoreProperty("weight")]
 	public double Weight { get; set; }
@@ -33,5 +33,5 @@ public class ReceivedExercise
 	public int Reps { get; set; }
 
 	[FirestoreProperty("details")]
-	public string Details { get; set; }
+	public string? Details { get; set; }
 }

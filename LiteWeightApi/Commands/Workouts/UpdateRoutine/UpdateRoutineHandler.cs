@@ -4,6 +4,7 @@ using LiteWeightAPI.Api.Workouts.Responses;
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Domain.Workouts;
+using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
 using LiteWeightAPI.Utils;
 
 namespace LiteWeightAPI.Commands.Workouts.UpdateRoutine;
@@ -21,11 +22,14 @@ public class UpdateRoutineHandler : ICommandHandler<UpdateRoutine, UserAndWorkou
 
 	public async Task<UserAndWorkoutResponse> HandleAsync(UpdateRoutine command)
 	{
-		var user = await _repository.GetUser(command.UserId);
+		var user = (await _repository.GetUser(command.UserId))!;
 		var workout = await _repository.GetWorkout(command.WorkoutId);
 		var routine = _mapper.Map<Routine>(command.Routine);
 
-		ValidationUtils.WorkoutExists(workout);
+		if (workout == null)
+		{
+			throw new ResourceNotFoundException("Workout");
+		}
 		ValidationUtils.EnsureWorkoutOwnership(user.Id, workout);
 
 		UpdateOwnedExercisesOnEdit(user, routine, workout);

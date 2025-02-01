@@ -10,5 +10,5 @@ public class RenameWorkoutRequest
 	/// </summary>
 	[Required]
 	[MaxLength(Globals.MaxWorkoutNameLength)]
-	public string Name { get; set; }
+	public string Name { get; set; } = null!;
 }

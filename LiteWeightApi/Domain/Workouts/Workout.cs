@@ -8,17 +8,17 @@ namespace LiteWeightAPI.Domain.Workouts;
 public class Workout
 {
 	[FirestoreDocumentId]
-	public string Id { get; set; }
+	public string Id { get; set; } = null!;
 
 	[FirestoreProperty("name")]
-	public string Name { get; set; }
+	public required string Name { get; set; }
 
 	[FirestoreProperty("creationUtc", ConverterType = typeof(InstantConverter))]
 	public Instant CreationUtc { get; set; }
 
 	[FirestoreProperty("creatorId")]
-	public string CreatorId { get; set; }
+	public required string CreatorId { get; set; }
 
 	[FirestoreProperty("routine")]
-	public Routine Routine { get; set; }
+	public required Routine Routine { get; set; }
 }

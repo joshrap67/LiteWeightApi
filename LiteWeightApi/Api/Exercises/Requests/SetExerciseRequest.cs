@@ -11,7 +11,7 @@ public class SetExerciseRequest
 	/// <example>Bench Press</example>
 	[Required]
 	[MaxLength(Globals.MaxExerciseName)]
-	public string Name { get; set; }
+	public string Name { get; set; } = null!;
 
 	/// <summary>
 	/// Default weight of the exercise (lb). Value that the exercise will be defaulted to when adding it to a workout.
@@ -51,12 +51,12 @@ public class SetExerciseRequest
 	/// </summary>
 	/// <example>Make sure to get a spotter.</example>
 	[MaxLength(Globals.MaxDetailsLength)]
-	public string DefaultDetails { get; set; }
+	public string? DefaultDetails { get; set; }
 
 	/// <summary>
 	/// Video URL of the exercise. Suggested use case is a video of how to perform the exercise.
 	/// </summary>
 	/// <example>https://www.youtube.com/watch?v=rT7DgCr-3pg</example>
 	[MaxLength(Globals.MaxUrlLength)]
-	public string VideoUrl { get; set; }
+	public string? VideoUrl { get; set; }
 }

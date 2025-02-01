@@ -11,5 +11,5 @@ public class ReportUserRequest
 	/// <example>Inappropriate username.</example>
 	[Required]
 	[MaxLength(Globals.MaxReportDescription)]
-	public string Description { get; set; }
+	public string Description { get; set; } = null!;
 }

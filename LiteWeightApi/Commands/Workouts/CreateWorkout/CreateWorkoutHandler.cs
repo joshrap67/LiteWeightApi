@@ -26,17 +26,18 @@ public class CreateWorkoutHandler : ICommandHandler<CreateWorkout, UserAndWorkou
 
 	public async Task<UserAndWorkoutResponse> HandleAsync(CreateWorkout command)
 	{
-		var user = await _repository.GetUser(command.UserId);
+		var user = (await _repository.GetUser(command.UserId))!;
 		var routine = _mapper.Map<Routine>(command.Routine);
 
 		var workoutId = Guid.NewGuid().ToString();
 
-		if (user.Workouts.Count > Globals.MaxFreeWorkouts && user.PremiumToken == null)
+		if (user.Workouts.Count >= Globals.MaxFreeWorkouts && user.PremiumToken == null)
 		{
+			// TODO update test
 			throw new MaxLimitException("Max amount of free workouts reached");
 		}
 
-		if (user.Workouts.Count > Globals.MaxWorkouts && user.PremiumToken != null)
+		if (user.Workouts.Count >= Globals.MaxWorkouts && user.PremiumToken != null)
 		{
 			throw new MaxLimitException("Maximum workouts exceeded");
 		}

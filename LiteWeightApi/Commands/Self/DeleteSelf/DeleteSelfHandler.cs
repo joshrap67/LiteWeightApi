@@ -51,6 +51,11 @@ public class DeleteSelfHandler : ICommandHandler<DeleteSelf, bool>
 		foreach (var otherUserId in usersWhoSentFriendRequests)
 		{
 			var userToDecline = await _repository.GetUser(otherUserId);
+			if (userToDecline == null)
+			{
+				continue;
+			}
+
 			userToDecline.Friends.RemoveAll(x => x.UserId == command.UserId);
 			await _pushNotificationService.SendFriendRequestDeclinedNotification(userToDecline, user);
 			await _repository.PutUser(userToDecline);
@@ -59,6 +64,11 @@ public class DeleteSelfHandler : ICommandHandler<DeleteSelf, bool>
 		foreach (var otherUserId in usersWhoAreFriends)
 		{
 			var userToRemove = await _repository.GetUser(otherUserId);
+			if (userToRemove == null)
+			{
+				continue;
+			}
+
 			userToRemove.Friends.RemoveAll(x => x.UserId == command.UserId);
 			await _pushNotificationService.SendRemovedAsFriendNotification(userToRemove, user);
 			await _repository.PutUser(userToRemove);
@@ -67,6 +77,11 @@ public class DeleteSelfHandler : ICommandHandler<DeleteSelf, bool>
 		foreach (var otherUserId in usersWhoReceivedFriendRequests)
 		{
 			var userToCancel = await _repository.GetUser(otherUserId);
+			if (userToCancel == null)
+			{
+				continue;
+			}
+
 			userToCancel.FriendRequests.RemoveAll(x => x.UserId == command.UserId);
 			await _pushNotificationService.SendFriendRequestCanceledNotification(userToCancel, user);
 			await _repository.PutUser(userToCancel);

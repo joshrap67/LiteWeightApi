@@ -23,5 +23,5 @@ public class UpdateWorkoutProgressRequest
 	/// Routine to update.
 	/// </summary>
 	[Required]
-	public SetRoutineRequest Routine { get; set; }
+	public SetRoutineRequest Routine { get; set; } = null!;
 }

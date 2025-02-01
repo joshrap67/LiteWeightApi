@@ -5,6 +5,7 @@ using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Domain.Workouts;
 using LiteWeightAPI.Errors.Exceptions;
+using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
 using LiteWeightAPI.Imports;
 using LiteWeightAPI.Utils;
 using NodaTime;
@@ -26,10 +27,13 @@ public class CopyWorkoutHandler : ICommandHandler<CopyWorkout, UserAndWorkoutRes
 
 	public async Task<UserAndWorkoutResponse> HandleAsync(CopyWorkout command)
 	{
-		var user = await _repository.GetUser(command.UserId);
+		var user = (await _repository.GetUser(command.UserId))!;
 		var workoutToCopy = await _repository.GetWorkout(command.WorkoutId);
 
-		ValidationUtils.WorkoutExists(workoutToCopy);
+		if (workoutToCopy == null)
+		{
+			throw new ResourceNotFoundException("Workout");
+		}
 		ValidationUtils.EnsureWorkoutOwnership(user.Id, workoutToCopy);
 
 		if (user.Workouts.Count > Globals.MaxFreeWorkouts && user.PremiumToken == null)

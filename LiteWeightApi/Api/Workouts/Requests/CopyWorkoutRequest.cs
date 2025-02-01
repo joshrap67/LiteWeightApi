@@ -11,5 +11,5 @@ public class CopyWorkoutRequest
 	/// <example>After-Work Workout</example>
 	[Required]
 	[MaxLength(Globals.MaxWorkoutNameLength)]
-	public string Name { get; set; }
+	public string Name { get; set; } = null!;
 }

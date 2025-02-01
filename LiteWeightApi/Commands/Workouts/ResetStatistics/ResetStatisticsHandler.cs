@@ -14,8 +14,7 @@ public class ResetStatisticsHandler : ICommandHandler<ResetStatistics, bool>
 
 	public async Task<bool> HandleAsync(ResetStatistics command)
 	{
-		var user = await _repository.GetUser(command.UserId);
-
+		var user = (await _repository.GetUser(command.UserId))!;
 		if (user.Workouts.All(x => x.WorkoutId != command.WorkoutId))
 		{
 			throw new ResourceNotFoundException("Workout");

@@ -4,7 +4,7 @@ namespace LiteWeightAPI.Commands.Workouts.UpdateRoutine;
 
 public class UpdateRoutine : ICommand<UserAndWorkoutResponse>
 {
-	public string UserId { get; set; }
-	public string WorkoutId { get; set; }
-	public SetRoutine Routine { get; set; }
+	public required string UserId { get; set; }
+	public required string WorkoutId { get; set; }
+	public required SetRoutine Routine { get; set; }
 }

@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Nodes;
-using LiteWeightAPI.Imports;
-using LiteWeightAPI.Utils;
+﻿using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -11,21 +9,17 @@ namespace LiteWeightAPI.Api;
 [Authorize]
 public class BaseController : Controller
 {
-	protected string CurrentUserId { get; private set; }
-	protected string CurrentUserEmail { get; private set; }
+	protected string CurrentUserId { get; private set; } = "";
 
 	public override Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
 	{
-		var firebaseClaim = HttpContext.User.Claims.ToList().FirstOrDefault(x => x.Type == "firebase");
-		if (firebaseClaim != null)
+		var userIdClaim = HttpContext.User.Claims.ToList().FirstOrDefault(x => x.Type == "user_id");
+		if (userIdClaim == null)
 		{
-			var deserializedToken = JsonUtils.Deserialize<JsonNode>(firebaseClaim.Value);
-			var email = deserializedToken["identities"]?["email"]?[0]?.GetValue<string>();
-			CurrentUserEmail = email;
+			throw new ForbiddenException();
 		}
 
-		var userIdClaim = HttpContext.User.Claims.ToList().FirstOrDefault(x => x.Type == "user_id");
-		CurrentUserId = userIdClaim?.Value;
+		CurrentUserId = userIdClaim.Value;
 
 		return base.OnActionExecutionAsync(context, next);
 	}

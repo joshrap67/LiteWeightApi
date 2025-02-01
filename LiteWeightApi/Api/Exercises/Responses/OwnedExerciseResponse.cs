@@ -6,13 +6,13 @@ public class OwnedExerciseResponse
 	/// Id of the exercise.
 	/// </summary>
 	/// <example>88a54457-2253-404e-ac09-82a8f2ce5fb8</example>
-	public string Id { get; set; }
+	public string Id { get; set; } = null!;
 
 	/// <summary>
 	/// Name of the exercise.
 	/// </summary>
 	/// <example>Barbell Curl</example>
-	public string Name { get; set; }
+	public string Name { get; set; } = null!;
 
 	/// <summary>
 	/// Default weight of the exercise (lb). Value that the exercise will be defaulted to when adding it to a workout.
@@ -36,13 +36,13 @@ public class OwnedExerciseResponse
 	/// Default details of the exercise. Value that the exercise will be defaulted to when adding it to a workout.
 	/// </summary>
 	/// <example>Don't overextend arms.</example>
-	public string DefaultDetails { get; set; }
+	public string? DefaultDetails { get; set; }
 
 	/// <summary>
 	/// Video url of the exercise. Suggested use case is a video of how to perform the exercise.
 	/// </summary>
 	/// <example>https://www.youtube.com/watch?v=kwG2ipFRgfo</example>
-	public string VideoUrl { get; set; }
+	public string? VideoUrl { get; set; }
 
 	/// <summary>
 	/// List of focuses of the exercise.
@@ -53,5 +53,5 @@ public class OwnedExerciseResponse
 	/// <summary>
 	/// List of workouts this exercise is associated with.
 	/// </summary>
-	public IList<OwnedExerciseWorkoutResponse> Workouts { get; set; } = new List<OwnedExerciseWorkoutResponse>();
+	public IList<OwnedExerciseWorkoutResponse> Workouts { get; set; } = [];
 }

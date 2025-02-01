@@ -1,4 +1,5 @@
 using LiteWeightAPI.Domain;
+using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
 using LiteWeightAPI.Services;
 
 namespace LiteWeightAPI.Commands.Self.UpdateProfilePicture;
@@ -17,6 +18,11 @@ public class UpdateProfilePictureHandler : ICommandHandler<UpdateProfilePicture,
 	public async Task<bool> HandleAsync(UpdateProfilePicture command)
 	{
 		var user = await _repository.GetUser(command.UserId);
+		if (user == null)
+		{
+			throw new ResourceNotFoundException("User");
+		}
+		
 		await _storageService.UploadProfilePicture(command.ImageData, user.ProfilePicture);
 		return true;
 	}

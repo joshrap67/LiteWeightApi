@@ -9,7 +9,7 @@ public class RoutineExerciseResponse
 	/// Id of the exercise (reference to the list of exercises on the user).
 	/// </summary>
 	/// <example>88a54457-2253-404e-ac09-82a8f2ce5fb8</example>
-	public string ExerciseId { get; set; }
+	public string ExerciseId { get; set; } = null!;
 
 	/// <summary>
 	/// Has the user completed this exercise?
@@ -42,5 +42,5 @@ public class RoutineExerciseResponse
 	/// </summary>
 	/// <example>Don't overextend arms.</example>
 	[MaxLength(Globals.MaxDetailsLength)]
-	public string Details { get; set; }
+	public string? Details { get; set; }
 }

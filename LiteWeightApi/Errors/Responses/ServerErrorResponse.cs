@@ -6,5 +6,5 @@ public class ServerErrorResponse
 	/// Response message.
 	/// </summary>
 	/// <example>The server has encountered an error</example>
-	public string Message { get; set; }
+	public string Message { get; set; } = null!;
 }

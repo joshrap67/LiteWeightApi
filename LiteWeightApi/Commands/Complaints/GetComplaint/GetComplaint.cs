@@ -4,6 +4,6 @@ namespace LiteWeightAPI.Commands.Complaints.GetComplaint;
 
 public class GetComplaint : ICommand<ComplaintResponse>
 {
-	public string UserId { get; set; }
-	public string ComplaintId { get; set; }
+	public required string UserId { get; set; }
+	public required string ComplaintId { get; set; }
 }

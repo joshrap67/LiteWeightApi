@@ -6,13 +6,13 @@ public class BadRequestResponse
 	/// Message describing the error.
 	/// </summary>
 	/// <example>An example error message</example>
-	public string Message { get; set; }
+	public string Message { get; set; } = null!;
 
 	/// <summary>
 	/// Specific type of error.
 	/// </summary>
 	/// <example>InvalidRequest</example>
-	public string ErrorType { get; set; }
+	public string ErrorType { get; set; } = null!;
 
 	/// <summary>
 	/// Lists any errors associated when binding the request.

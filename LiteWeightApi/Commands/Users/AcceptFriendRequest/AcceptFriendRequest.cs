@@ -2,6 +2,6 @@ namespace LiteWeightAPI.Commands.Users.AcceptFriendRequest;
 
 public class AcceptFriendRequest : ICommand<bool>
 {
-	public string InitiatorUserId { get; set; }
-	public string AcceptedUserId { get; set; }
+	public required string InitiatorUserId { get; set; }
+	public required string AcceptedUserId { get; set; }
 }

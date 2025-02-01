@@ -7,7 +7,6 @@ using LiteWeightAPI.Commands.Exercises.DeleteExercise;
 using LiteWeightAPI.Commands.Exercises.UpdateExercise;
 using LiteWeightAPI.Errors.Attributes;
 using Microsoft.AspNetCore.Mvc;
-using ILogger = Serilog.ILogger;
 
 namespace LiteWeightAPI.Api.Exercises;
 

@@ -2,7 +2,7 @@ using AutoMapper;
 using LiteWeightAPI.Api.Complaints.Responses;
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Complaints;
-using LiteWeightAPI.Utils;
+using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
 using NodaTime;
 
 namespace LiteWeightAPI.Commands.Users.ReportUser;
@@ -24,7 +24,10 @@ public class ReportUserHandler : ICommandHandler<ReportUser, ComplaintResponse>
 	{
 		var userToReport = await _repository.GetUser(command.ReportedUserId);
 
-		ValidationUtils.UserExists(userToReport);
+		if (userToReport == null)
+		{
+			throw new ResourceNotFoundException("User");
+		}
 
 		var complaint = new Complaint
 		{

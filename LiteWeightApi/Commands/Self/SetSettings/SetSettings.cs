@@ -2,7 +2,7 @@ namespace LiteWeightAPI.Commands.Self.SetSettings;
 
 public class SetSettings : ICommand<bool>
 {
-	public string UserId { get; set; }
+	public required string UserId { get; set; }
 
 	public bool PrivateAccount { get; set; }
 

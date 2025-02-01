@@ -8,13 +8,13 @@ namespace LiteWeightAPI.Domain.Users;
 public class FriendRequest
 {
 	[FirestoreProperty("userId")]
-	public string UserId { get; set; }
+	public required string UserId { get; set; }
 
 	[FirestoreProperty("username")]
-	public string Username { get; set; }
+	public required string Username { get; set; }
 
 	[FirestoreProperty("profilePicture")]
-	public string ProfilePicture { get; set; }
+	public required string ProfilePicture { get; set; }
 
 	[FirestoreProperty("seen")]
 	public bool Seen { get; set; }

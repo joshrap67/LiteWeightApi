@@ -2,6 +2,7 @@ using AutoMapper;
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Domain.Workouts;
+using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
 using LiteWeightAPI.Utils;
 
 namespace LiteWeightAPI.Commands.Workouts.UpdateWorkoutProgress;
@@ -19,11 +20,14 @@ public class UpdateWorkoutProgressHandler : ICommandHandler<UpdateWorkoutProgres
 
 	public async Task<bool> HandleAsync(UpdateWorkoutProgress command)
 	{
-		var user = await _repository.GetUser(command.UserId);
+		var user = (await _repository.GetUser(command.UserId))!;
 		var workoutToUpdate = await _repository.GetWorkout(command.WorkoutId);
 		var routine = _mapper.Map<Routine>(command.Routine);
+		if (workoutToUpdate == null)
+		{
+			throw new ResourceNotFoundException("Workout");
+		}
 
-		ValidationUtils.WorkoutExists(workoutToUpdate);
 		ValidationUtils.EnsureWorkoutOwnership(user.Id, workoutToUpdate);
 
 		workoutToUpdate.Routine = routine;

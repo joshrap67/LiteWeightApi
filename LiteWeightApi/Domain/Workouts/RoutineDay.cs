@@ -9,7 +9,7 @@ public class RoutineDay
 	public IList<RoutineExercise> Exercises { get; set; } = new List<RoutineExercise>();
 
 	[FirestoreProperty("tag")]
-	public string Tag { get; set; }
+	public string? Tag { get; set; }
 
 	public RoutineDay Clone()
 	{
@@ -30,6 +30,9 @@ public class RoutineDay
 	public void DeleteExercise(string exerciseId)
 	{
 		var exercise = Exercises.FirstOrDefault(x => x.ExerciseId == exerciseId);
-		Exercises.Remove(exercise);
+		if (exercise != null)
+		{
+			Exercises.Remove(exercise);
+		}
 	}
 }

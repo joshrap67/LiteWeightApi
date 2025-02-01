@@ -11,16 +11,16 @@ public class Complaint
 	public string Id { get; set; } = Guid.NewGuid().ToString();
 
 	[FirestoreProperty("claimantUserId")]
-	public string ClaimantUserId { get; set; }
+	public required string ClaimantUserId { get; set; }
 
 	[FirestoreProperty("reportedUserId")]
-	public string ReportedUserId { get; set; }
+	public required string ReportedUserId { get; set; }
 
 	[FirestoreProperty("reportedUsername")]
-	public string ReportedUsername { get; set; }
+	public required string ReportedUsername { get; set; }
 
 	[FirestoreProperty("description")]
-	public string Description { get; set; }
+	public required string Description { get; set; }
 
 	// in the future could add profile picture if wanting to persist a potentially offensive profile picture
 

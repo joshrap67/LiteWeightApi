@@ -1,7 +1,7 @@
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Users;
+using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
 using LiteWeightAPI.Services;
-using LiteWeightAPI.Utils;
 
 namespace LiteWeightAPI.Commands.Users.RemoveFriend;
 
@@ -18,14 +18,17 @@ public class RemoveFriendHandler : ICommandHandler<RemoveFriend, bool>
 
 	public async Task<bool> HandleAsync(RemoveFriend command)
 	{
-		var initiator = await _repository.GetUser(command.InitiatorUserId);
+		var initiator = (await _repository.GetUser(command.InitiatorUserId))!;
 		var removedFriend = await _repository.GetUser(command.RemovedUserId);
 
-		ValidationUtils.UserExists(removedFriend);
+		if (removedFriend == null)
+		{
+			throw new ResourceNotFoundException("User");
+		}
 
 		var friendToRemove = initiator.Friends.FirstOrDefault(x => x.UserId == command.RemovedUserId);
 		var initiatorToRemove = removedFriend.Friends.FirstOrDefault(x => x.UserId == command.InitiatorUserId);
-		if (friendToRemove == null) return false;
+		if (friendToRemove == null || initiatorToRemove == null) return false;
 
 		initiator.Friends.Remove(friendToRemove);
 		removedFriend.Friends.Remove(initiatorToRemove);

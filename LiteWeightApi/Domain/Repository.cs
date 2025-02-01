@@ -10,34 +10,37 @@ namespace LiteWeightAPI.Domain;
 
 public interface IRepository
 {
-	Task<User> GetUser(string userId);
-	Task<User> GetUserByUsername(string username);
-	Task<User> GetUserByEmail(string email);
+	Task<User?> GetUser(string userId);
+	Task<User?> GetUserByUsername(string username);
+	Task<User?> GetUserByEmail(string email);
 	Task CreateUser(User user);
 	Task PutUser(User user);
 	Task DeleteUser(string userId);
 	Task CreateComplaint(Complaint complaint);
-	Task<Workout> GetWorkout(string workoutId);
+	Task<Workout?> GetWorkout(string workoutId);
 	Task CreateWorkout(Workout workout);
 	Task PutWorkout(Workout workout);
 	Task DeleteWorkout(string workoutId);
-	Task<ReceivedWorkout> GetReceivedWorkout(string receivedWorkoutId);
+	Task<ReceivedWorkout?> GetReceivedWorkout(string receivedWorkoutId);
 	Task DeleteReceivedWorkout(string workoutId);
-	Task<Complaint> GetComplaint(string complaintId);
+	Task<Complaint?> GetComplaint(string complaintId);
 
-	Task ExecuteBatchWrite(IList<Workout> workoutsToPut = null, IList<User> usersToPut = null,
-		IList<ReceivedWorkout> receivedWorkoutsToPut = null, IList<Workout> workoutsToDelete = null,
-		IList<User> usersToDelete = null, IList<ReceivedWorkout> receivedWorkoutsToDelete = null);
+	Task ExecuteBatchWrite(IList<Workout>? workoutsToPut = null, IList<User>? usersToPut = null,
+		IList<ReceivedWorkout>? receivedWorkoutsToPut = null, IList<Workout>? workoutsToDelete = null,
+		IList<User>? usersToDelete = null, IList<ReceivedWorkout>? receivedWorkoutsToDelete = null);
 }
 
 public class Repository : IRepository
 {
-	private readonly FirestoreOptions _fireStoreOptions;
 	private readonly FirebaseOptions _firebaseOptions;
 
-	public Repository(IOptions<FirestoreOptions> fireStoreOptions, IOptions<FirebaseOptions> firebaseOptions)
+	private const string WorkoutsCollection = "Workouts";
+	private const string UsersCollection = "Users";
+	private const string ComplaintsCollection = "Complaints";
+	private const string ReceivedWorkoutsCollection = "ReceivedWorkouts";
+
+	public Repository(IOptions<FirebaseOptions> firebaseOptions)
 	{
-		_fireStoreOptions = fireStoreOptions.Value;
 		_firebaseOptions = firebaseOptions.Value;
 	}
 
@@ -46,10 +49,10 @@ public class Repository : IRepository
 		return FirestoreDb.Create(_firebaseOptions.ProjectId);
 	}
 
-	public async Task<Complaint> GetComplaint(string complaintId)
+	public async Task<Complaint?> GetComplaint(string complaintId)
 	{
 		var db = GetDb();
-		var docRef = db.Collection(_fireStoreOptions.ComplaintsCollection).Document(complaintId);
+		var docRef = db.Collection(ComplaintsCollection).Document(complaintId);
 		var snapshot = await docRef.GetSnapshotAsync();
 
 		if (!snapshot.Exists) return null;
@@ -57,56 +60,58 @@ public class Repository : IRepository
 		return complaint;
 	}
 
-	public async Task ExecuteBatchWrite(IList<Workout> workoutsToPut = null, IList<User> usersToPut = null,
-		IList<ReceivedWorkout> receivedWorkoutsToPut = null, IList<Workout> workoutsToDelete = null,
-		IList<User> usersToDelete = null, IList<ReceivedWorkout> receivedWorkoutsToDelete = null)
+	public async Task ExecuteBatchWrite(IList<Workout>? workoutsToPut = null, IList<User>? usersToPut = null,
+		IList<ReceivedWorkout>? receivedWorkoutsToPut = null, IList<Workout>? workoutsToDelete = null,
+		IList<User>? usersToDelete = null, IList<ReceivedWorkout>? receivedWorkoutsToDelete = null)
 	{
 		var db = GetDb();
 		var batch = db.StartBatch();
 
 		foreach (var workout in workoutsToDelete ?? new List<Workout>())
 		{
-			var workoutsRef = db.Collection(_fireStoreOptions.WorkoutsCollection).Document(workout.Id);
+			var workoutsRef = db.Collection(WorkoutsCollection).Document(workout.Id);
 			batch.Delete(workoutsRef);
 		}
 
 		foreach (var workout in workoutsToPut ?? new List<Workout>())
 		{
-			var workoutsRef = db.Collection(_fireStoreOptions.WorkoutsCollection).Document(workout.Id);
+			var workoutsRef = db.Collection(WorkoutsCollection).Document(workout.Id);
 			batch.Set(workoutsRef, workout);
 		}
 
 		foreach (var user in usersToDelete ?? new List<User>())
 		{
-			var usersRef = db.Collection(_fireStoreOptions.UsersCollection).Document(user.Id);
+			var usersRef = db.Collection(UsersCollection).Document(user.Id);
 			batch.Delete(usersRef);
 		}
 
 		foreach (var user in usersToPut ?? new List<User>())
 		{
-			var usersRef = db.Collection(_fireStoreOptions.UsersCollection).Document(user.Id);
+			var usersRef = db.Collection(UsersCollection).Document(user.Id);
 			batch.Set(usersRef, user);
 		}
 
 		foreach (var receivedWorkout in receivedWorkoutsToDelete ?? new List<ReceivedWorkout>())
 		{
-			var receivedWorkoutRef = db.Collection(_fireStoreOptions.ReceivedWorkoutsCollection).Document(receivedWorkout.Id);
+			var receivedWorkoutRef =
+				db.Collection(ReceivedWorkoutsCollection).Document(receivedWorkout.Id);
 			batch.Delete(receivedWorkoutRef);
 		}
 
 		foreach (var receivedWorkout in receivedWorkoutsToPut ?? new List<ReceivedWorkout>())
 		{
-			var receivedWorkoutRef = db.Collection(_fireStoreOptions.ReceivedWorkoutsCollection).Document(receivedWorkout.Id);
+			var receivedWorkoutRef =
+				db.Collection(ReceivedWorkoutsCollection).Document(receivedWorkout.Id);
 			batch.Set(receivedWorkoutRef, receivedWorkout);
 		}
 
 		await batch.CommitAsync();
 	}
 
-	public async Task<User> GetUser(string userId)
+	public async Task<User?> GetUser(string userId)
 	{
 		var db = GetDb();
-		var docRef = db.Collection(_fireStoreOptions.UsersCollection).Document(userId);
+		var docRef = db.Collection(UsersCollection).Document(userId);
 		var snapshot = await docRef.GetSnapshotAsync();
 
 		if (!snapshot.Exists) return null;
@@ -114,10 +119,10 @@ public class Repository : IRepository
 		return user;
 	}
 
-	public async Task<User> GetUserByUsername(string username)
+	public async Task<User?> GetUserByUsername(string username)
 	{
 		var db = GetDb();
-		var usersRef = db.Collection(_fireStoreOptions.UsersCollection);
+		var usersRef = db.Collection(UsersCollection);
 		var query = usersRef.WhereEqualTo("username", username.ToLowerInvariant());
 		var querySnapshot = await query.GetSnapshotAsync();
 
@@ -125,10 +130,10 @@ public class Repository : IRepository
 		return user?.ConvertTo<User>();
 	}
 
-	public async Task<User> GetUserByEmail(string email)
+	public async Task<User?> GetUserByEmail(string email)
 	{
 		var db = GetDb();
-		var usersRef = db.Collection(_fireStoreOptions.UsersCollection);
+		var usersRef = db.Collection(UsersCollection);
 		var query = usersRef.WhereEqualTo("email", email);
 		var querySnapshot = await query.GetSnapshotAsync();
 
@@ -139,35 +144,35 @@ public class Repository : IRepository
 	public async Task CreateUser(User user)
 	{
 		var db = GetDb();
-		var docRef = db.Collection(_fireStoreOptions.UsersCollection).Document(user.Id);
+		var docRef = db.Collection(UsersCollection).Document(user.Id);
 		await docRef.CreateAsync(user);
 	}
 
 	public async Task PutUser(User user)
 	{
 		var db = GetDb();
-		var docRef = db.Collection(_fireStoreOptions.UsersCollection).Document(user.Id);
+		var docRef = db.Collection(UsersCollection).Document(user.Id);
 		await docRef.SetAsync(user);
 	}
 
 	public async Task DeleteUser(string userId)
 	{
 		var db = GetDb();
-		var docRef = db.Collection(_fireStoreOptions.UsersCollection).Document(userId);
+		var docRef = db.Collection(UsersCollection).Document(userId);
 		await docRef.DeleteAsync();
 	}
 
 	public async Task CreateComplaint(Complaint complaint)
 	{
 		var db = GetDb();
-		var docRef = db.Collection(_fireStoreOptions.ComplaintsCollection).Document(complaint.Id);
+		var docRef = db.Collection(ComplaintsCollection).Document(complaint.Id);
 		await docRef.CreateAsync(complaint);
 	}
 
-	public async Task<Workout> GetWorkout(string workoutId)
+	public async Task<Workout?> GetWorkout(string workoutId)
 	{
 		var db = GetDb();
-		var docRef = db.Collection(_fireStoreOptions.WorkoutsCollection).Document(workoutId);
+		var docRef = db.Collection(WorkoutsCollection).Document(workoutId);
 		var snapshot = await docRef.GetSnapshotAsync();
 
 		if (!snapshot.Exists) return null;
@@ -178,28 +183,28 @@ public class Repository : IRepository
 	public async Task CreateWorkout(Workout workout)
 	{
 		var db = GetDb();
-		var docRef = db.Collection(_fireStoreOptions.WorkoutsCollection).Document(workout.Id);
+		var docRef = db.Collection(WorkoutsCollection).Document(workout.Id);
 		await docRef.CreateAsync(workout);
 	}
 
 	public async Task PutWorkout(Workout workout)
 	{
 		var db = GetDb();
-		var docRef = db.Collection(_fireStoreOptions.WorkoutsCollection).Document(workout.Id);
+		var docRef = db.Collection(WorkoutsCollection).Document(workout.Id);
 		await docRef.SetAsync(workout);
 	}
 
 	public async Task DeleteWorkout(string workoutId)
 	{
 		var db = GetDb();
-		var docRef = db.Collection(_fireStoreOptions.WorkoutsCollection).Document(workoutId);
+		var docRef = db.Collection(WorkoutsCollection).Document(workoutId);
 		await docRef.DeleteAsync();
 	}
 
-	public async Task<ReceivedWorkout> GetReceivedWorkout(string receivedWorkoutId)
+	public async Task<ReceivedWorkout?> GetReceivedWorkout(string receivedWorkoutId)
 	{
 		var db = GetDb();
-		var docRef = db.Collection(_fireStoreOptions.ReceivedWorkoutsCollection).Document(receivedWorkoutId);
+		var docRef = db.Collection(ReceivedWorkoutsCollection).Document(receivedWorkoutId);
 		var snapshot = await docRef.GetSnapshotAsync();
 
 		if (!snapshot.Exists) return null;
@@ -210,7 +215,7 @@ public class Repository : IRepository
 	public async Task DeleteReceivedWorkout(string workoutId)
 	{
 		var db = GetDb();
-		var docRef = db.Collection(_fireStoreOptions.ReceivedWorkoutsCollection).Document(workoutId);
+		var docRef = db.Collection(ReceivedWorkoutsCollection).Document(workoutId);
 		await docRef.DeleteAsync();
 	}
 }

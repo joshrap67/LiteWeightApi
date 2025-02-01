@@ -1,4 +1,5 @@
 using LiteWeightAPI.Domain;
+using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
 
 namespace LiteWeightAPI.Commands.Self.SetReceivedWorkoutSeen;
 
@@ -14,6 +15,11 @@ public class SetReceivedWorkoutSeenHandler : ICommandHandler<SetReceivedWorkoutS
 	public async Task<bool> HandleAsync(SetReceivedWorkoutSeen command)
 	{
 		var user = await _repository.GetUser(command.UserId);
+		if (user == null)
+		{
+			throw new ResourceNotFoundException("User");
+		}
+		
 		var receivedWorkoutInfo = user.ReceivedWorkouts.FirstOrDefault(x => x.ReceivedWorkoutId == command.ReceivedWorkoutId);
 		if (receivedWorkoutInfo == null)
 		{

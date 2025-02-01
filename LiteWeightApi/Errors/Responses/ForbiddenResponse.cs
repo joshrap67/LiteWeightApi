@@ -6,5 +6,5 @@ public class ForbiddenResponse
 	///  Response message.
 	/// </summary>
 	/// <example>Forbidden access</example>
-	public string Message { get; set; }
+	public string Message { get; set; } = null!;
 }

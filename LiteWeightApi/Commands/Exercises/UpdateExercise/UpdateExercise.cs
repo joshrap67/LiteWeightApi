@@ -2,11 +2,11 @@ namespace LiteWeightAPI.Commands.Exercises.UpdateExercise;
 
 public class UpdateExercise : ICommand<bool>
 {
-	public string UserId { get; set; }
+	public required string UserId { get; set; }
 	
-	public string ExerciseId { get; set; }
+	public required string ExerciseId { get; set; }
 
-	public string Name { get; set; }
+	public required string Name { get; set; }
 
 	public double DefaultWeight { get; set; }
 
@@ -16,7 +16,7 @@ public class UpdateExercise : ICommand<bool>
 
 	public IList<string> Focuses { get; set; } = new List<string>();
 
-	public string DefaultDetails { get; set; }
+	public string? DefaultDetails { get; set; }
 
-	public string VideoUrl { get; set; }
+	public string? VideoUrl { get; set; }
 }

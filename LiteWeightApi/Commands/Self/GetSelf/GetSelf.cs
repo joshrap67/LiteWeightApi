@@ -4,5 +4,5 @@ namespace LiteWeightAPI.Commands.Self.GetSelf;
 
 public class GetSelf : ICommand<UserResponse>
 {
-	public string UserId { get; set; }
+	public required string UserId { get; init; }
 }

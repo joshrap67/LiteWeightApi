@@ -1,7 +1,7 @@
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Users;
+using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
 using LiteWeightAPI.Services;
-using LiteWeightAPI.Utils;
 
 namespace LiteWeightAPI.Commands.Users.CancelFriendRequest;
 
@@ -18,21 +18,23 @@ public class CancelFriendRequestHandler : ICommandHandler<CancelFriendRequest, b
 
 	public async Task<bool> HandleAsync(CancelFriendRequest command)
 	{
-		var initiator = await _repository.GetUser(command.InitiatorUserId);
+		var initiator = (await _repository.GetUser(command.InitiatorUserId))!;
 		var userToCancel = await _repository.GetUser(command.UserIdToCancel);
 
-		ValidationUtils.UserExists(userToCancel);
+		if (userToCancel == null)
+		{
+			throw new ResourceNotFoundException("User");
+		}
 
 		var pendingFriend = initiator.Friends.FirstOrDefault(x => x.UserId == command.UserIdToCancel);
-		if (pendingFriend == null)
-		{
-			return false;
-		}
+		if (pendingFriend == null) return false;
 
 		initiator.Friends.Remove(pendingFriend);
 
 		var initiatorFriendRequest =
 			userToCancel.FriendRequests.FirstOrDefault(x => x.UserId == command.InitiatorUserId);
+		if (initiatorFriendRequest == null) return false;
+
 		userToCancel.FriendRequests.Remove(initiatorFriendRequest);
 
 		await _repository.ExecuteBatchWrite(usersToPut: new List<User> { initiator, userToCancel });

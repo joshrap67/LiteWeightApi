@@ -1,5 +1,6 @@
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Errors.Exceptions;
+using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
 using NodaTime;
 
 namespace LiteWeightAPI.Commands.Self.SetCurrentWorkout;
@@ -18,6 +19,10 @@ public class SetCurrentWorkoutHandler : ICommandHandler<SetCurrentWorkout, bool>
 	public async Task<bool> HandleAsync(SetCurrentWorkout command)
 	{
 		var user = await _repository.GetUser(command.UserId);
+		if (user == null)
+		{
+			throw new ResourceNotFoundException("User");
+		}
 
 		if (command.CurrentWorkoutId != null && user.Workouts.All(x => x.WorkoutId != command.CurrentWorkoutId))
 		{

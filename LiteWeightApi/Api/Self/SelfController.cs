@@ -1,3 +1,4 @@
+using System.Text.Json.Nodes;
 using AutoMapper;
 using LiteWeightAPI.Api.Self.Requests;
 using LiteWeightAPI.Api.Self.Responses;
@@ -12,6 +13,7 @@ using LiteWeightAPI.Commands.Self.SetSettings;
 using LiteWeightAPI.Commands.Self.UpdateProfilePicture;
 using LiteWeightAPI.Errors.Attributes;
 using LiteWeightAPI.Imports;
+using LiteWeightAPI.Utils;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LiteWeightAPI.Api.Self;
@@ -53,8 +55,17 @@ public class SelfController : BaseController
 	[ProducesResponseType(StatusCodes.Status201Created)]
 	public async Task<ActionResult<UserResponse>> CreateSelf(CreateSelfRequest request)
 	{
+		var firebaseClaim = HttpContext.User.Claims.ToList().FirstOrDefault(x => x.Type == "firebase");
+		var currentUserEmail = "";
+		if (firebaseClaim != null)
+		{
+			var deserializedToken = JsonUtils.Deserialize<JsonNode>(firebaseClaim.Value);
+			var email = deserializedToken["identities"]?["email"]?[0]?.GetValue<string>();
+			currentUserEmail = email ?? "";
+		}
+
 		var command = _mapper.Map<CreateSelf>(request);
-		command.UserEmail = CurrentUserEmail;
+		command.UserEmail = currentUserEmail;
 		command.UserId = CurrentUserId;
 
 		var user = await _dispatcher.DispatchAsync<CreateSelf, UserResponse>(command);
@@ -66,6 +77,7 @@ public class SelfController : BaseController
 	[HttpPut("profile-picture")]
 	[InvalidRequest]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult> UpdateProfilePicture(UpdateProfilePictureRequest request)
 	{
 		await _dispatcher.DispatchAsync<UpdateProfilePicture, bool>(new UpdateProfilePicture
@@ -79,6 +91,7 @@ public class SelfController : BaseController
 	/// <remarks>Sets the firebase messaging token to the authenticated user. This enables the authenticated user's ability to receive push notifications, or removes it if the token is null.</remarks>
 	[HttpPut("set-firebase-messaging-token")]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult> SetFirebaseMessagingToken(SetFirebaseMessagingTokenRequest request)
 	{
 		await _dispatcher.DispatchAsync<SetFirebaseMessagingToken, bool>(new SetFirebaseMessagingToken
@@ -92,6 +105,7 @@ public class SelfController : BaseController
 	/// <remarks>Sets all friend requests on the authenticated user as seen.</remarks>
 	[HttpPut("all-friend-requests-seen")]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult> SetAllFriendRequestsSeen()
 	{
 		await _dispatcher.DispatchAsync<SetAllFriendRequestsSeen, bool>(new SetAllFriendRequestsSeen
@@ -106,6 +120,7 @@ public class SelfController : BaseController
 	[HttpPut("settings")]
 	[InvalidRequest]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult> SetSettings(UserSettingsResponse request)
 	{
 		var command = _mapper.Map<SetSettings>(request);
@@ -120,6 +135,7 @@ public class SelfController : BaseController
 	[HttpPut("current-workout")]
 	[WorkoutNotFound]
 	[ProducesResponseType(StatusCodes.Status204NoContent)]
+	[ProducesResponseType(StatusCodes.Status404NotFound)]
 	public async Task<ActionResult> SetCurrentWorkout(SetCurrentWorkoutRequest request)
 	{
 		await _dispatcher.DispatchAsync<SetCurrentWorkout, bool>(new SetCurrentWorkout

@@ -9,7 +9,7 @@ public class RoutineExercise
 	public bool Completed { get; set; }
 
 	[FirestoreProperty("exerciseId")]
-	public string ExerciseId { get; set; }
+	public required string ExerciseId { get; set; }
 
 	[FirestoreProperty("weight")]
 	public double Weight { get; set; } // stored in lbs
@@ -21,7 +21,7 @@ public class RoutineExercise
 	public int Reps { get; set; }
 
 	[FirestoreProperty("details")]
-	public string Details { get; set; }
+	public string? Details { get; set; }
 
 	public RoutineExercise Clone()
 	{

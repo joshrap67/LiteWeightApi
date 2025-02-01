@@ -1,6 +1,7 @@
 using LiteWeightAPI.Domain;
 using LiteWeightAPI.Domain.Users;
 using LiteWeightAPI.Domain.Workouts;
+using LiteWeightAPI.Errors.Exceptions.BaseExceptions;
 using LiteWeightAPI.Utils;
 
 namespace LiteWeightAPI.Commands.Workouts.DeleteWorkout;
@@ -16,10 +17,13 @@ public class DeleteWorkoutHandler : ICommandHandler<DeleteWorkout, bool>
 
 	public async Task<bool> HandleAsync(DeleteWorkout command)
 	{
+		var user = (await _repository.GetUser(command.UserId))!;
 		var workoutToDelete = await _repository.GetWorkout(command.WorkoutId);
-		var user = await _repository.GetUser(command.UserId);
+		if (workoutToDelete == null)
+		{
+			throw new ResourceNotFoundException("Workout");
+		}
 
-		ValidationUtils.WorkoutExists(workoutToDelete);
 		ValidationUtils.EnsureWorkoutOwnership(user.Id, workoutToDelete);
 
 		user.Workouts.RemoveAll(x => x.WorkoutId == command.WorkoutId);

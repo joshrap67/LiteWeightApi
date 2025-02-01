@@ -6,5 +6,5 @@ public class TooManyRequestsResponse
 	///  Response message.
 	/// </summary>
 	/// <example>Too many requests. Please try again later.</example>
-	public string Message { get; set; }
+	public string Message { get; set; } = null!;
 }

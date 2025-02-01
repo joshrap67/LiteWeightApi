@@ -42,7 +42,6 @@ public static class ServiceCollectionExtensions
 	{
 		services.Configure<JwtOptions>(configuration.GetSection(EnvRootKey + "Jwt"));
 		services.Configure<FirebaseOptions>(configuration.GetSection(EnvRootKey + "Firebase"));
-		services.Configure<FirestoreOptions>(configuration.GetSection(EnvRootKey + "Firestore"));
 	}
 
 	public static void ConfigureRateLimiting(this IServiceCollection services)

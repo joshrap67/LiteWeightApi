@@ -4,9 +4,9 @@ namespace LiteWeightAPI.Commands.Exercises.CreateExercise;
 
 public class CreateExercise : ICommand<OwnedExerciseResponse>
 {
-	public string UserId { get; set; }
+	public required string UserId { get; set; }
 
-	public string Name { get; set; }
+	public required string Name { get; set; }
 
 	public double DefaultWeight { get; set; }
 
@@ -16,7 +16,7 @@ public class CreateExercise : ICommand<OwnedExerciseResponse>
 
 	public IList<string> Focuses { get; set; } = new List<string>();
 
-	public string DefaultDetails { get; set; }
+	public string? DefaultDetails { get; set; }
 
-	public string VideoUrl { get; set; }
+	public string? VideoUrl { get; set; }
 }

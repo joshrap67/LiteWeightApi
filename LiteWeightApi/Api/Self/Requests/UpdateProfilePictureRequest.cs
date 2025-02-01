@@ -9,5 +9,5 @@ public class UpdateProfilePictureRequest
 	/// </summary>
 	/// <example>iVBORw0KGgoAAAANSUhEUgAAAlgAAAJ</example>
 	[Required]
-	public byte[] ProfilePictureData { get; set; }
+	public byte[] ProfilePictureData { get; set; } = null!;
 }

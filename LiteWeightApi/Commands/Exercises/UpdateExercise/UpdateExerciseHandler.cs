@@ -15,7 +15,7 @@ public class UpdateExerciseHandler : ICommandHandler<UpdateExercise, bool>
 
 	public async Task<bool> HandleAsync(UpdateExercise command)
 	{
-		var user = await _repository.GetUser(command.UserId);
+		var user = (await _repository.GetUser(command.UserId))!;
 
 		var oldExercise = user.Exercises.FirstOrDefault(x => x.Id == command.ExerciseId);
 		if (oldExercise == null)

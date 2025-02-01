@@ -28,7 +28,7 @@ public class SendWorkoutHandler : ICommandHandler<SendWorkout, string>
 
 	public async Task<string> HandleAsync(SendWorkout command)
 	{
-		var senderUser = await _repository.GetUser(command.SenderUserId);
+		var senderUser = (await _repository.GetUser(command.SenderUserId))!;
 		var recipientUser = await _repository.GetUser(command.RecipientUserId);
 		var workoutToSend = await _repository.GetWorkout(command.WorkoutId);
 
@@ -37,9 +37,13 @@ public class SendWorkoutHandler : ICommandHandler<SendWorkout, string>
 			throw new MiscErrorException("Cannot send workout to yourself");
 		}
 
-		ValidationUtils.UserExists(recipientUser);
+		if (recipientUser == null)
+		{
+			throw new ResourceNotFoundException("User");
+		}
+
 		ValidationUtils.ReferencedWorkoutExists(workoutToSend);
-		ValidationUtils.EnsureWorkoutOwnership(command.SenderUserId, workoutToSend);
+		ValidationUtils.EnsureWorkoutOwnership(command.SenderUserId, workoutToSend!);
 
 		if (recipientUser.Settings.PrivateAccount &&
 		    recipientUser.Friends.All(x => x.UserId != command.SenderUserId))
@@ -64,7 +68,7 @@ public class SendWorkoutHandler : ICommandHandler<SendWorkout, string>
 			SenderId = command.SenderUserId,
 			SenderUsername = senderUser.Username,
 			SenderProfilePicture = senderUser.ProfilePicture,
-			WorkoutName = workoutToSend.Name,
+			WorkoutName = workoutToSend!.Name,
 			ReceivedUtc = _clock.GetCurrentInstant(),
 			TotalDays = workoutToSend.Routine.TotalNumberOfDays,
 			MostFrequentFocus = _statisticsService
@@ -73,7 +77,8 @@ public class SendWorkoutHandler : ICommandHandler<SendWorkout, string>
 		recipientUser.ReceivedWorkouts.Add(receivedWorkoutInfo);
 		senderUser.WorkoutsSent++;
 
-		var receivedWorkout = new ReceivedWorkout(workoutToSend, command.RecipientUserId, receivedWorkoutId, senderUser);
+		var receivedWorkout =
+			new ReceivedWorkout(workoutToSend, command.RecipientUserId, receivedWorkoutId, senderUser);
 
 		await _repository.ExecuteBatchWrite(
 			usersToPut: new List<User> { senderUser, recipientUser },

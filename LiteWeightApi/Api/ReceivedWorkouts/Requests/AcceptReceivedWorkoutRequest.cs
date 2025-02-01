@@ -10,5 +10,5 @@ public class AcceptReceivedWorkoutRequest
 	/// </summary>
 	/// <example>Olympic Routine</example>
 	[MaxLength(Globals.MaxWorkoutNameLength)]
-	public string WorkoutName { get; set; }
+	public string WorkoutName { get; set; } = null!;
 }

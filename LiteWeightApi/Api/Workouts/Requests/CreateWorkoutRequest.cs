@@ -11,13 +11,13 @@ public class CreateWorkoutRequest
 	/// <example>High Intensity Workout</example>
 	[Required]
 	[MaxLength(Globals.MaxWorkoutNameLength)]
-	public string Name { get; set; }
+	public string Name { get; set; } = null!;
 
 	/// <summary>
 	/// Routine of the workout.
 	/// </summary>
 	[Required]
-	public SetRoutineRequest Routine { get; set; }
+	public SetRoutineRequest Routine { get; set; } = null!;
 
 	/// <summary>
 	/// If true, set this new workout to be the current workout for the user creating the workout.
