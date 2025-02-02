@@ -34,7 +34,7 @@ public class DeclineReceivedWorkoutHandler : ICommandHandler<DeclineReceivedWork
 		ValidationUtils.EnsureReceivedWorkoutOwnership(command.UserId, workoutToDecline);
 
 		var workoutToRemove =
-			user!.ReceivedWorkouts.FirstOrDefault(x => x.ReceivedWorkoutId == command.ReceivedWorkoutId);
+			user.ReceivedWorkouts.FirstOrDefault(x => x.ReceivedWorkoutId == command.ReceivedWorkoutId);
 		if (workoutToRemove == null) return false;
 		user.ReceivedWorkouts.Remove(workoutToRemove);
 

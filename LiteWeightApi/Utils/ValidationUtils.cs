@@ -8,16 +8,6 @@ namespace LiteWeightAPI.Utils;
 
 public static class ValidationUtils
 {
-	
-
-	public static void ReferencedWorkoutExists(Workout? workout)
-	{
-		if (workout == null)
-		{
-			throw new WorkoutNotFoundException("Referenced workout does not exist");
-		}
-	}
-
 	public static void EnsureWorkoutOwnership(string userId, Workout workout)
 	{
 		if (workout.CreatorId != userId)

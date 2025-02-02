@@ -6,7 +6,7 @@ namespace LiteWeightAPI.Commands.Self;
 public class SetFirebaseMessagingToken : ICommand<bool>
 {
 	public required string UserId { get; set; }
-	public required string Token { get; set; }
+	public string? Token { get; set; }
 }
 
 public class SetFirebaseMessagingTokenHandler : ICommandHandler<SetFirebaseMessagingToken, bool>

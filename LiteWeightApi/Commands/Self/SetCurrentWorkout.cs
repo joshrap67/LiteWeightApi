@@ -8,7 +8,7 @@ namespace LiteWeightAPI.Commands.Self;
 public class SetCurrentWorkout : ICommand<bool>
 {
 	public required string UserId { get; set; }
-	public required string CurrentWorkoutId { get; set; }
+	public string? CurrentWorkoutId { get; set; }
 }
 
 public class SetCurrentWorkoutHandler : ICommandHandler<SetCurrentWorkout, bool>

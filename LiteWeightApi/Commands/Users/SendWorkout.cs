@@ -49,8 +49,12 @@ public class SendWorkoutHandler : ICommandHandler<SendWorkout, string>
 			throw new ResourceNotFoundException("User");
 		}
 
-		ValidationUtils.ReferencedWorkoutExists(workoutToSend);
-		ValidationUtils.EnsureWorkoutOwnership(command.SenderUserId, workoutToSend!);
+		if (workoutToSend == null)
+		{
+			throw new WorkoutNotFoundException("Referenced workout does not exist");
+		}
+
+		ValidationUtils.EnsureWorkoutOwnership(command.SenderUserId, workoutToSend);
 
 		if (recipientUser.Settings.PrivateAccount &&
 		    recipientUser.Friends.All(x => x.UserId != command.SenderUserId))
@@ -75,7 +79,7 @@ public class SendWorkoutHandler : ICommandHandler<SendWorkout, string>
 			SenderId = command.SenderUserId,
 			SenderUsername = senderUser.Username,
 			SenderProfilePicture = senderUser.ProfilePicture,
-			WorkoutName = workoutToSend!.Name,
+			WorkoutName = workoutToSend.Name,
 			ReceivedUtc = _clock.GetCurrentInstant(),
 			TotalDays = workoutToSend.Routine.TotalNumberOfDays,
 			MostFrequentFocus = _statisticsService

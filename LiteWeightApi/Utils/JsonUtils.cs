@@ -11,7 +11,7 @@ public static class JsonUtils
 		PropertyNamingPolicy = JsonNamingPolicy.CamelCase
 	}.ConfigureForNodaTime(DateTimeZoneProviders.Tzdb);
 
-	public static T Deserialize<T>(string json)
+	public static T? Deserialize<T>(string json)
 	{
 		return JsonSerializer.Deserialize<T>(json, DefaultSerializerSettings);
 	}

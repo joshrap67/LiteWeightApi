@@ -53,7 +53,7 @@ public class SelfController : BaseController
 		if (firebaseClaim != null)
 		{
 			var deserializedToken = JsonUtils.Deserialize<JsonNode>(firebaseClaim.Value);
-			var email = deserializedToken["identities"]?["email"]?[0]?.GetValue<string>();
+			var email = deserializedToken?["identities"]?["email"]?[0]?.GetValue<string>();
 			currentUserEmail = email ?? "";
 		}
 

@@ -18,7 +18,7 @@ public static class StorageService
 
 		await storage.UploadObjectAsync(obj, stream);
 	}
-	
+
 	public static async Task Upload(Stream stream, string fileName, string contentType)
 	{
 		var storage = await StorageClient.CreateAsync();

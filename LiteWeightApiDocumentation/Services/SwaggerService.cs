@@ -35,7 +35,7 @@ public static class SwaggerService
 
 		var assembly = Assembly.GetExecutingAssembly();
 		var stream = new StreamReader(
-			assembly.GetManifestResourceStream("LiteWeightApiDocumentation.Markdown.InfoDescription.md"));
+			assembly.GetManifestResourceStream("LiteWeightApiDocumentation.Markdown.InfoDescription.md")!);
 		var fileString = stream.ReadToEnd();
 		return $"{fileString}\n\n\n{lastPublished}";
 	}

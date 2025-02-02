@@ -34,10 +34,10 @@ public class Repository : IRepository
 {
 	private readonly FirebaseOptions _firebaseOptions;
 
-	private const string WorkoutsCollection = "Workouts";
-	private const string UsersCollection = "Users";
-	private const string ComplaintsCollection = "Complaints";
-	private const string ReceivedWorkoutsCollection = "ReceivedWorkouts";
+	private const string WorkoutsCollection = "workouts";
+	private const string UsersCollection = "users";
+	private const string ComplaintsCollection = "complaints";
+	private const string ReceivedWorkoutsCollection = "receivedWorkouts";
 
 	public Repository(IOptions<FirebaseOptions> firebaseOptions)
 	{
